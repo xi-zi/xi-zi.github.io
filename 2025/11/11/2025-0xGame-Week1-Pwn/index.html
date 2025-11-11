@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xizi">
+
+
+    <meta name="subtitle" content="Welcome to Xizi's blog">
+
+
+
+
+<title>2025 0xGame Week1 Pwn | Xizi的个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const pagebody = document.getElementsByTagName('body')[0]
+
+            function setTheme(status) {
+
+                if (status === 'dark') {
+                    window.sessionStorage.theme = 'dark'
+                    pagebody.classList.add('dark-theme');
+
+                } else if (status === 'light') {
+                    window.sessionStorage.theme = 'light'
+                    pagebody.classList.remove('dark-theme');
+                }
+            };
+
+            setTheme(window.sessionStorage.theme)
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Bentham&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Bentham&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">
+                    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 17.27q-.213 0-.356-.145T4 16.768t.144-.356t.356-.143h15q.213 0 .356.144q.144.144.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h15q.213 0 .356.144t.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.143Q4 7.443 4 7.23t.144-.356t.356-.143h15q.213 0 .356.144T20 7.23t-.144.356t-.356.144z"/></svg>
+                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols Light by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 12.708l-5.246 5.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354L11.292 12L6.046 6.754q-.14-.14-.15-.344t.15-.364t.354-.16t.354.16L12 11.292l5.246-5.246q.14-.14.345-.15q.203-.01.363.15t.16.354t-.16.354L12.708 12l5.246 5.246q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"/></svg>
+                </div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.classList.contains("active")) {
+            toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        } else {
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">2025 0xGame Week1 Pwn</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xizi</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 11, 2025&nbsp;&nbsp;12:38:04</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/ctf-pwn/">ctf-pwn</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame Week1 Pwn"></a>0xGame Week1 Pwn</h1><h2 id="1-Test-your-nc"><a href="#1-Test-your-nc" class="headerlink" title="1.Test your nc"></a>1.Test your nc</h2><p>简单的签到题，熟知nc的用法即可。</p>
+<p><img src="/images/week1-1(1).png" alt="图解"></p>
+<h2 id="2-命令执行"><a href="#2-命令执行" class="headerlink" title="2.命令执行"></a>2.命令执行</h2><p>同样远端连接后，可以直接获取shell，不过过滤了cat和sh指令。通过拼接就可以成功获得flag。</p>
+<p><img src="/images/week1-2(1).png" alt="图解"></p>
+<h2 id="3-Stack-overflow"><a href="#3-Stack-overflow" class="headerlink" title="3.Stack overflow"></a>3.Stack overflow</h2><p>栈溢出。先丢进ida查看，发现backdoor，却是假的，但是whhhat给出了shell。再看main函数，看到了read危险函数，并且存在溢出的机会。</p>
+<p><img src="/images/week1-3(1).png" alt="ida"></p>
+<p><img src="/images/week1-3(2).png" alt="exp"></p>
+<p>简单说一下exp，首先是对pwn工具库的一个调用，之后是对远端的连接，如果是在虚拟机上连接远端环境用remote，如果在物理机上则用connect，调试也可以用process指令。观察ida可以看出距离rbp为0x30又有0x8（64位下）的大小存放rbp，所以距离ret_addr实际上是0x38的大小，所以填充0x38的padding来使函数返回至后门函数，也就是shell的地址（在ida中找出，这里不做演示）。最后getshell。</p>
+<p><img src="/images/week1-3(3).png" alt="图解"></p>
+<h2 id="4-ROP1"><a href="#4-ROP1" class="headerlink" title="4.ROP1"></a>4.ROP1</h2><p>rop链是pwn的一种常见攻击手段，可以上网看看原理。把附件丢进ida中</p>
+<p><img src="/images/week1-4(1).png" alt="ida"></p>
+<p>可以看到有gadget函数，可以在ida中查看gadget的地址为0x40117E，也可以在bash中用指令（ROPgadget –binary “文件名” –only “pop|ret” | grep “rdi”）获得地址。</p>
+<p><img src="/images/week1-4(4).png" alt="rdi"></p>
+<p>由于在ida中找不到sh相关的字符串，于是可以从gdb中获取（当然选择在help中用偏移也是可以打通的）</p>
+<p><img src="/images/week1-4(2).png" alt="sh"></p>
+<p>从而可以构造exp</p>
+<p><img src="/images/week1-4(3).png" alt="exp"></p>
+<h5 id="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。"><a href="#由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。" class="headerlink" title="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。"></a>由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。</h5><p>这里的ret是任意的一个ret_addr，因为其大小为1，所以可以起到一个对齐的作用。（因为我也不完全清楚其背后的原理QAQ）</p>
+<h2 id="5-ROP2"><a href="#5-ROP2" class="headerlink" title="5.ROP2"></a>5.ROP2</h2><p>这道题的解法其实和上一道rop1类似，不过由于过滤掉了sh，bash等sh类指令，所以这边可以联想到$0这个神奇的参数也可以起到一个shell的作用。</p>
+<p><img src="/images/week1-5(1).png" alt="$0"></p>
+<p>exp如下图</p>
+<p><img src="/images/week1-5(2).png" alt="exp"></p>
+<p>week1至此结束，至于还有一道简单数学题，对python语法要求较高，我就不在此叙述。（绝对不是我菜QWQ）</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xizi</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2025/11/11/2025-0xGame-Week1-Pwn/">http://example.com/2025/11/11/2025-0xGame-Week1-Pwn/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/pwn%E5%85%A5%E9%97%A8/"># pwn入门</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xizi | Powered by 
+            <a href="https://hexo.io" target="_blank">Hexo</a> & 
+            <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a>
+        </span>
+    </div>
+</footer>
+
+<!-- 鼠标点击文字特效 -->
+<script src="/js/clickwords.js"></script>
+
+<!-- LeanCloud SDK（国际版可用） -->
+
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+
+<!-- LeanCloud PV 统计脚本 -->
+
+<script>
+  AV.init({
+    appId: "2x1nbbd1J8LtQNyvHKKLEBGu-MdYXbMMI",
+    appKey: "QDXYbChoAqXbvelKVqeDht8B",
+  });
+  function addCount(Counter) {
+    let view_id = Counter.id;
+    let query = new AV.Query('Counter');
+    query.equalTo('url', view_id);
+    query.first().then(function(result) {
+      if (result) {
+        result.increment('time', 1);
+        result.save().then(function(result) {
+          Counter.querySelector('.leancloud-visitors-count').innerText = result.get('time');
+        });
+      } else {
+        let newRecord = new AV.Object('Counter');
+        newRecord.set('url', view_id);
+        newRecord.set('time', 1);
+        newRecord.save().then(function(result) {
+          Counter.querySelector('.leancloud-visitors-count').innerText = 1;
+        });
+      }
+    });
+  }
+
+  function showCount(Counter) {
+    let view_id = Counter.id;
+    let query = new AV.Query('Counter');
+    query.equalTo('url', view_id);
+    query.first().then(function(result) {
+      if (result) {
+        Counter.querySelector('.leancloud-visitors-count').innerText = result.get('time');
+      } else {
+        Counter.querySelector('.leancloud-visitors-count').innerText = 0;
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    let Counters = document.querySelectorAll('.leancloud-visitors');
+    Counters.forEach(function(Counter) {
+      if (Counter.getAttribute('data-flag-title')) {
+        addCount(Counter);
+      } else {
+        showCount(Counter);
+      }
+    });
+  });
+</script>
+
+    </div>
+</body>
+
+</html>
