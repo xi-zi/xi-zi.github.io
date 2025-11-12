@@ -39,31 +39,7 @@
     };
   }
 
-  for(let i=0;i<25;i++) leaves.push(createLeaf());
-
-  function update(){
-    ctx.clearRect(0,0,W,H);
-    for(let i=0;i<leaves.length;i++){
-      const lf = leaves[i];
-      lf.x += lf.vx;
-      lf.y += lf.vy;
-      lf.rotation += lf.vr;
-      lf.vy += 0.002; // gravity
-      ctx.save();
-      ctx.translate(lf.x, lf.y);
-      ctx.rotate(lf.rotation);
-      if (img.complete) {
-        ctx.drawImage(img, -lf.size/2, -lf.size/2, lf.size, lf.size);
-      } else {
-        // fallback: simple circle
-        ctx.fillStyle = 'rgba(180,80,50,0.8)';
-        ctx.beginPath();
-        ctx.ellipse(0,0, lf.size/2, lf.size/3, 0, 0, Math.PI*2);
-        ctx.fill();
-      }
-      ctx.restore();
-
-      if (lf.y > H + 50 || lf.x < -50 || lf.x > W + 50) {
+  for(let i=0;i<25;i++) leaves.push(createleaf()); function update(){ ctx.clearrect(0,0,w,h); for(let i="0;i<leaves.length;i++){" const lf="leaves[i];" lf.x +="lf.vx;" lf.y lf.rotation lf.vy gravity ctx.save(); ctx.translate(lf.x, lf.y); ctx.rotate(lf.rotation); if (img.complete) { ctx.drawimage(img, -lf.size 2, lf.size, lf.size); } else fallback: simple circle ctx.fillstyle="rgba(180,80,50,0.8)" ; ctx.beginpath(); ctx.ellipse(0,0, lf.size 3, 0, math.pi*2); ctx.fill(); ctx.restore(); (lf.y> H + 50 || lf.x < -50 || lf.x > W + 50) {
         leaves[i] = createLeaf();
         leaves[i].y = -20;
       }
@@ -73,4 +49,4 @@
   img.onload = update;
   // if img not load quickly
   setTimeout(()=> { if (!img.complete) update(); }, 500);
-})();
+})();</25;i++)>
