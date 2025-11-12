@@ -22,7 +22,7 @@
 
   // 叶子图片（可替换为水墨枫叶或花瓣 png）
   const img = new Image();
-  img.src = '/images/leaf.png'; // 请把一张叶子或花瓣的透明PNG放到 /source/images/leaf.png
+  img.src = '/img/leaf.png'; // 请把一张叶子或花瓣的透明PNG放到 /source/images/leaf.png
 
   function rand(a,b){ return Math.random()*(b-a)+a; }
 
