@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ret2csu | Xizi的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ret2csu将附件丢进ida  可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。 于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rsi，rdi，rdx，rcx，r8，r9。所以我们只要做到r">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ret2csu | Xizi的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ret2csu将附件丢进ida  可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。 于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到r">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ret2csu">
 <meta property="og:url" content="http://example.com/2025/11/21/ret2csu/index.html">
 <meta property="og:site_name" content="Xizi的个人博客">
-<meta property="og:description" content="ret2csu将附件丢进ida  可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。 于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rsi，rdi，rdx，rcx，r8，r9。所以我们只要做到r">
+<meta property="og:description" content="ret2csu将附件丢进ida  可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。 于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到r">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/butterfly-icon.png">
 <meta property="article:published_time" content="2025-11-20T23:58:34.000Z">
-<meta property="article:modified_time" content="2025-11-21T01:00:55.004Z">
+<meta property="article:modified_time" content="2025-11-21T01:18:39.462Z">
 <meta property="article:author" content="xizi">
 <meta property="article:tag" content="pwn入门">
 <meta name="twitter:card" content="summary">
@@ -18,7 +18,7 @@
   "url": "http://example.com/2025/11/21/ret2csu/",
   "image": "http://example.com/img/butterfly-icon.png",
   "datePublished": "2025-11-20T23:58:34.000Z",
-  "dateModified": "2025-11-21T01:00:55.004Z",
+  "dateModified": "2025-11-21T01:18:39.462Z",
   "author": [
     {
       "@type": "Person",
@@ -159,10 +159,10 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Xizi的个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">ret2csu</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">ret2csu</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-20T23:58:34.000Z" title="发表于 2025-11-21 07:58:34">2025-11-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-21T01:00:55.004Z" title="更新于 2025-11-21 09:00:55">2025-11-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h1><p>将附件丢进ida</p>
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Xizi的个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">ret2csu</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">ret2csu</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-20T23:58:34.000Z" title="发表于 2025-11-21 07:58:34">2025-11-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-21T01:18:39.462Z" title="更新于 2025-11-21 09:18:39">2025-11-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h1><p>将附件丢进ida</p>
 <p><img src="/images/ret2csu-(1).png" alt="ida"></p>
 <p>可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。</p>
-<p>于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rsi，rdi，rdx，rcx，r8，r9。所以我们只要做到rsi &#x3D; 1；rdi &#x3D; write_got；len&gt;&#x3D;8就可以了。</p>
+<p>于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到rsi &#x3D; 1；rdi &#x3D; write_got；len&gt;&#x3D;8就可以了。</p>
 <p>__libc_csu_init进行初始化时有这么一串汇编指令：</p>
 <p><img src="/images/ret2csu-(2).png" alt="ida"></p>
 <p>如果我们把上半部分成为gadget2，下半部分gadget1。那么在gadget1中可以看出我们可以轻松控制pop到各个寄存器的值，再结合gadget2，可以看出控制r12间接控制rdi–fd（这里r12d是指取rdi的低四字节的值，因为是控制fd所以不影响）；控制r13间接控制rsi–write_got；控制r14间接控制rdx–len。所以我们需要在vuln中进行栈溢出，控制程序执行到gadget1的位置，然后精心构造各个寄存器的值，进行我们需要的充满特定参数的函数。</p>
