@@ -1,0 +1,284 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>House_of_apple2 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="House of apple2这里还是看下roderick师傅的文章便于理解。 链接：[原创] House of apple 一种新的glibc中IO攻击方法 (2)-Pwn-看雪安全社区｜专业技术交流与安全研究论坛 由于高版本下，vtable无法被直接伪造（有严格的范围检查）。所以我们主动去调用_wide_data结构体里的函数指针。而_wide_data及其对应的虚表没有任何安全检查机制。通过">
+<meta property="og:type" content="website">
+<meta property="og:title" content="House_of_apple2">
+<meta property="og:url" content="http://example.com/2026/05/25/House-of-apple2/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="House of apple2这里还是看下roderick师傅的文章便于理解。 链接：[原创] House of apple 一种新的glibc中IO攻击方法 (2)-Pwn-看雪安全社区｜专业技术交流与安全研究论坛 由于高版本下，vtable无法被直接伪造（有严格的范围检查）。所以我们主动去调用_wide_data结构体里的函数指针。而_wide_data及其对应的虚表没有任何安全检查机制。通过">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-05-25T00:22:39.000Z">
+<meta property="article:modified_time" content="2026-05-25T02:27:12.605Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/05/25/House-of-apple2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'House_of_apple2',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">House_of_apple2</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="House-of-apple2"><a href="#House-of-apple2" class="headerlink" title="House of apple2"></a>House of apple2</h1><p>这里还是看下roderick师傅的文章便于理解。</p>
+<p>链接：[<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-273832-1.htm#msg_header_h3_0">原创] House of apple 一种新的glibc中IO攻击方法 (2)-Pwn-看雪安全社区｜专业技术交流与安全研究论坛</a></p>
+<p>由于高版本下，<code>vtable</code>无法被直接伪造（有严格的范围检查）。所以我们主动去调用<code>_wide_data</code>结构体里的函数指针。而<code>_wide_data</code>及其对应的虚表没有任何安全检查机制。通过控制这个“法外之地”，我们达到目的。</p>
+<p>我这里主要是记录下几条攻击链条。</p>
+<h3 id="1-利用-IO-wfile-overflow函数控制程序执行流"><a href="#1-利用-IO-wfile-overflow函数控制程序执行流" class="headerlink" title="1.利用_IO_wfile_overflow函数控制程序执行流"></a>1.利用_IO_wfile_overflow函数控制程序执行流</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_IO_wfile_overflow</span><br><span class="line">    _IO_wdoallocbuf</span><br><span class="line">        _IO_WDOALLOCATE</span><br><span class="line">            *(fp-&gt;_wide_data-&gt;_wide_vtable + 0x68)(fp)</span><br></pre></td></tr></table></figure>
+
+<p>首先看一下<code>_IO_wfile_overflow</code>函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">wint_t</span></span><br><span class="line">_IO_wfile_overflow (FILE *f, <span class="type">wint_t</span> wch)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (f-&gt;_flags &amp; _IO_NO_WRITES) <span class="comment">/* SET ERROR */</span></span><br><span class="line">    &#123;</span><br><span class="line">      f-&gt;_flags |= _IO_ERR_SEEN;</span><br><span class="line">      __set_errno (EBADF);</span><br><span class="line">      <span class="keyword">return</span> WEOF;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">/* If currently reading or no buffer allocated. */</span></span><br><span class="line">  <span class="keyword">if</span> ((f-&gt;_flags &amp; _IO_CURRENTLY_PUTTING) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Allocate a buffer if needed. */</span></span><br><span class="line">      <span class="keyword">if</span> (f-&gt;_wide_data-&gt;_IO_write_base == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      _IO_wdoallocbuf (f);<span class="comment">// 需要走到这里</span></span><br><span class="line">      <span class="comment">// ......</span></span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里首先要通过三个检测点。</p>
+<p>1.<code>(f-&gt;_flags &amp; _IO_NO_WRITES) = 0</code>，而<code>_IO_NO_WRITES</code>是0x8。</p>
+<p>2.<code>(f-&gt;_flags &amp; _IO_CURRENTLY_PUTTING) = 0</code>，而<code>_IO_CURRENTLY_PUTTING</code>是0x800。</p>
+<p>3<code>(f-&gt;_wide_data-&gt;_IO_write_base) = 0</code>。控制<code>_wide_data-&gt;_IO_write_base = 0</code></p>
+<p>所以我们<code>_flags</code>应该设置为~（ 0x8 | 0x800）。这样保证触发<code>_IO_wdoallocbuf</code>。</p>
+<p><code>_IO_wdoallocbuf</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line">_IO_wdoallocbuf (FILE *fp)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_wide_data-&gt;_IO_buf_base)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">if</span> (!(fp-&gt;_flags &amp; _IO_UNBUFFERED))</span><br><span class="line">    <span class="keyword">if</span> ((<span class="type">wint_t</span>)_IO_WDOALLOCATE (fp) != WEOF)<span class="comment">// _IO_WXXXX调用</span></span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  _IO_wsetb (fp, fp-&gt;_wide_data-&gt;_shortbuf,</span><br><span class="line">             fp-&gt;_wide_data-&gt;_shortbuf + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_def (_IO_wdoallocbuf)</span><br></pre></td></tr></table></figure>
+
+<p>1.<code>(fp-&gt;_wide_data-&gt;_IO_buf_base) = 0</code>。要控制<code>_wide_data-&gt;_IO_buf_base = 0</code></p>
+<p>2.<code>(fp-&gt;_flags &amp; _IO_UNBUFFERED) = 0</code>，而<code>_IO_UNBUFFERED</code>是2。所以<code>_flags</code>应该设置为~2</p>
+<p><code>_IO_UNBUFFERED</code> 代表“无缓冲区模式”。所以逻辑为如果我们这里文件流不是无缓冲模式，系统就认为我们需要一个缓冲区。然后就会去调用<code>_IO_WDOALLOCATE</code>来为我们分配一个缓冲区。</p>
+<p><code>_IO_WDOALLOCATE</code>的一参是fp。而<code>_IO_WDOALLOCATE</code>位于<code>_wide_vtable</code>的0x68偏移处。所以如果我们把这个地方写入system函数的地址。同时控制<code>fp=sh</code>就可以getshell了。</p>
+<p>现在来总结下利用链。</p>
+<ul>
+<li>首先把<code>_flags</code>设置为~（2 | 0x8 | 0x800）。如果对一参没有要求，直接控制为0就可以。如果需要获得shell。就可以设置为<code>  sh;</code>。这前面有两个空格。因为这样的十六进制表现为<code>0x3b68732020</code>。将其写入<code>_flags</code>的前四字节为<code>0x68732020</code>，刚好满足了<code>_flags</code>的要求，同时也能拿到shell。</li>
+<li><code>vtable</code>设置为<code>_IO_wfile_jumps</code>或<code>_IO_wfile_jumps_mmap/_IO_wfile_jumps_maybe_mmap</code>地址（加减偏移）。因为在 <code>_IO_wfile_jumps</code> 这个官方虚表中，偏移 <code>0x18</code> 的位置恰好就是 <code>_IO_wfile_overflow</code>，而虚表中的 <code>__overflow</code> 接口偏移固定为 <code>0x18</code>。所以加减偏移是为了最终能调用<code>_IO_wfile_overflow</code></li>
+<li><code>_wide_data</code>设置为可控堆地址<code>A</code>，即满足<code>*(fp + 0xa0) = A</code></li>
+<li><code>_wide_data-&gt;_IO_write_base</code>设置为<code>0</code>，即满足<code>*(A + 0x18) = 0</code></li>
+<li><code>_wide_data-&gt;_IO_buf_base</code>设置为<code>0</code>，即满足<code>*(A + 0x30) = 0</code></li>
+<li><code>_wide_data-&gt;_wide_vtable</code>设置为可控堆地址<code>B</code>，即满足<code>*(A + 0xe0) = B</code></li>
+<li><code>_wide_data-&gt;_wide_vtable-&gt;doallocate</code>设置为地址<code>C</code>用于劫持<code>RIP</code>，即满足<code>*(B + 0x68) = C</code></li>
+</ul>
+<h3 id="2-利用-IO-wfile-underflow-mmap函数控制程序执行流"><a href="#2-利用-IO-wfile-underflow-mmap函数控制程序执行流" class="headerlink" title="2.利用_IO_wfile_underflow_mmap函数控制程序执行流"></a>2.利用_IO_wfile_underflow_mmap函数控制程序执行流</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_IO_wfile_underflow_mmap</span><br><span class="line">    _IO_wdoallocbuf</span><br><span class="line">        _IO_WDOALLOCATE</span><br><span class="line">            *(fp-&gt;_wide_data-&gt;_wide_vtable + 0x68)(fp)</span><br></pre></td></tr></table></figure>
+
+<p>首先看<code>_IO_wfile_underflow_mmap</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">wint_t</span></span><br><span class="line">_IO_wfile_underflow_mmap (FILE *fp)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_codecvt</span> *<span class="title">cd</span>;</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *read_stop;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">if</span> (__glibc_unlikely (fp-&gt;_flags &amp; _IO_NO_READS))</span><br><span class="line">    &#123;</span><br><span class="line">      fp-&gt;_flags |= _IO_ERR_SEEN;</span><br><span class="line">      __set_errno (EBADF);</span><br><span class="line">      <span class="keyword">return</span> WEOF;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_wide_data-&gt;_IO_read_ptr &lt; fp-&gt;_wide_data-&gt;_IO_read_end)</span><br><span class="line">    <span class="keyword">return</span> *fp-&gt;_wide_data-&gt;_IO_read_ptr;</span><br><span class="line"> </span><br><span class="line">  cd = fp-&gt;_codecvt;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* Maybe there is something left in the external buffer.  */</span></span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_IO_read_ptr &gt;= fp-&gt;_IO_read_end</span><br><span class="line">      <span class="comment">/* No.  But maybe the read buffer is not fully set up.  */</span></span><br><span class="line">      &amp;&amp; _IO_file_underflow_mmap (fp) == EOF)</span><br><span class="line">    <span class="comment">/* Nothing available.  _IO_file_underflow_mmap has set the EOF or error</span></span><br><span class="line"><span class="comment">       flags as appropriate.  */</span></span><br><span class="line">    <span class="keyword">return</span> WEOF;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* There is more in the external.  Convert it.  */</span></span><br><span class="line">  read_stop = (<span class="type">const</span> <span class="type">char</span> *) fp-&gt;_IO_read_ptr;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_wide_data-&gt;_IO_buf_base == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Maybe we already have a push back pointer.  */</span></span><br><span class="line">      <span class="keyword">if</span> (fp-&gt;_wide_data-&gt;_IO_save_base != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">free</span> (fp-&gt;_wide_data-&gt;_IO_save_base);</span><br><span class="line">      fp-&gt;_flags &amp;= ~_IO_IN_BACKUP;</span><br><span class="line">    &#125;</span><br><span class="line">      _IO_wdoallocbuf (fp);<span class="comment">// 需要走到这里</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>1.<code>(fp-&gt;_flags &amp; _IO_NO_READS) = 0</code>，<code>_IO_NO_READS</code>是4。</p>
+<p>2.<code>fp-&gt;_wide_data-&gt;_IO_read_ptr &gt;= fp-&gt;_wide_data-&gt;_IO_read_end</code>，这说明宽字符的缓冲区已经空了，需要补充新数据（触发overflow）。</p>
+<p>3.<code>fp-&gt;_IO_read_ptr &lt; fp-&gt;_IO_read_end</code>。这样系统就会认为底层原始字节缓冲区里还有数据没处理完，然后就不会执行后续的<code>_IO_file_underflow_mmap</code>，而是直接往下走。</p>
+<p>4.<code>fp-&gt;_wide_data-&gt;_IO_buf_base == NULL</code>，欺骗系统为还没有分配缓冲区，其实到这一步就已经可以调用<code>_IO_wdoallocbuf</code>了。</p>
+<p>5.<code>fp-&gt;_wide_data-&gt;_IO_save_base = NULL</code>，这是为了防止执行 <code>free()</code> 时因为传入非法地址而崩溃。（如果有合法的可被free的地址也可以传入。一般设置为0）</p>
+<p>利用链：</p>
+<ul>
+<li><code>_flags</code>设置为~4。其余和上面要求一样。</li>
+<li><code>vtable</code>设置为<code>_IO_wfile_jumps_mmap</code>地址（加减偏移），使其能成功调用<code>_IO_wfile_underflow_mmap</code></li>
+<li><code>_wide_data</code>设置为可控堆地址<code>A</code>，即满足<code>*(fp + 0xa0) = A</code></li>
+<li><code>_wide_data-&gt;_IO_read_ptr &gt;= _wide_data-&gt;_IO_read_end</code>，即满足<code>*A &gt;= *(A + 8)</code></li>
+<li><code>_wide_data-&gt;_IO_buf_base</code>设置为<code>0</code>，即满足<code>*(A + 0x30) = 0</code></li>
+<li><code>_wide_data-&gt;_IO_save_base</code>设置为<code>0</code>或者合法的可被<code>free</code>的地址，即满足<code>*(A + 0x40) = 0</code></li>
+<li><code>_wide_data-&gt;_wide_vtable</code>设置为可控堆地址<code>B</code>，即满足<code>*(A + 0xe0) = B</code></li>
+<li><code>_wide_data-&gt;_wide_vtable-&gt;doallocate</code>设置为地址<code>C</code>用于劫持<code>RIP</code>，即满足<code>*(B + 0x68) = C</code></li>
+</ul>
+<h3 id="3-利用-IO-wdefault-xsgetn函数控制程序执行流"><a href="#3-利用-IO-wdefault-xsgetn函数控制程序执行流" class="headerlink" title="3.利用_IO_wdefault_xsgetn函数控制程序执行流"></a>3.利用_IO_wdefault_xsgetn函数控制程序执行流</h3><h5 id="这条链执行的条件是调用到-IO-wdefault-xsgetn时rdx寄存器，也就是第三个参数不为0。如果不满足这个条件，可选用其他链。"><a href="#这条链执行的条件是调用到-IO-wdefault-xsgetn时rdx寄存器，也就是第三个参数不为0。如果不满足这个条件，可选用其他链。" class="headerlink" title="这条链执行的条件是调用到_IO_wdefault_xsgetn时rdx寄存器，也就是第三个参数不为0。如果不满足这个条件，可选用其他链。"></a>这条链执行的条件是调用到_IO_wdefault_xsgetn时rdx寄存器，也就是第三个参数不为0。如果不满足这个条件，可选用其他链。</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_IO_wdefault_xsgetn</span><br><span class="line">    __wunderflow</span><br><span class="line">        _IO_switch_to_wget_mode</span><br><span class="line">            _IO_WOVERFLOW</span><br><span class="line">                *(fp-&gt;_wide_data-&gt;_wide_vtable + 0x18)(fp)</span><br></pre></td></tr></table></figure>
+
+<p><code>_IO_wdefault_xsgetn</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span></span><br><span class="line">_IO_wdefault_xsgetn (FILE *fp, <span class="type">void</span> *data, <span class="type">size_t</span> n)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">size_t</span> more = n;</span><br><span class="line">  <span class="type">wchar_t</span> *s = (<span class="type">wchar_t</span>*) data;</span><br><span class="line">  <span class="keyword">for</span> (;;)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Data available. */</span></span><br><span class="line">      <span class="type">ssize_t</span> count = (fp-&gt;_wide_data-&gt;_IO_read_end</span><br><span class="line">                       - fp-&gt;_wide_data-&gt;_IO_read_ptr);</span><br><span class="line">      <span class="keyword">if</span> (count &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ((<span class="type">size_t</span>) count &gt; more)</span><br><span class="line">        count = more;</span><br><span class="line">      <span class="keyword">if</span> (count &gt; <span class="number">20</span>)</span><br><span class="line">        &#123;</span><br><span class="line">          s = __wmempcpy (s, fp-&gt;_wide_data-&gt;_IO_read_ptr, count);</span><br><span class="line">          fp-&gt;_wide_data-&gt;_IO_read_ptr += count;</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (count &lt;= <span class="number">0</span>)</span><br><span class="line">        count = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="type">wchar_t</span> *p = fp-&gt;_wide_data-&gt;_IO_read_ptr;</span><br><span class="line">          <span class="type">int</span> i = (<span class="type">int</span>) count;</span><br><span class="line">          <span class="keyword">while</span> (--i &gt;= <span class="number">0</span>)</span><br><span class="line">        *s++ = *p++;</span><br><span class="line">          fp-&gt;_wide_data-&gt;_IO_read_ptr = p;</span><br><span class="line">            &#125;</span><br><span class="line">            more -= count;</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="keyword">if</span> (more == <span class="number">0</span> || __wunderflow (fp) == WEOF)</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">return</span> n - more;</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_def (_IO_wdefault_xsgetn)</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/05/25/House-of-apple2/">http://example.com/2026/05/25/House-of-apple2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/26/C++%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="C++异常处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-26</div><div class="info-item-2">C++异常处理</div></div><div class="info-2"><div class="info-item-1">C++异常处理机制misc | Hexo C++ 异常处理是一种在程序运行时处理错误和特殊情况的机制。它允许程序在遇到问题时，通过抛出和捕获异常来转移控制流，而不是使用传统的错误处理方法（如通过函数返回值）。C++ 异常处理主要涉及三个关键字：try、catch和throw。 核心工作机制：栈展开 (Stack Unwinding)这是C++异常机制中最重要的一环。当异常被 throw 抛出，且在当前作用域没有找到匹配的 catch 块时，C++ 运行时会去调用者的作用域中寻找，一直沿着函数调用栈向上找。 在这个“向上找”的过程中，C++ 会自动调用当前作用域内所有已构造的局部对象的析构函数，安全地释放资源。这个过程就叫栈展开。这与 RAII（资源获取即初始化）机制完美配合，防止了内存泄漏。 异常展开机制在把控制权交还给 main 函数时，不仅会设置 RIP，还会从栈上恢复 RBP 寄存器，以恢复 main 函数的栈帧环境。 所以说，如果我们能伪造rbp+8的地址，让它指向一个含有c++异常处理的函数。这样做到可以绕过canary等保护。 [第五空间 2022]toolkit链接...</div></div></div></a><a class="pagination-related" href="/2025/12/11/ISCTF/" title="ISCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-11</div><div class="info-item-2">ISCTF</div></div><div class="info-2"><div class="info-item-1">ISCTF1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节，所以用p32包裹0xaddaaaaa就可以getshell了。 下面给出exp。 12345678from pwn import *io = remote(&#x27;challenge.bluesharkinfo.com&#x27;,25138)pl = b&#x27;a&#x27; * 108 + p32(0xaddaaaaa)io.sendafter(b&#x27;do you like blueshark?&#x27;,pl)io.interactive()  2.Fmt 经典的格式化字符串泄露。但是这里需要换一下附件的依赖。 由于这里给了libc.so.6，所以我们可...</div></div></div></a><a class="pagination-related" href="/2026/05/23/Litctf/" title="Litctf"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-23</div><div class="info-item-2">Litctf</div></div><div class="info-2"><div class="info-item-1">Litctf1.ret2text32简单的签到题。 12345678void vuln()&#123;  char buf[48]; // [esp+0h] [ebp-38h] BYREF  puts(&quot;Welcome, rookie! Can you find the backdoor?&quot;);  printf(&quot;Input: &quot;);  read(0, buf, 0x200u);&#125;  vuln函数里存在栈溢出。程序32位，存在backdoor。 1234void backdoor()&#123;  system(&quot;/bin/sh&quot;);&#125;  由于程序是32位的，所以和我们64位ret到system传参数的地址不同。 我们这里需要控制程序流到backdoor的起始位置。 12345678910111213141516171819202122232425.text:08049213 ; void backdoor().text:08049213                 public backdoor...</div></div></div></a><a class="pagination-related" href="/2026/02/07/Hgame2026/" title="Hgame2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-07</div><div class="info-item-2">Hgame2026</div></div><div class="info-2"><div class="info-item-1">Hgame 2026第一周的Hgame pwn的部分题解。花了一周的大部分时间在写。也确实难度很高。万幸的是还好没爆零。还是需要不断学习的。 1.EZheap真的ez吗？😂快被虐哭了😢其实是自己菜。 123456789101112131415161718192021222324252627282930313233343536int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int choice; // [rsp+4h] [rbp-34h] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-30h]  v5 = __readfsqword(0x28u);  init();  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;choice);    switch ( choice )    &#123;      case 1:        add()...</div></div></div></a><a class="pagination-related" href="/2026/04/06/NCTF2026/" title="NCTF2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-06</div><div class="info-item-2">NCTF2026</div></div><div class="info-2"><div class="info-item-1">NCTF2026 从一开始对NCTF满怀憧憬，到最后打完比赛颇感无语，我只能说比赛是好的，出题的师傅们是好的，做题的我们不好。并不排斥利用ai，但是过度利用ai仅仅只为了让自己的排名上升一点，看上去舒服一点，ai全程托管，py行为，各种手段层出不穷，无所不用其极，需要我好好思考后面应该怎么走。 言归正传 ，这里NCTF pwn方向有四道题，最后一道压轴的iot类型和一道高版本的large bin attack的heap题没写出来。下面给出前面两道的打法。 1.Checkin12345678910int __fastcall __noreturn main(int argc, const char **argv, const char **envp)&#123;  setvbuf(stdin, 0LL, 2, 0LL);  setvbuf(_bss_start, 0LL, 2, 0LL);  setvbuf(stderr, 0LL, 2, 0LL);  puts(&quot;Please checkin first&quot;);  read(0, buf, 0x100uLL); ...</div></div></div></a><a class="pagination-related" href="/2026/04/24/Only-read/" title="Only_read"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-24</div><div class="info-item-2">Only_read</div></div><div class="info-2"><div class="info-item-1">Only_Read其实这种题型之前已经提供过一种做法了。就是magic_gadget。通过控制rbp和ebx的值，我们可以在没有泄露libc基地址的情况下，getshell。但是，如果当我们连rbp和ebx都控制不了又该怎么办呢？ 在高版本情况下，__libc_csu_init是被删去的。也就是说，我们缺少了很多可以直接控制的寄存器。那么此时在面对只有read函数又该怎么办呢？ https://khighl.github.io/2025/06/13/ACTF%202025/ 这是我师傅的链接。我们在这里就先讨论一种做法，后面的有空再说(咕咕咕)…. 12345678int __fastcall main(int argc, const char **argv, const char **envp)&#123;  _BYTE buf[96]; // [rsp+0h] [rbp-60h] BYREF  init();  read(0, buf, 0x400uLL);  return 0;&#125;  保护如下 12345678Arch:       amd64-64-littleR...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/25/House-of-apple2/" title="House_of_apple2">House_of_apple2</a><time datetime="2026-05-25T00:22:39.000Z" title="发表于 2026-05-25 08:22:39">2026-05-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/23/Litctf/" title="Litctf">Litctf</a><time datetime="2026-05-23T07:44:48.000Z" title="发表于 2026-05-23 15:44:48">2026-05-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/24/Only-read/" title="Only_read">Only_read</a><time datetime="2026-04-24T15:28:47.000Z" title="发表于 2026-04-24 23:28:47">2026-04-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/ret2gets/" title="ret2gets">ret2gets</a><time datetime="2026-04-19T09:47:37.000Z" title="发表于 2026-04-19 17:47:37">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/17/%E6%B5%8B%E4%BF%A1%E9%81%93%E7%88%86%E7%A0%B4/" title="测信道爆破">测信道爆破</a><time datetime="2026-04-17T13:02:25.000Z" title="发表于 2026-04-17 21:02:25">2026-04-17</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.3em; color: #99a1ac">pwn入门</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.3em; color: #99a1ac">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">31</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-05-25T03:40:37.342Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
